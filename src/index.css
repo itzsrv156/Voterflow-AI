@@ -1,8 +1,22 @@
 @import "tailwindcss";
 
 @theme {
-  --color-saffron: #FF9933;
-  --color-white: #FFFFFF;
-  --color-green: #128807;
-  --color-navy: #000080;
+  --color-civic-saffron: #FF9933;
+  --color-civic-white: #FFFFFF;
+  --color-civic-green: #128807;
+  --color-civic-navy: #000080;
+  
+  --font-sans: "Inter", system-ui, -apple-system, sans-serif;
+  --font-display: "Outfit", sans-serif;
+}
+
+@layer base {
+  body {
+    @apply bg-[#FDFDFD] text-slate-900 antialiased;
+    background-image: 
+      radial-gradient(#00008011 1px, transparent 1px),
+      radial-gradient(#00008011 1px, transparent 1px);
+    background-size: 40px 40px;
+    background-position: 0 0, 20px 20px;
+  }
 }

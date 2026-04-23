@@ -12,8 +12,12 @@ export default {
           white: '#FFFFFF',
           green: '#128807',
           navy: '#000080',
-        }
-      }
+        },
+      },
+      fontFamily: {
+        sans: ['"Inter"', 'system-ui', '-apple-system', 'sans-serif'],
+        display: ['"Outfit"', 'sans-serif'],
+      },
     },
   },
   plugins: [],

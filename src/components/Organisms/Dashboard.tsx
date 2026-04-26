@@ -27,7 +27,7 @@ const LanguageToggle = () => {
     );
 };
 
-const ConstituencyHeatmap = () => (
+const ConstituencyHeatmap = ({ onOpenChat }: { onOpenChat: () => void }) => (
     <div className="bg-white/40 backdrop-blur-xl rounded-[3.5rem] p-10 border border-white/50 shadow-sm relative overflow-hidden h-full">
         <div className="flex justify-between items-start mb-8">
             <div>
@@ -58,9 +58,17 @@ const ConstituencyHeatmap = () => (
                     <span className="text-gray-400 uppercase">Current Sector</span>
                     <span className="text-civic-navy">Shanti Nagar</span>
                 </div>
-                <div className="flex justify-between items-center text-[9px] font-bold">
-                    <span className="text-gray-400 uppercase">Sync Status</span>
-                    <span className="text-civic-green">89.2% Optimized</span>
+                <div className="space-y-4">
+                    <div className="flex justify-between items-center text-[10px] font-bold">
+                        <span className="text-gray-400 uppercase">SIR Phase</span>
+                        <span className="text-civic-navy">2.4 Revision</span>
+                    </div>
+                    <button 
+                        onClick={onOpenChat}
+                        className="w-full py-3 bg-civic-navy text-white text-[9px] font-black uppercase tracking-widest rounded-xl hover:scale-105 transition-all"
+                    >
+                        Ask AI Assistant
+                    </button>
                 </div>
             </div>
         </div>
@@ -123,7 +131,6 @@ export const Dashboard = () => {
   const [showAiValidator, setShowAiValidator] = useState(false);
   const [scanStatus, setScanStatus] = useState<'idle' | 'scanning' | 'result'>('idle');
   const [isDeepSearching, setIsDeepSearching] = useState(false);
-  const [showReportModal, setShowReportModal] = useState(false);
 
   const chatEndRef = useRef<HTMLDivElement>(null);
 
@@ -160,33 +167,27 @@ export const Dashboard = () => {
     
     if (isDeep) setIsDeepSearching(true);
 
-    const sources = isDeep ? ['ECI Knowledge Graph', 'Legal Gazette 2026', 'Sovereign Intel Archives'] : undefined;
+    const sources = isDeep ? ['ECI Knowledge Graph', 'Legal Gazette 2026', 'VoterFlow Archives'] : undefined;
     
     // Add an empty AI message that we will fill
     setChatMessages(prev => [...prev, { role: 'ai', text: 'Thinking...', sources }]);
 
-    // Format history for Gemini (alternating user/model)
+    // Format history for Gemini
     const history = chatMessages.map(m => 
         `${m.role === 'user' ? 'User' : 'Assistant'}: ${m.text}`
     ).join('\n');
 
-    const systemPrompt = `You are the Sovereign ECI Intelligence Core (Gemini 1.5). 
+    const systemPrompt = `You are the VoterFlow Intelligence Core (Gemini 1.5). 
     Your mission is to assist Indian citizens in navigating the 2026 Special Intensive Revision (SIR) cycle.
     
     CURRENT CONTEXT:
     - User Persona: ${persona || 'General Citizen'}.
-    - Constituency: Bengaluru Central (PC 25).
-    - Current Readiness: ${Math.round(readinessScore)}%.
+    - Constituency: PC 25 (Bengaluru).
     
     CHAT HISTORY:
     ${history}
     
-    ECI PROTOCOLS:
-    - Form 6: New registration. Qualifying date 01-01-2026.
-    - Form 8: Correction/Replacement.
-    - SIR 2026: Active house-to-house mapping.
-    
-    STYLE: Professional, concise, authoritative. Respond dynamically based on the conversation history.`;
+    STYLE: Professional, concise, authoritative. Respond dynamically based on history.`;
 
     streamGeminiResponse(text, systemPrompt, (fullText) => {
         setIsDeepSearching(false);
@@ -281,7 +282,7 @@ export const Dashboard = () => {
       {/* Main Content Area */}
       <div className="flex-1 overflow-y-auto pr-4 custom-scrollbar h-full space-y-8 pb-32">
           
-          {/* Gemini 1.5 Pro Workspace Access - NEW PREMIUM FEATURE */}
+          {/* VoterFlow Assistant Access */}
           <motion.div 
               whileHover={{ scale: 1.01 }}
               onClick={() => setIsChatOpen(true)}
@@ -294,27 +295,27 @@ export const Dashboard = () => {
                           <div className="absolute inset-0 bg-gradient-to-tr from-google-blue/10 to-purple-500/10 animate-pulse" />
                       </div>
                       <div className="text-left">
-                          <h3 className="text-3xl font-display font-bold text-civic-navy tracking-tight">Sovereign Gemini Workspace</h3>
+                          <h3 className="text-3xl font-display font-bold text-civic-navy tracking-tight">VoterFlow Assistant</h3>
                           <p className="text-sm text-gray-500 mt-2 font-medium max-w-md leading-relaxed">
-                              Experience 1.5 Pro intelligence with a 1M+ token context window. Analyze legislative gazettes, verify identities, and resolve complex civic disputes in real-time.
+                              Experience real-time intelligence for the 2026 Revision cycle. Resolve complex civic disputes and verify identity in seconds.
                           </p>
                       </div>
                   </div>
                   <div className="px-10 py-5 bg-civic-navy text-white font-black rounded-2xl text-xs uppercase tracking-widest flex items-center gap-3 group-hover:bg-google-blue transition-all shadow-xl shadow-civic-navy/20">
-                      <Sparkles className="w-5 h-5 text-civic-saffron" /> Launch Gemini AI
+                      <Sparkles className="w-5 h-5 text-civic-saffron" /> Launch AI Assistant
                   </div>
               </div>
           </motion.div>
 
-            {/* Sovereign Alert Ticker */}
-            <div className="bg-civic-navy text-white px-8 py-3 rounded-2xl flex items-center gap-6 overflow-hidden relative">
-                <div className="flex items-center gap-2 shrink-0 bg-civic-saffron text-civic-navy px-3 py-1 rounded-lg text-[9px] font-black uppercase tracking-widest z-10">
-                    <Zap className="w-3 h-3" /> Alert
+            {/* VoterFlow Alert Ticker */}
+            <div className="w-full bg-red-50/50 backdrop-blur-md border border-red-100 rounded-3xl p-6 flex items-center gap-6 overflow-hidden">
+                <div className="flex items-center gap-3 px-4 py-2 bg-red-500 text-white rounded-full text-[10px] font-black uppercase tracking-widest animate-pulse">
+                    <Zap className="w-4 h-4 fill-white" /> Emergency Alert
                 </div>
                 <motion.div 
                     animate={{ x: ["100%", "-100%"] }}
                     transition={{ duration: 30, repeat: Infinity, ease: "linear" }}
-                    className="whitespace-nowrap text-[10px] font-bold uppercase tracking-widest opacity-80"
+                    className="whitespace-nowrap text-[10px] font-bold uppercase tracking-widest text-red-900"
                 >
                     SIR 2026: House-to-House Mapping is active in Karnataka Sectors. // Form 12D Home Voting requests open for Senior Citizens. // Aadhaar-EPIC linking is mandatory for data integrity.
                 </motion.div>
@@ -364,17 +365,6 @@ export const Dashboard = () => {
                             <div className="text-xs font-bold text-civic-navy">Bengaluru Central (PC 25)</div>
                         </div>
                     </div>
-
-                    <button 
-                        onClick={() => setShowReportModal(true)}
-                        className="px-6 py-4 bg-white/60 rounded-3xl border border-white shadow-sm flex items-center gap-4 hover:bg-civic-navy hover:text-white transition-all group"
-                    >
-                        <FileText className="w-5 h-5 text-civic-navy group-hover:text-white" />
-                        <div className="text-left">
-                            <div className="text-[9px] font-black opacity-40 uppercase tracking-widest">Intel Report</div>
-                            <div className="text-xs font-bold">SIR 2026 Status</div>
-                        </div>
-                    </button>
                 </div>
               </motion.div>
               
@@ -425,7 +415,7 @@ export const Dashboard = () => {
                   </div>
               </motion.div>
 
-              {/* Sovereign Timeline Feature */}
+              {/* VoterFlow Timeline Feature */}
               <motion.div variants={{ hidden: { y: 20, opacity: 0 }, show: { y: 0, opacity: 1 } }} className="xl:col-span-2 bg-white/40 backdrop-blur-xl rounded-[3.5rem] p-12 border border-white/50 shadow-sm overflow-hidden relative group">
                   <div className="absolute top-0 right-0 p-8 opacity-5 pointer-events-none group-hover:scale-110 transition-transform duration-700">
                       <Calendar className="w-48 h-48 text-civic-navy" />
@@ -434,7 +424,7 @@ export const Dashboard = () => {
                       <div className="w-12 h-12 bg-civic-navy rounded-2xl flex items-center justify-center shadow-xl shadow-civic-navy/10">
                           <Library className="w-6 h-6 text-civic-saffron" />
                       </div>
-                      <h3 className="text-2xl font-display font-bold text-civic-navy">Sovereign Journey Timeline</h3>
+                      <h3 className="text-2xl font-display font-bold text-civic-navy">VoterFlow Journey Timeline</h3>
                   </div>
                   
                   <div className="relative flex flex-col md:flex-row justify-between gap-8 px-4">
@@ -442,8 +432,8 @@ export const Dashboard = () => {
                       {[
                         { date: 'Oct 2025', event: 'SIR Cycle Start', status: 'Passed', icon: Zap, details: "Special Intensive Revision began. Your sector (PC 25) mapping is finalized." },
                         { date: 'Feb 2026', event: 'Draft Roll Sync', status: 'Current', icon: Search, details: "The Draft Roll is now live. Verify your entry to avoid exclusion during the de-duplication phase." },
-                        { date: 'Mar 2026', event: 'Final Publication', status: 'Upcoming', icon: ShieldCheck, details: "Final Sovereign Roll will be published. This is the last version before General Elections." },
-                        { date: 'May 2026', event: 'General Elections', status: 'Goal', icon: Flame, details: "E-Day. Your polling station BBMP School is ready for Sovereign turnout." }
+                        { date: 'Mar 2026', event: 'Final Publication', status: 'Upcoming', icon: ShieldCheck, details: "Final VoterFlow Roll will be published. This is the last version before General Elections." },
+                        { date: 'May 2026', event: 'General Elections', status: 'Goal', icon: Flame, details: "E-Day. Your polling station BBMP School is ready for VoterFlow turnout." }
                       ].map((t, i) => (
                         <button 
                             key={i} 
@@ -476,11 +466,11 @@ export const Dashboard = () => {
 
               {/* Top 50 Feature: Heatmap & Future Voter Tool */}
               <motion.div variants={{ hidden: { y: 20, opacity: 0 }, show: { y: 0, opacity: 1 } }} className="grid grid-cols-1 xl:grid-cols-2 gap-8 xl:col-span-2">
-                  <ConstituencyHeatmap />
+                  <ConstituencyHeatmap onOpenChat={() => setIsChatOpen(true)} />
                   <FutureVoterTool />
               </motion.div>
 
-              {/* Sovereign Voter Card */}
+              {/* VoterFlow Voter Card */}
               {progress.registration === 100 && (
                 <motion.div 
                     initial={{ opacity: 0, scale: 0.9 }}
@@ -500,7 +490,7 @@ export const Dashboard = () => {
                             </div>
                             <div>
                                 <div className="flex items-center gap-3 mb-2">
-                                    <span className="px-3 py-1 bg-civic-saffron text-civic-navy text-[8px] font-black uppercase tracking-[0.2em] rounded-full">Sovereign Identity</span>
+                                    <span className="px-3 py-1 bg-civic-saffron text-civic-navy text-[8px] font-black uppercase tracking-[0.2em] rounded-full">VoterFlow Identity</span>
                                     <span className="text-[10px] font-bold text-white/40 uppercase tracking-widest">EPIC: BEL-2026-0420</span>
                                 </div>
                                 <h3 className="text-3xl font-display font-bold uppercase tracking-tight">{voterName || 'Sarvesh Arunkumar'}</h3>
@@ -579,7 +569,7 @@ export const Dashboard = () => {
                   <div className="w-16 h-16 bg-civic-navy rounded-2xl flex items-center justify-center group-hover:scale-110 group-hover:-rotate-6 transition-all duration-500 shadow-xl">
                     <Cpu className="text-civic-saffron w-7 h-7" />
                   </div>
-                  <span className="px-4 py-2 bg-civic-navy/5 rounded-full text-[9px] font-black text-civic-navy uppercase tracking-widest">Sovereign AI v2.4</span>
+                  <span className="px-4 py-2 bg-civic-navy/5 rounded-full text-[9px] font-black text-civic-navy uppercase tracking-widest">VoterFlow AI v2.4</span>
                 </div>
                 <div className="relative z-10">
                     <h3 className="text-3xl font-bold text-civic-navy mb-4">Document Validator</h3>
@@ -728,7 +718,7 @@ export const Dashboard = () => {
                   <div className="w-16 h-16 bg-civic-navy rounded-2xl flex items-center justify-center group-hover:scale-110 group-hover:-rotate-6 transition-all duration-500 shadow-xl">
                     <Cpu className="text-civic-saffron w-7 h-7" />
                   </div>
-                  <span className="px-4 py-2 bg-civic-navy/5 rounded-full text-[9px] font-black text-civic-navy uppercase tracking-widest">Sovereign AI v2.4</span>
+                  <span className="px-4 py-2 bg-civic-navy/5 rounded-full text-[9px] font-black text-civic-navy uppercase tracking-widest">VoterFlow AI v2.4</span>
                 </div>
                 <div className="relative z-10">
                     <h3 className="text-3xl font-bold text-civic-navy mb-4">Document Validator</h3>
@@ -764,10 +754,10 @@ export const Dashboard = () => {
                   <p className="text-gray-500 font-medium">Verify legislative protocols and electoral data integrity.</p>
                 </div>
                 <button 
-                  onClick={() => setShowReportModal(true)} 
+                  onClick={() => setIsChatOpen(true)} 
                   className="px-8 py-4 bg-civic-navy text-white font-bold rounded-2xl shadow-xl shadow-civic-navy/20 hover:scale-105 active:scale-95 transition-all flex items-center gap-3"
                 >
-                  <BookOpen className="w-5 h-5" /> Open Research Vault
+                  <BookOpen className="w-5 h-5" /> Consult Assistant
                 </button>
               </motion.header>
 
@@ -790,7 +780,7 @@ export const Dashboard = () => {
               <motion.div variants={{ hidden: { y: 20, opacity: 0 }, show: { y: 0, opacity: 1 } }} className="p-10 bg-gradient-to-br from-civic-navy to-blue-900 rounded-[3rem] text-white relative overflow-hidden">
                   <Globe className="absolute -bottom-20 -right-20 w-80 h-80 opacity-10" />
                   <div className="relative z-10 max-w-xl">
-                      <h3 className="text-2xl font-display font-bold mb-4 text-civic-saffron">Sovereign Data Federation</h3>
+                      <h3 className="text-2xl font-display font-bold mb-4 text-civic-saffron">VoterFlow Data Federation</h3>
                       <p className="text-white/60 text-sm leading-relaxed mb-8">
                           The VoterFlow research engine pulls directly from ECI open-data simulations. Every guideline here is verified against the 2026 Electoral Code.
                       </p>
@@ -829,7 +819,7 @@ export const Dashboard = () => {
                   <div className="p-8 bg-white rounded-[2.5rem] border border-gray-100 shadow-sm flex flex-col items-center gap-4 group hover:bg-civic-navy hover:text-white transition-all">
                       <div className="text-[10px] font-black uppercase tracking-widest opacity-40">National Support</div>
                       <div className="text-4xl font-display font-bold">1950</div>
-                      <div className="text-xs font-bold opacity-60">Sovereign Voter Hotline</div>
+                      <div className="text-xs font-bold opacity-60">VoterFlow Voter Hotline</div>
                       <a href="tel:1950" className="mt-4 px-6 py-3 bg-civic-saffron text-civic-navy rounded-xl text-[10px] font-black uppercase tracking-widest group-hover:bg-white transition-all">Connect Now</a>
                   </div>
                   <div className="p-8 bg-white rounded-[2.5rem] border border-gray-100 shadow-sm flex flex-col items-center gap-4 group hover:bg-civic-navy hover:text-white transition-all">
@@ -886,7 +876,7 @@ export const Dashboard = () => {
                       <AlertTriangle className="w-10 h-10 text-civic-saffron" />
                       <div>
                           <h4 className="text-xl font-bold mb-1">Verify SIR Inclusion</h4>
-                          <p className="text-sm text-white/60">Ensure your record is synchronized with the 2026 Karnataka Sovereign Roll.</p>
+                          <p className="text-sm text-white/60">Ensure your record is synchronized with the 2026 Karnataka VoterFlow Roll.</p>
                       </div>
                   </div>
                   <button 
@@ -911,7 +901,7 @@ export const Dashboard = () => {
                   </div>
                   <div>
                       <h2 className="text-3xl font-display font-bold text-civic-navy">Form 8: Correction Suite</h2>
-                      <p className="text-[10px] font-black text-gray-400 uppercase tracking-widest mt-1">Sovereign Data Integrity Platform</p>
+                      <p className="text-[10px] font-black text-gray-400 uppercase tracking-widest mt-1">VoterFlow Data Integrity Platform</p>
                   </div>
                </div>
                
@@ -945,7 +935,7 @@ export const Dashboard = () => {
                   <Info className="w-8 h-8 text-civic-navy opacity-30" />
                   <p className="text-[11px] text-gray-400 font-medium leading-relaxed">
                     Form 8 submissions require OTP authentication via Aadhaar-linked mobile numbers. 
-                    <a href="https://voters.eci.gov.in/" target="_blank" className="text-civic-navy underline ml-2">Sovereign Portal</a>
+                    <a href="https://voters.eci.gov.in/" target="_blank" className="text-civic-navy underline ml-2">VoterFlow Portal</a>
                   </p>
                </div>
             </motion.div>
@@ -1090,241 +1080,109 @@ export const Dashboard = () => {
         )}
       </AnimatePresence>
 
-      {/* Sovereign Intel Report Modal */}
-      <AnimatePresence>
-          {showReportModal && (
-              <div className="fixed inset-0 z-[5000] flex items-center justify-center p-6 bg-civic-navy/80 backdrop-blur-3xl">
-                  <motion.div 
-                    initial={{ y: 100, opacity: 0 }}
-                    animate={{ y: 0, opacity: 1 }}
-                    exit={{ y: 100, opacity: 0 }}
-                    className="bg-white w-full max-w-4xl rounded-[4rem] overflow-hidden shadow-2xl flex flex-col h-[80vh]"
-                  >
-                      <div className="p-12 bg-civic-navy text-white flex justify-between items-center">
-                          <div className="flex items-center gap-6">
-                              <div className="w-16 h-16 bg-white/10 rounded-2xl flex items-center justify-center border border-white/20">
-                                  <FileText className="w-8 h-8 text-civic-saffron" />
-                              </div>
-                              <div>
-                                  <h3 className="text-3xl font-display font-bold">Sovereign Intelligence Report</h3>
-                                  <p className="text-[10px] font-black text-white/40 uppercase tracking-[0.3em]">PC 25: Bengaluru Central // SIR 2026</p>
-                              </div>
-                          </div>
-                          <button onClick={() => setShowReportModal(false)} className="p-4 bg-white/10 rounded-full hover:bg-white/20 transition-all"><X className="w-6 h-6" /></button>
-                      </div>
-                      
-                      <div className="flex-1 overflow-y-auto p-16 space-y-12 bg-gray-50/50 custom-scrollbar">
-                          <section>
-                              <h4 className="text-xs font-black text-civic-navy uppercase tracking-widest mb-6 border-b border-gray-200 pb-2">Executive Summary</h4>
-                              <p className="text-gray-600 leading-relaxed font-medium">
-                                  This report synthesizes real-time electoral mapping data for the Bengaluru Central sector. As of Feb 2026, the constituency demonstrates an **89.2%** synchronization rate with the National Voter Service Portal. Current focus areas include the mitigation of double-entries and the facilitation of student residency declarations (Annexure-II).
-                              </p>
-                          </section>
-                          
-                          <div className="grid grid-cols-2 gap-8">
-                              <div className="p-8 bg-white rounded-3xl border border-gray-100 shadow-sm">
-                                  <div className="flex items-center gap-3 mb-6">
-                                      <Target className="w-5 h-5 text-civic-navy" />
-                                      <h5 className="font-bold text-civic-navy text-sm uppercase">Sector Readiness</h5>
-                                  </div>
-                                  <div className="space-y-4">
-                                      {['Shanti Nagar', 'Shivaji Nagar', 'CV Raman Nagar'].map(s => (
-                                          <div key={s} className="space-y-1">
-                                              <div className="flex justify-between text-[10px] font-bold">
-                                                  <span>{s}</span>
-                                                  <span className="text-civic-green">Optimal</span>
-                                              </div>
-                                              <div className="h-1 w-full bg-gray-100 rounded-full overflow-hidden">
-                                                  <div className="h-full bg-civic-green w-[90%]" />
-                                              </div>
-                                          </div>
-                                      ))}
-                                  </div>
-                              </div>
-                              <div className="p-8 bg-white rounded-3xl border border-gray-100 shadow-sm">
-                                  <div className="flex items-center gap-3 mb-6">
-                                      <ShieldCheck className="w-5 h-5 text-civic-navy" />
-                                      <h5 className="font-bold text-civic-navy text-sm uppercase">Legislative Parity</h5>
-                                  </div>
-                                  <ul className="space-y-3">
-                                      <li className="flex items-center gap-2 text-xs text-gray-500 font-medium">
-                                          <div className="w-1.5 h-1.5 bg-civic-navy rounded-full" />
-                                          Aadhaar-EPIC parity achieved for 94.2% of PC 25.
-                                      </li>
-                                      <li className="flex items-center gap-2 text-xs text-gray-500 font-medium">
-                                          <div className="w-1.5 h-1.5 bg-civic-navy rounded-full" />
-                                          Form 12D requests finalized for Senior Citizens.
-                                      </li>
-                                      <li className="flex items-center gap-2 text-xs text-gray-500 font-medium">
-                                          <div className="w-1.5 h-1.5 bg-civic-navy rounded-full" />
-                                          SIR Cycle 2026 Audit: No ghost entries detected in Karnataka.
-                                      </li>
-                                  </ul>
-                              </div>
-                          </div>
-                      </div>
-                      
-                      <div className="p-12 border-t border-gray-100 bg-white flex justify-end gap-4">
-                          <button 
-                            onClick={() => {
-                                const toast = document.createElement('div');
-                                toast.className = "fixed top-12 left-1/2 -translate-x-1/2 bg-civic-navy text-white px-8 py-4 rounded-2xl shadow-2xl z-[6000] font-bold flex items-center gap-4 animate-bounce";
-                                toast.innerHTML = `<div class="w-2 h-2 bg-civic-saffron rounded-full animate-pulse"></div> Generating Sovereign PDF Report...`;
-                                document.body.appendChild(toast);
-                                setTimeout(() => {
-                                    window.print();
-                                    document.body.removeChild(toast);
-                                }, 1500);
-                            }}
-                            className="px-10 py-5 bg-gray-100 text-civic-navy font-black rounded-2xl text-xs uppercase tracking-widest flex items-center gap-3 hover:bg-civic-navy hover:text-white transition-all"
-                          >
-                              <Download className="w-5 h-5" /> Export PDF
-                          </button>
-                          <button onClick={() => setShowReportModal(false)} className="px-10 py-5 bg-civic-navy text-white font-black rounded-2xl text-xs uppercase tracking-widest flex items-center gap-3 hover:scale-105 active:scale-95 transition-all shadow-xl shadow-civic-navy/20">
-                              Synchronize with Dashboard
-                          </button>
-                      </div>
-                  </motion.div>
-              </div>
-          )}
-      </AnimatePresence>
-
-      {/* Gemini Workspace - Refined Medium Size */}
+      {/* VoterFlow Assistant - Right Sidebar Overlay */}
       <AnimatePresence>
         {isChatOpen && (
-          <div className="fixed inset-0 z-[5000] flex items-center justify-center p-4 md:p-8 bg-civic-navy/20 backdrop-blur-2xl">
+          <div className="fixed inset-0 z-[5000] flex justify-end bg-civic-navy/10 backdrop-blur-md">
             <motion.div
-              initial={{ opacity: 0, scale: 0.95, y: 20 }}
-              animate={{ opacity: 1, scale: 1, y: 0 }}
-              exit={{ opacity: 0, scale: 0.95, y: 20 }}
-              className="w-full max-w-4xl h-[85vh] bg-white rounded-[3.5rem] shadow-[0_50px_150px_rgba(0,0,0,0.4)] border border-white flex flex-col md:flex-row overflow-hidden relative"
+              initial={{ x: 500, opacity: 0 }}
+              animate={{ x: 0, opacity: 1 }}
+              exit={{ x: 500, opacity: 0 }}
+              transition={{ type: "spring", damping: 30, stiffness: 300 }}
+              className="w-full max-w-lg h-full bg-white shadow-2xl flex flex-col relative"
             >
-              <div className="absolute top-0 left-0 w-full h-1.5 bg-gradient-to-r from-google-blue via-purple-500 to-pink-500 z-10" />
-              
-              {/* Workspace Sidebar - File Context (Hidden on smaller viewports) */}
-              <div className="hidden lg:flex w-72 bg-gray-50 border-r border-gray-100 p-8 flex-col gap-6">
-                  <div>
-                      <div className="flex items-center gap-3 mb-6">
-                          <Library className="w-5 h-5 text-civic-navy" />
-                          <h4 className="font-display font-bold text-civic-navy text-sm">Context</h4>
-                      </div>
-                      <div className="space-y-2">
-                          {[
-                              { name: 'ECI_Manual.pdf', size: '12MB' },
-                              { name: 'SIR_Protocol.json', size: '4MB' }
-                          ].map(file => (
-                              <div key={file.name} className="p-3 bg-white rounded-xl border border-gray-100 shadow-sm flex flex-col gap-1">
-                                  <div className="text-[9px] font-bold text-civic-navy truncate">{file.name}</div>
-                                  <div className="text-[7px] font-black text-gray-400 uppercase">Analyzing</div>
-                              </div>
-                          ))}
-                      </div>
+              {/* Chat Header */}
+              <div className="p-8 border-b border-gray-100 flex justify-between items-center bg-white/80 backdrop-blur-md sticky top-0 z-20">
+                <div className="flex items-center gap-4">
+                  <div className="w-12 h-12 bg-gray-50 rounded-2xl flex items-center justify-center border border-gray-100">
+                    <img src="https://www.gstatic.com/lamda/images/gemini_sparkle_v002_d4735304ff6292a690345.svg" className="w-8 h-8" alt="Gemini" />
                   </div>
+                  <div>
+                    <h3 className="text-xl font-display font-bold text-civic-navy">VoterFlow AI</h3>
+                    <div className="flex items-center gap-2 mt-1">
+                        <div className="w-1.5 h-1.5 bg-civic-green rounded-full animate-pulse" />
+                        <span className="text-[9px] font-black text-gray-400 uppercase tracking-widest leading-none">Ready for Query</span>
+                    </div>
+                  </div>
+                </div>
+                <button onClick={() => setIsChatOpen(false)} className="p-3 bg-gray-50 rounded-full hover:bg-red-50 transition-all">
+                    <X className="w-5 h-5 text-gray-400" />
+                </button>
               </div>
 
-              {/* Chat Core */}
-              <div className="flex-1 flex flex-col bg-white relative">
-                  <div className="p-8 border-b border-gray-100 flex justify-between items-center bg-white/50 backdrop-blur-md sticky top-0 z-20">
-                    <div className="flex items-center gap-4">
-                      <div className="w-12 h-12 bg-gray-50 rounded-2xl flex items-center justify-center border border-gray-100 shadow-sm relative group">
-                        <img src="https://www.gstatic.com/lamda/images/gemini_sparkle_v002_d4735304ff6292a690345.svg" className="w-8 h-8" alt="Gemini" />
-                      </div>
-                      <div>
-                        <h3 className="text-xl font-display font-bold text-civic-navy">Sovereign Gemini</h3>
-                        <div className="flex items-center gap-2 mt-1">
-                            <div className="w-1.5 h-1.5 bg-civic-green rounded-full animate-pulse" />
-                            <span className="text-[9px] font-black text-gray-400 uppercase tracking-widest leading-none">Context Memory Active</span>
-                        </div>
-                      </div>
+              {/* Chat Area */}
+              <div className="flex-1 p-8 overflow-y-auto space-y-6 bg-gray-50/10 custom-scrollbar">
+                {chatMessages.length === 0 ? (
+                  <div className="h-full flex flex-col items-center justify-center text-center p-8">
+                    <div className="w-20 h-20 bg-gray-50 rounded-[2rem] flex items-center justify-center mb-6">
+                        <MessageCircle className="w-10 h-10 text-gray-300" />
                     </div>
-                    <div className="flex items-center gap-4">
-                        <div className="hidden sm:flex items-center gap-2 px-3 py-1.5 bg-gray-50 rounded-full border border-gray-100">
-                             <ShieldCheck className="w-3 h-3 text-civic-navy" />
-                             <span className="text-[8px] font-black uppercase text-gray-400">High Integrity</span>
+                    <h4 className="text-xl font-display font-bold text-civic-navy">How can I help you today?</h4>
+                    <p className="text-sm text-gray-400 mt-2 max-w-xs leading-relaxed">
+                        I can help with Form 6 registration, EPIC corrections, or SIR 2026 deadlines.
+                    </p>
+                  </div>
+                ) : (
+                  chatMessages.map((m, idx) => (
+                    <motion.div 
+                      key={idx} 
+                      initial={{ opacity: 0, y: 10 }}
+                      animate={{ opacity: 1, y: 0 }}
+                      className={cn(
+                        "p-6 rounded-[2rem] max-w-[90%] shadow-sm",
+                        m.role === 'user' ? "bg-civic-navy text-white ml-auto rounded-tr-none" : "bg-white text-civic-navy border border-gray-100 rounded-tl-none"
+                      )}
+                    >
+                      <div className="text-[13px] font-medium leading-relaxed">{m.text}</div>
+                      {m.sources && (
+                        <div className="mt-4 pt-4 border-t border-gray-100 grid grid-cols-2 gap-2">
+                          {m.sources.map(s => (
+                            <div key={s} className="flex items-center gap-2 p-2 bg-gray-50 rounded-lg">
+                              <BookOpen className="w-3 h-3 text-civic-navy" />
+                              <span className="text-[8px] font-bold text-civic-navy">{s}</span>
+                            </div>
+                          ))}
                         </div>
-                        <button onClick={() => setIsChatOpen(false)} className="p-3 bg-gray-50 rounded-full hover:bg-red-50 transition-all">
-                            <X className="w-5 h-5 text-gray-400" />
+                      )}
+                    </motion.div>
+                  ))
+                )}
+                {isDeepSearching && (
+                  <div className="p-6 bg-white rounded-[2rem] border border-gray-100 shadow-sm max-w-[80%] space-y-3">
+                    <div className="flex items-center gap-3">
+                      <Loader2 className="w-4 h-4 text-google-blue animate-spin" />
+                      <span className="text-[10px] font-black text-gray-400 uppercase tracking-widest">Accessing VoterFlow Archives...</span>
+                    </div>
+                  </div>
+                )}
+                <div ref={chatEndRef} />
+              </div>
+
+              {/* Chat Input */}
+              <div className="p-8 bg-white border-t border-gray-100">
+                <div className="flex gap-4 p-3 bg-gray-50 rounded-[2rem] border border-gray-100 focus-within:bg-white transition-all">
+                  <input 
+                    value={userInput}
+                    onChange={e => setUserInput(e.target.value)}
+                    onKeyPress={e => e.key === 'Enter' && handleChat()}
+                    placeholder="Ask about registration..."
+                    className="flex-1 px-4 bg-transparent text-sm font-medium focus:outline-none"
+                  />
+                  <button 
+                    onClick={() => handleChat()} 
+                    disabled={isStreaming} 
+                    className="p-4 bg-civic-navy text-white rounded-2xl hover:scale-105 active:scale-95 transition-all"
+                  >
+                    <Send className="w-5 h-5" />
+                  </button>
+                </div>
+                <div className="mt-6 flex flex-wrap gap-2">
+                    {['Check Booth Queue', 'Form 6 Checklist'].map(p => (
+                        <button key={p} onClick={() => handleChat(p)} className="px-4 py-2 bg-gray-50 hover:bg-civic-navy hover:text-white rounded-xl text-[10px] font-bold text-gray-400 transition-all border border-gray-100">
+                            {p}
                         </button>
-                    </div>
-                  </div>
-
-                  <div className="flex-1 p-12 overflow-y-auto space-y-8 bg-gray-50/20 custom-scrollbar">
-                    <div className="bg-white p-8 rounded-[3rem] rounded-tl-none text-sm text-gray-600 shadow-sm border border-gray-100 leading-relaxed font-medium max-w-2xl">
-                      Welcome to the **Sovereign Gemini Workspace**. I have initialized with the full legislative context of PC 25 (Bengaluru Central). How can I assist your civic journey today?
-                    </div>
-                    {chatMessages.map((m, i) => (
-                      <motion.div 
-                        key={i} 
-                        initial={{ opacity: 0, y: 20 }}
-                        animate={{ opacity: 1, y: 0 }}
-                        className={cn(
-                            "flex flex-col gap-2",
-                            m.role === 'user' ? "items-end" : "items-start"
-                        )}
-                      >
-                        <div 
-                          className={cn(
-                              "p-8 rounded-[3rem] text-sm leading-relaxed font-medium shadow-sm transition-all max-w-2xl", 
-                              m.role === 'user' 
-                              ? "bg-civic-navy text-white rounded-tr-none shadow-2xl shadow-civic-navy/10" 
-                              : "bg-white text-gray-600 rounded-tl-none border border-gray-100"
-                          )}
-                        >
-                          {m.text}
-                          
-                          {m.sources && (
-                              <div className="mt-6 pt-6 border-t border-gray-100 grid grid-cols-2 gap-3">
-                                  {m.sources.map(s => (
-                                      <div key={s} className="flex items-center gap-2 p-3 bg-gray-50 rounded-xl border border-gray-100">
-                                          <BookOpen className="w-3 h-3 text-civic-navy" />
-                                          <span className="text-[9px] font-bold text-civic-navy">{s}</span>
-                                      </div>
-                                  ))}
-                              </div>
-                          )}
-                        </div>
-                      </motion.div>
                     ))}
-                    {isDeepSearching && (
-                        <div className="p-8 bg-white rounded-[3rem] border border-gray-100 shadow-sm max-w-md space-y-4">
-                            <div className="flex items-center gap-3">
-                                <Loader2 className="w-5 h-5 text-google-blue animate-spin" />
-                                <span className="text-xs font-black text-gray-400 uppercase tracking-widest">Cross-Referencing ECI Database...</span>
-                            </div>
-                            <div className="h-1.5 w-full bg-gray-100 rounded-full overflow-hidden">
-                                <motion.div initial={{ width: 0 }} animate={{ width: '100%' }} transition={{ duration: 3 }} className="h-full bg-google-blue shadow-[0_0_10px_rgba(66,133,244,0.5)]" />
-                            </div>
-                        </div>
-                    )}
-                    <div ref={chatEndRef} />
-                  </div>
-
-                  <div className="p-12 bg-white border-t border-gray-100">
-                    <div className="flex gap-4 p-4 bg-gray-50 rounded-[2.5rem] border border-gray-100 focus-within:bg-white focus-within:shadow-xl focus-within:border-google-blue transition-all">
-                      <input 
-                        value={userInput}
-                        onChange={e => setUserInput(e.target.value)}
-                        onKeyPress={e => e.key === 'Enter' && handleChat()}
-                        placeholder="Type your civic query..."
-                        className="flex-1 px-6 bg-transparent text-sm font-medium focus:outline-none"
-                      />
-                      <button 
-                        onClick={() => handleChat()} 
-                        disabled={isStreaming} 
-                        className="p-5 bg-civic-navy text-white rounded-[1.8rem] shadow-xl shadow-civic-navy/20 hover:scale-105 active:scale-95 transition-all flex items-center gap-3"
-                      >
-                        <span className="text-[10px] font-black uppercase tracking-widest ml-2">Analyze</span>
-                        <Send className="w-5 h-5" />
-                      </button>
-                    </div>
-                    <div className="mt-6 flex flex-wrap gap-2">
-                        {['Check Booth Queue', 'Form 6 Checklist', 'SIR Deadlines'].map(p => (
-                            <button key={p} onClick={() => handleChat(p)} className="px-4 py-2 bg-gray-50 hover:bg-civic-navy hover:text-white rounded-xl text-[10px] font-bold text-gray-400 transition-all border border-gray-100">
-                                {p}
-                            </button>
-                        ))}
-                    </div>
-                  </div>
+                </div>
               </div>
             </motion.div>
           </div>

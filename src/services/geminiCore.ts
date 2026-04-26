@@ -41,8 +41,9 @@ export const streamGeminiResponse = async (
       fullText += chunkText;
       onChunk(fullText);
     }
-  } catch (error) {
+  } catch (error: any) {
     console.error("Gemini Streaming Error:", error);
-    onChunk("Connection failed. Please check your API key in geminiCore.ts.");
+    const errorMessage = error?.message || "Check your network or API key.";
+    onChunk(`Connection failed: ${errorMessage}`);
   }
 };

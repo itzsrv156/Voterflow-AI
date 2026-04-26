@@ -1,6 +1,6 @@
 import { useState, useEffect, useRef } from 'react';
 import { motion, AnimatePresence } from 'framer-motion';
-import { useVoterStore } from '../../store/useVoterStore';
+import { useVoterStore, type VoterState } from '../../store/useVoterStore';
 import { useTranslation } from '../../LanguageContext';
 import { PollingSimulator } from './PollingSimulator';
 import { PollingBoothLocator } from './PollingBoothLocator';

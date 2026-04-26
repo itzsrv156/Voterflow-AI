@@ -3,7 +3,7 @@ import { persist } from 'zustand/middleware';
 
 export type Persona = 'FirstTime' | 'Student' | 'Senior';
 
-interface VoterState {
+export interface VoterState {
   persona: Persona | null;
   view: 'selection' | 'dashboard';
   activeTab: 'overview' | 'registration' | 'research' | 'polling' | 'form8' | 'sir2026' | 'helpline';

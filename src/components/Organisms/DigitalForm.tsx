@@ -17,7 +17,7 @@ interface FormData {
   photo?: boolean;
   addressProof?: boolean;
   idProof?: boolean;
-  [key: string]: string | boolean | undefined;
+  [key: string]: any;
 }
 
 interface FormStepProps {
@@ -32,7 +32,7 @@ const StudentBranch = ({ data, setData }: { data: FormData, setData: (d: FormDat
       <div className="flex flex-col gap-2">
         <label className="text-xs font-bold text-gray-400 uppercase">Residency Type</label>
         <div className="flex gap-2">
-          {['Day Scholar', 'Hostel'].map(type => (
+          {(['Day Scholar', 'Hostel'] as const).map(type => (
             <button
               key={type}
               onClick={() => setData({ ...data, residencyType: type })}

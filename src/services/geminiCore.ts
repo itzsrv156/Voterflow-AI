@@ -1,15 +1,14 @@
 import { GoogleGenerativeAI } from "@google/generative-ai";
 
-// TO THE USER: Get your API Key from https://aistudio.google.com/app/apikey
-// Replace 'YOUR_API_KEY' with your actual key.
-const API_KEY = "AIzaSyCsj9CeilCZEL-coo6rOUQ2pSy9pJwNo30";
+// Security: API Key is now loaded from .env file (VITE_GEMINI_API_KEY)
+const API_KEY = import.meta.env.VITE_GEMINI_API_KEY || ""; 
 
 const genAI = new GoogleGenerativeAI(API_KEY);
 
 export const getGeminiResponse = async (userPrompt: string, systemContext: string) => {
   try {
     const model = genAI.getGenerativeModel({
-      model: "gemini-1.5-flash",
+      model: "gemini-1.5-flash-latest",
       systemInstruction: systemContext
     });
 
@@ -29,7 +28,7 @@ export const streamGeminiResponse = async (
 ) => {
   try {
     const model = genAI.getGenerativeModel({
-      model: "gemini-1.5-flash",
+      model: "gemini-1.5-flash-latest",
       systemInstruction: systemContext
     });
 

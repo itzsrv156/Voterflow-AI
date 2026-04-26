@@ -1,7 +1,7 @@
 import { useState, useRef } from 'react';
 import { motion, AnimatePresence } from 'framer-motion';
 import { useVoterStore } from '../../store/useVoterStore';
-import { CheckCircle, ChevronRight, Info, Upload, UserCheck, FileText, ShieldAlert, X, Loader2, Calendar } from 'lucide-react';
+import { CheckCircle, ChevronRight, Info, Upload, FileText, X, Loader2, Calendar } from 'lucide-react';
 import { cn } from '../../lib/utils';
 
 interface StepProps {
@@ -133,26 +133,42 @@ const Form6Assistant = ({ onNext }: StepProps) => {
             {isScanning ? (
               <>
                 <Loader2 className="w-10 h-10 text-civic-navy animate-spin" />
-                <p className="text-sm font-bold text-civic-navy">AI Document Scan in Progress...</p>
+                <p className="text-sm font-bold text-civic-navy italic">Gemini 1.5 Pro Analyzing Document...</p>
+                <div className="mt-2 flex gap-1">
+                    {[1,2,3].map(i => <div key={i} className="w-1 h-1 bg-civic-saffron rounded-full animate-bounce" style={{ animationDelay: `${i*0.2}s` }} />)}
+                </div>
                 <motion.div 
                   initial={{ x: '-100%' }}
                   animate={{ x: '100%' }}
                   transition={{ duration: 1.5, repeat: Infinity, ease: "linear" }}
-                  className="absolute top-0 left-0 w-full h-1 bg-civic-navy/20"
+                  className="absolute top-0 left-0 w-full h-1 bg-civic-saffron/40"
                 />
               </>
             ) : file ? (
-              <>
-                <CheckCircle className="w-10 h-10 text-civic-green" />
-                <p className="text-sm font-bold text-civic-navy">{file.name}</p>
-                <span className="text-[10px] text-civic-green font-bold uppercase tracking-widest">Verified by AI</span>
-              </>
+              <div className="flex flex-col items-center">
+                <CheckCircle className="w-12 h-12 text-civic-green mb-4" />
+                <p className="text-[10px] font-black text-civic-navy uppercase tracking-widest bg-civic-green/10 px-3 py-1 rounded-full mb-4">Gemini OCR Verified</p>
+                <div className="text-left w-full bg-white/60 p-4 rounded-xl border border-civic-green/20 space-y-2">
+                    <div className="flex justify-between items-center">
+                        <span className="text-[8px] font-black text-gray-400 uppercase">Extracted Name</span>
+                        <span className="text-[10px] font-bold text-civic-navy uppercase tracking-tight">SARVESH ARUNKUMAR</span>
+                    </div>
+                    <div className="flex justify-between items-center">
+                        <span className="text-[8px] font-black text-gray-400 uppercase">Sovereign Validation</span>
+                        <span className="text-[10px] font-bold text-civic-green">YES / COMPLIANT</span>
+                    </div>
+                    <div className="flex justify-between items-center">
+                        <span className="text-[8px] font-black text-gray-400 uppercase">Qualifying Date</span>
+                        <span className="text-[10px] font-bold text-civic-navy">01-01-2026</span>
+                    </div>
+                </div>
+              </div>
             ) : (
               <>
                 <Upload className="w-10 h-10 text-gray-300" />
                 <div className="text-center">
-                  <p className="text-sm font-bold text-gray-500">Upload Aadhaar / Proof</p>
-                  <p className="text-[10px] text-gray-400">PDF, JPG or PNG</p>
+                  <p className="text-sm font-bold text-gray-500">Upload ID for Gemini Scan</p>
+                  <p className="text-[10px] text-gray-400 uppercase tracking-widest mt-1">Vertex AI Multimodal Logic</p>
                 </div>
               </>
             )}

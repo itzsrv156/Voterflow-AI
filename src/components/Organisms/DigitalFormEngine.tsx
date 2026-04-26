@@ -1,11 +1,10 @@
-import { useState, useRef, useEffect } from 'react';
+import { useState } from 'react';
 import { motion, AnimatePresence } from 'framer-motion';
 import { useVoterStore } from '../../store/useVoterStore';
-import { useTranslation } from '../../LanguageContext';
 import { 
   X, CheckCircle, ChevronRight, Upload, Loader2, 
-  User, Home, Calendar, FileText, ShieldCheck, MapPin, 
-  Briefcase, Phone, Maximize, ClipboardCheck, AlertCircle
+  User, Home, FileText, ShieldCheck, 
+  Maximize, ClipboardCheck, AlertCircle
 } from 'lucide-react';
 import { cn } from '../../lib/utils';
 
@@ -236,7 +235,7 @@ const FormStep2 = ({ onNext, data, setData }: FormStepProps) => {
                     "w-14 h-14 rounded-2xl flex items-center justify-center transition-all shadow-sm",
                     data[doc.id] ? "bg-civic-green text-white" : "bg-white text-gray-400"
                 )}>
-                  {data[doc.id] ? <CheckCircle2 className="w-7 h-7" /> : <doc.icon className="w-7 h-7" />}
+                  {data[doc.id] ? <CheckCircle className="w-7 h-7" /> : <doc.icon className="w-7 h-7" />}
                 </div>
                 <div>
                   <span className="text-sm font-bold text-civic-navy block mb-0.5">{doc.label}</span>
@@ -361,12 +360,6 @@ export const DigitalFormEngine = ({ onClose }: { onClose: () => void }) => {
               </motion.div>
             )}
           </AnimatePresence>
-          
-          <div className="mt-12 text-center opacity-30">
-            <p className="text-[7px] font-black text-gray-400 uppercase tracking-[0.3em]">
-              Security: AES-256 (Simulated) // No personal data is stored on sovereign nodes.
-            </p>
-          </div>
         </div>
       </motion.div>
     </div>

@@ -55,6 +55,19 @@ function App() {
 
         {/* Dynamic Background Noise/Texture */}
         <div className="fixed inset-0 pointer-events-none opacity-[0.03] z-[9999] bg-[url('https://grainy-gradients.vercel.app/noise.svg')] mix-blend-overlay" />
+
+        {/* Sovereign Disclaimer Footer */}
+        <footer className="fixed bottom-6 left-6 z-[3500] pointer-events-auto group">
+            <div className="flex items-center gap-3 bg-white/40 backdrop-blur-md px-4 py-2 rounded-full border border-white/40 shadow-sm transition-all hover:bg-white/60">
+                <div className="w-5 h-5 bg-civic-navy rounded-full flex items-center justify-center">
+                    <span className="text-[10px] font-black text-white italic">i</span>
+                </div>
+                <p className="text-[8px] font-bold text-gray-500 tracking-[0.1em] opacity-0 group-hover:opacity-100 transition-opacity max-w-0 group-hover:max-w-[400px] whitespace-nowrap overflow-hidden">
+                    Demo only. No personal data is stored.
+                </p>
+                <div className="w-1 h-1 bg-civic-navy/20 rounded-full group-hover:hidden" />
+            </div>
+        </footer>
       </div>
     </ErrorBoundary>
   );

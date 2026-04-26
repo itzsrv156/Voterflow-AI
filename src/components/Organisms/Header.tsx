@@ -1,13 +1,11 @@
 import { motion, AnimatePresence } from 'framer-motion';
 import { useVoterStore } from '../../store/useVoterStore';
-import { useTranslation } from '../../LanguageContext';
-import { ShieldCheck, Flame, Radio, Globe, User, ExternalLink } from 'lucide-react';
+import { ShieldCheck, Vote, Globe, User, ExternalLink } from 'lucide-react';
 import { cn } from '../../lib/utils';
 import { useState } from 'react';
 
 export const Header = () => {
   const { setView, resetStore, view, language, setLanguage } = useVoterStore();
-  const { t } = useTranslation();
   const [showCredits, setShowCredits] = useState(false);
 
   return (
@@ -20,16 +18,33 @@ export const Header = () => {
         {/* Logo - Click to Reload/Home */}
         <button 
           onClick={() => resetStore()}
-          className="flex items-center gap-3 group transition-transform active:scale-95"
+          className="flex items-center gap-4 group transition-all active:scale-95"
         >
-          <div className="w-12 h-12 bg-civic-navy rounded-2xl flex items-center justify-center shadow-xl group-hover:rotate-12 transition-transform">
-            <Flame className="text-civic-saffron w-7 h-7" />
+          <div className="relative">
+            {/* Dynamic Container with Gradient and Shadow Glow */}
+            <div className="w-14 h-14 bg-gradient-to-tr from-civic-navy via-blue-700 to-civic-navy rounded-2xl flex items-center justify-center shadow-xl group-hover:shadow-blue-500/20 group-hover:rotate-[15deg] group-hover:scale-110 transition-all duration-500 relative overflow-hidden border border-white/20">
+              {/* Shine Sweep Effect */}
+              <div className="absolute inset-0 bg-gradient-to-r from-transparent via-white/10 to-transparent -translate-x-full group-hover:animate-[shimmer_1.5s_infinite] transition-transform" />
+              
+              <Vote className="text-white w-8 h-8 drop-shadow-[0_0_8px_rgba(255,255,255,0.4)] group-hover:scale-110 transition-transform duration-500 animate-pulse" />
+              
+              {/* Subtle Orange Accent dot/mark */}
+              <div className="absolute top-4 right-4 w-1.5 h-1.5 bg-civic-saffron rounded-full shadow-[0_0_8px_rgba(255,153,51,0.8)] group-hover:scale-125 transition-all" />
+            </div>
+            
+            {/* Energy Aura on Hover */}
+            <div className="absolute inset-0 border-2 border-blue-400/20 rounded-2xl scale-125 opacity-0 group-hover:opacity-100 group-hover:scale-150 transition-all duration-700 pointer-events-none" />
           </div>
+
           <div className="text-left">
-            <h1 className="text-2xl font-display font-bold text-civic-navy leading-none tracking-tight">
-              VoterFlow <span className="text-civic-saffron">AI</span>
+            <h1 className="text-2xl font-display font-black text-civic-navy leading-none tracking-tight flex items-center gap-2 group-hover:tracking-tighter transition-all">
+              VoterFlow 
+              <span className="bg-civic-saffron/10 text-civic-saffron px-2 py-0.5 rounded-lg text-xs italic border border-civic-saffron/20 group-hover:bg-civic-saffron group-hover:text-white transition-all">AI</span>
             </h1>
-            <span className="text-[10px] font-bold text-gray-400 uppercase tracking-[0.2em] mt-1 block group-hover:text-civic-navy transition-colors">Sovereign Edition</span>
+            <div className="flex items-center gap-2 mt-1">
+                <div className="h-px w-3 bg-civic-navy/20 group-hover:w-6 transition-all" />
+                <span className="text-[9px] font-bold text-gray-400 uppercase tracking-[0.2em] group-hover:text-civic-navy transition-colors">Sovereign Edition</span>
+            </div>
           </div>
         </button>
 

@@ -57,7 +57,7 @@ export const Hero = () => {
           animate={{ opacity: 1, y: 0 }}
           transition={{ duration: 0.6 }}
         >
-          <h1 className="text-5xl md:text-7xl font-display font-bold text-civic-navy mb-6 tracking-tight">
+          <h1 className="text-5xl md:text-7xl font-display font-bold text-civic-navy mb-8 tracking-tight">
             {t('select_persona').split('Voter')[0]} 
             <span className="bg-gradient-to-r from-civic-saffron to-civic-navy bg-clip-text text-transparent">
                {t('select_persona').includes('Voter') ? 'Voter Persona' : 'Persona'}
@@ -78,13 +78,13 @@ export const Hero = () => {
                 initial={{ opacity: 0, scale: 0.9, y: 30 }}
                 animate={{ opacity: 1, scale: 1, y: 0 }}
                 transition={{ delay: index * 0.1, duration: 0.5 }}
-                whileHover={{ y: -12, scale: 1.05 }}
+                whileHover={{ y: -8, scale: 1.02 }}
                 whileTap={{ scale: 0.95 }}
                 onClick={() => setPersona(data.type)}
                 className={cn(
                   "relative group cursor-pointer p-8 rounded-[3rem] transition-all duration-500",
                   "bg-white/40 backdrop-blur-xl border border-white/40 shadow-2xl overflow-hidden",
-                  "hover:bg-white/60 hover:shadow-civic-navy/10"
+                  "hover:bg-white/60 hover:shadow-3xl hover:shadow-civic-navy/20"
                 )}
               >
                 {/* Badge */}
@@ -107,7 +107,7 @@ export const Hero = () => {
                     <Icon className="w-8 h-8" />
                   </div>
                   
-                  <h3 className="text-2xl font-display font-bold text-civic-navy mb-3">
+                  <h3 className="text-2xl font-display font-bold text-civic-navy mb-4">
                     {t(`persona_${data.type.toLowerCase()}`)}
                   </h3>
                   <p className="text-gray-500 font-medium leading-relaxed text-sm">

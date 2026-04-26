@@ -1,4 +1,4 @@
-import React, { createContext, useContext, ReactNode } from 'react';
+import { createContext, useContext, type ReactNode } from 'react';
 import { useVoterStore } from './store/useVoterStore';
 
 // 1. Explicitly define the available languages
@@ -16,9 +16,9 @@ export const translations: TranslationMap = {
   persona_firsttime: { en: 'First-Time Voter', hi: 'पहली बार मतदाता', kn: 'ಮೊದಲ ಬಾರಿ ಮತದಾರ' },
   persona_student: { en: 'Student / Migrant', hi: 'छात्र / प्रवासी', kn: 'ವಿದ್ಯಾರ್ಥಿ / ವಲಸೆಗಾರ' },
   persona_senior: { en: 'Senior Citizen', hi: 'वरिष्ठ नागरिक', kn: 'ಹಿರಿಯ ನಾಗರಿಕ' },
-  persona_firsttime_desc: { en: 'Just turned 18? Start your civic journey with guided registration.', hi: 'अभी 18 साल के हुए? निर्देशित पंजीकरण के साथ अपनी नागरिक यात्रा शुरू करें।', kn: 'ಈಗಷ್ಟೇ 18 ವರ್ಷ ತುಂಬಿದೆಯೇ? ಮಾರ್ಗದರ್ಶಿ ನೋಂದಣಿಯೊಂದಿಗೆ ನಿಮ್ಮ ನಾಗರಿಕ ಪ್ರಯಾಣವನ್ನು ಪ್ರಾರಂಭಿಸಿ.' },
+  persona_firsttime_desc: { en: 'Just turned 18? Begin your voting journey with step-by-step registration guidance.', hi: 'अभी 18 साल के हुए? चरण-दर-चरण पंजीकरण मार्गदर्शन के साथ अपनी मतदान यात्रा शुरू करें।', kn: 'ಈಗಷ್ಟೇ 18 ವರ್ಷ ತುಂಬಿದೆಯೇ? ಹಂತ-ಹಂತದ ನೋಂದಣಿ ಮಾರ್ಗದರ್ಶನದೊಂದಿಗೆ ನಿಮ್ಮ ಮತದಾನದ ಪ್ರಯಾಣವನ್ನು ಪ್ರಾರಂಭಿಸಿ.' },
   persona_student_desc: { en: 'Studying away from home? Learn about Form 6 and hostel residence rules.', hi: 'घर से दूर पढ़ रहे हैं? फॉर्म 6 और छात्रावास निवास नियमों के बारे में जानें।', kn: 'ಮನೆಯಿಂದ ದೂರ ಓದುತ್ತಿದ್ದೀರಾ? ನಮೂನೆ 6 ಮತ್ತು ಹಾಸ್ಟೆಲ್ ನಿವಾಸದ ನಿಯಮಗಳ ಬಗ್ಗೆ ತಿಳಿಯಿರಿ.' },
-  persona_senior_desc: { en: '80+ or priority voter? Access home-voting and priority assistance.', hi: '80+ या प्राथमिकता वाले मतदाता? होम-वोटिंग और प्राथमिकता सहायता प्राप्त करें।', kn: '80+ ಅಥವಾ ಆದ್ಯತೆಯ ಮತದಾರರೇ? ಮನೆ-ಮತದಾನ ಮತ್ತು ಆದ್ಯತೆಯ ಸಹಾಯವನ್ನು ಪಡೆಯಿರಿ.' },
+  persona_senior_desc: { en: '80+ or a priority voter? Explore home voting options and assisted services.', hi: '80+ या प्राथमिकता वाले मतदाता? होम वोटिंग विकल्पों और सहायता प्राप्त सेवाओं का पता लगाएं।', kn: '80+ ಅಥವಾ ಆದ್ಯತೆಯ ಮತದಾರರೇ? ಮನೆ ಮತದಾನದ ಆಯ್ಕೆಗಳು ಮತ್ತು ನೆರವಿನ ಸೇವೆಗಳನ್ನು ಅನ್ವೇಷಿಸಿ.' },
 
   // Dashboard
   active_profile: { en: 'Active Profile', hi: 'सक्रिय प्रोफ़ाइल', kn: 'ಸಕ್ರಿಯ ಪ್ರೊಫೈಲ್' },
@@ -41,6 +41,14 @@ export const translations: TranslationMap = {
   // Chat
   ai_coach: { en: 'AI Voter Coach', hi: 'AI मतदाता कोच', kn: 'AI ಮತದಾರರ ತರಬೇತುದಾರ' },
   ask_query: { en: 'Ask your query...', hi: 'अपना प्रश्न पूछें...', kn: 'ನಿಮ್ಮ ಪ್ರಶ್ನೆಯನ್ನು ಕೇಳಿ...' },
+  
+  // Legal Hub
+  legal_revision: { en: 'Special Intensive Revision', hi: 'विशेष गहन पुनरीक्षण', kn: 'ವಿಶೇಷ ತೀವ್ರ ಪರಿಷ್ಕರಣೆ' },
+  legal_ordinary_residence: { en: 'Ordinary Residence Protocol', hi: 'सामान्य निवास प्रोटोकॉल', kn: 'ಸಾಮಾನ್ಯ ನಿವಾಸ ಪ್ರೋಟೋಕಾಲ್' },
+  legal_form6: { en: 'Form 6: New Registration', hi: 'फॉर्म 6: नया पंजीकरण', kn: 'ನಮೂನೆ 6: ಹೊಸ ನೋಂದಣಿ' },
+  legal_form8: { en: 'Form 8: Data Integrity', hi: 'फॉर्म 8: डेटा अखंडता', kn: 'ನಮೂನೆ 8: ಡೇಟಾ ಸಮಗ್ರತೆ' },
+  legal_polling_booth: { en: 'Constituency Mapping', hi: 'निर्वाचन क्षेत्र मैपिंग', kn: 'ಕ್ಷೇತ್ರ ಮ್ಯಾಪಿಂಗ್' },
+  legal_gemini_vision: { en: 'Gemini Multimodal OCR', hi: 'Gemini मल्टीमॉडल OCR', kn: 'Gemini ಮಲ್ಟಿಮೋಡಲ್ OCR' },
 };
 
 interface LanguageContextType {

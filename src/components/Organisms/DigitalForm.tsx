@@ -1,11 +1,9 @@
-import { useState, useRef } from 'react';
+import { useState } from 'react';
 import { motion, AnimatePresence } from 'framer-motion';
 import { useVoterStore } from '../../store/useVoterStore';
-import { useTranslation } from '../../LanguageContext';
 import { 
-  X, CheckCircle, ChevronRight, Upload, Loader2, 
-  User, Home, Calendar, FileText, ShieldCheck, MapPin, 
-  Briefcase, Phone
+  X, CheckCircle, ChevronRight, Loader2, 
+  User, Home, ShieldCheck
 } from 'lucide-react';
 import { cn } from '../../lib/utils';
 
@@ -127,7 +125,6 @@ const FormStep1 = ({ onNext, data, setData }: FormStepProps) => {
 
 const FormStep2 = ({ onNext, data, setData }: FormStepProps) => {
   const [uploading, setUploading] = useState<string | null>(null);
-  const fileInputRef = useRef<HTMLInputElement>(null);
 
   const handleUpload = (type: string) => {
     setUploading(type);
@@ -183,7 +180,6 @@ const FormStep2 = ({ onNext, data, setData }: FormStepProps) => {
 export const DigitalForm = ({ onClose }: { onClose: () => void }) => {
   const [step, setStep] = useState(1);
   const [formData, setFormData] = useState<any>({});
-  const { t } = useTranslation();
 
   return (
     <div className="fixed inset-0 z-[200] flex items-center justify-center p-4 bg-civic-navy/40 backdrop-blur-md">

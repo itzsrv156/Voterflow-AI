@@ -386,6 +386,28 @@ export const DigitalFormEngine = ({ onClose }: { onClose: () => void }) => {
                     >
                         Return to Command Center
                     </button>
+
+                    <div className="mt-12 pt-12 border-t border-gray-100">
+                        <h4 className="text-[10px] font-black text-gray-300 uppercase tracking-widest mb-6">Google Cloud Ecosystem Sync</h4>
+                        <div className="flex justify-center gap-4">
+                            <button 
+                                onClick={() => {
+                                    const url = `https://calendar.google.com/calendar/render?action=TEMPLATE&text=General+Elections+2026&dates=20260515T090000Z/20260515T180000Z&details=Sovereign+Voting+Day+at+Bengaluru+Central.&location=Your+Polling+Station`;
+                                    window.open(url, '_blank');
+                                }}
+                                className="px-6 py-3 bg-white border border-gray-100 rounded-2xl flex items-center gap-3 hover:shadow-lg transition-all"
+                            >
+                                <img src="https://www.gstatic.com/images/branding/product/1x/calendar_2020q4_48dp.png" className="w-5 h-5" alt="Google Calendar" />
+                                <span className="text-[10px] font-bold text-gray-600">Add to Calendar</span>
+                            </button>
+                            <button 
+                                className="px-6 py-3 bg-white border border-gray-100 rounded-2xl flex items-center gap-3 hover:shadow-lg transition-all"
+                            >
+                                <img src="https://www.gstatic.com/images/branding/product/1x/drive_2020q4_48dp.png" className="w-5 h-5" alt="Google Drive" />
+                                <span className="text-[10px] font-bold text-gray-600">Save to Drive</span>
+                            </button>
+                        </div>
+                    </div>
                 </div>
             </motion.div>
         </div>

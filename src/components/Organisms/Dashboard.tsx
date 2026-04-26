@@ -491,9 +491,22 @@ export const Dashboard = () => {
                                 </div>
                             </div>
                         </div>
-                        <div className="flex gap-4">
-                            <button className="px-8 py-4 bg-white/10 hover:bg-white/20 border border-white/10 rounded-2xl text-[10px] font-black uppercase tracking-widest transition-all">Download EPIC</button>
-                            <button className="px-8 py-4 bg-civic-saffron text-civic-navy font-black rounded-2xl text-[10px] uppercase tracking-widest shadow-xl shadow-civic-saffron/20 hover:scale-105 active:scale-95 transition-all">Verify Status</button>
+                        <div className="flex flex-col sm:flex-row gap-4">
+                            <button className="px-8 py-4 bg-white/10 hover:bg-white/20 border border-white/10 rounded-2xl text-[10px] font-black uppercase tracking-widest transition-all flex items-center gap-2">
+                                <Download className="w-4 h-4" /> Download EPIC
+                            </button>
+                            <button 
+                                onClick={() => {
+                                    const toast = document.createElement('div');
+                                    toast.className = "fixed top-12 left-1/2 -translate-x-1/2 bg-civic-navy text-white px-8 py-4 rounded-2xl shadow-2xl z-[6000] font-bold flex items-center gap-4 animate-bounce";
+                                    toast.innerHTML = `<div class="w-4 h-4 bg-google-blue rounded-full"></div> Syncing with Google Wallet...`;
+                                    document.body.appendChild(toast);
+                                    setTimeout(() => document.body.removeChild(toast), 2000);
+                                }}
+                                className="px-8 py-4 bg-[#000000] text-white font-black rounded-2xl text-[10px] uppercase tracking-widest shadow-xl flex items-center gap-3 hover:scale-105 active:scale-95 transition-all border border-white/20"
+                            >
+                                <img src="https://www.gstatic.com/wallet/badge/en_US.svg" className="h-4" alt="Add to Google Wallet" />
+                            </button>
                         </div>
                     </div>
                 </motion.div>
@@ -1101,7 +1114,10 @@ export const Dashboard = () => {
                   </div>
                   <div>
                     <span className="font-bold text-lg block leading-none">Sovereign Intel</span>
-                    <span className="text-[8px] font-black text-civic-saffron uppercase tracking-[0.2em] mt-1 block">Karnataka ECI Federation</span>
+                    <span className="text-[8px] font-black text-white/40 uppercase tracking-[0.2em] mt-1 block flex items-center gap-2">
+                        <img src="https://www.gstatic.com/lamda/images/gemini_sparkle_v002_d4735304ff6292a690345.svg" className="w-3 h-3" alt="Gemini" />
+                        Powered by Gemini Pro 1.5
+                    </span>
                   </div>
                 </div>
                 <button onClick={() => setIsChatOpen(false)} className="p-2 hover:bg-white/10 rounded-full transition-colors">

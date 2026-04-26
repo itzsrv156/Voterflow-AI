@@ -281,38 +281,63 @@ export const Dashboard = () => {
       </motion.aside>
 
       {/* Main Content Area */}
-      <div className="flex-1 overflow-y-auto pr-4 custom-scrollbar h-full space-y-8">
-        
-        {/* Sovereign Alert Ticker */}
-        <div className="bg-civic-navy text-white px-8 py-3 rounded-2xl flex items-center gap-6 overflow-hidden relative">
-            <div className="flex items-center gap-2 shrink-0 bg-civic-saffron text-civic-navy px-3 py-1 rounded-lg text-[9px] font-black uppercase tracking-widest z-10">
-                <Zap className="w-3 h-3" /> Alert
-            </div>
-            <motion.div 
-                animate={{ x: ["100%", "-100%"] }}
-                transition={{ duration: 30, repeat: Infinity, ease: "linear" }}
-                className="whitespace-nowrap text-[10px] font-bold uppercase tracking-widest opacity-80"
-            >
-                SIR 2026: House-to-House Mapping is active in Karnataka Sectors. // Form 12D Home Voting requests open for Senior Citizens. // Aadhaar-EPIC linking is mandatory for data integrity.
-            </motion.div>
-        </div>
+      <div className="flex-1 overflow-y-auto pr-4 custom-scrollbar h-full space-y-8 pb-32">
+          
+          {/* Gemini 1.5 Pro Workspace Access - NEW PREMIUM FEATURE */}
+          <motion.div 
+              whileHover={{ scale: 1.01 }}
+              onClick={() => setIsChatOpen(true)}
+              className="w-full bg-gradient-to-r from-google-blue via-purple-600 to-civic-navy p-1 rounded-[3.5rem] cursor-pointer shadow-2xl shadow-google-blue/20 group"
+          >
+              <div className="bg-white/95 backdrop-blur-xl rounded-[3.3rem] p-10 flex flex-col md:flex-row justify-between items-center gap-8">
+                  <div className="flex items-center gap-8">
+                      <div className="w-24 h-24 bg-gray-50 rounded-[2.5rem] flex items-center justify-center relative overflow-hidden group-hover:bg-white transition-all shadow-inner">
+                          <img src="https://www.gstatic.com/lamda/images/gemini_sparkle_v002_d4735304ff6292a690345.svg" className="w-12 h-12 relative z-10" alt="Gemini" />
+                          <div className="absolute inset-0 bg-gradient-to-tr from-google-blue/10 to-purple-500/10 animate-pulse" />
+                      </div>
+                      <div className="text-left">
+                          <h3 className="text-3xl font-display font-bold text-civic-navy tracking-tight">Sovereign Gemini Workspace</h3>
+                          <p className="text-sm text-gray-500 mt-2 font-medium max-w-md leading-relaxed">
+                              Experience 1.5 Pro intelligence with a 1M+ token context window. Analyze legislative gazettes, verify identities, and resolve complex civic disputes in real-time.
+                          </p>
+                      </div>
+                  </div>
+                  <div className="px-10 py-5 bg-civic-navy text-white font-black rounded-2xl text-xs uppercase tracking-widest flex items-center gap-3 group-hover:bg-google-blue transition-all shadow-xl shadow-civic-navy/20">
+                      <Sparkles className="w-5 h-5 text-civic-saffron" /> Launch Gemini AI
+                  </div>
+              </div>
+          </motion.div>
 
-        <AnimatePresence mode="wait">
-          {activeTab === 'overview' ? (
-            <motion.div
-              key="overview"
-              initial="hidden"
-              animate="show"
-              exit="hidden"
-              variants={{
-                hidden: { opacity: 0 },
-                show: {
-                  opacity: 1,
-                  transition: { staggerChildren: 0.1 }
-                }
-              }}
-              className="grid grid-cols-1 xl:grid-cols-2 gap-8 pb-10"
-            >
+            {/* Sovereign Alert Ticker */}
+            <div className="bg-civic-navy text-white px-8 py-3 rounded-2xl flex items-center gap-6 overflow-hidden relative">
+                <div className="flex items-center gap-2 shrink-0 bg-civic-saffron text-civic-navy px-3 py-1 rounded-lg text-[9px] font-black uppercase tracking-widest z-10">
+                    <Zap className="w-3 h-3" /> Alert
+                </div>
+                <motion.div 
+                    animate={{ x: ["100%", "-100%"] }}
+                    transition={{ duration: 30, repeat: Infinity, ease: "linear" }}
+                    className="whitespace-nowrap text-[10px] font-bold uppercase tracking-widest opacity-80"
+                >
+                    SIR 2026: House-to-House Mapping is active in Karnataka Sectors. // Form 12D Home Voting requests open for Senior Citizens. // Aadhaar-EPIC linking is mandatory for data integrity.
+                </motion.div>
+            </div>
+
+            <AnimatePresence mode="wait">
+              {activeTab === 'overview' ? (
+                <motion.div 
+                  key="overview"
+                  initial="hidden"
+                  animate="show"
+                  exit="hidden"
+                  variants={{
+                    hidden: { opacity: 0 },
+                    show: {
+                      opacity: 1,
+                      transition: { staggerChildren: 0.1 }
+                    }
+                  }}
+                  className="grid grid-cols-1 xl:grid-cols-2 gap-8 pb-10"
+                >
               {/* Header Info */}
               <motion.div variants={{ hidden: { y: 20, opacity: 0 }, show: { y: 0, opacity: 1 } }} className="xl:col-span-2 flex justify-between items-center mb-4">
                 <div className="flex items-center gap-6">
@@ -1166,183 +1191,191 @@ export const Dashboard = () => {
           )}
       </AnimatePresence>
 
-      {/* Floating Chat Assistant */}
-      <div className="fixed bottom-12 right-12 z-[3000] flex flex-col items-end gap-6">
-        <AnimatePresence>
-          {isChatOpen && (
+      {/* Gemini Full-Screen Workspace */}
+      <AnimatePresence>
+        {isChatOpen && (
+          <div className="fixed inset-0 z-[5000] flex items-center justify-center p-4 md:p-12 bg-civic-navy/40 backdrop-blur-3xl">
             <motion.div
-              initial={{ opacity: 0, y: 40, scale: 0.8, transformOrigin: 'bottom right' }}
-              animate={{ opacity: 1, y: 0, scale: 1 }}
-              exit={{ opacity: 0, y: 40, scale: 0.8 }}
-              className="w-[400px] h-[650px] bg-white rounded-[3.5rem] shadow-[0_50px_150px_rgba(0,0,0,0.3)] border border-gray-100 flex flex-col overflow-hidden mb-4"
+              initial={{ opacity: 0, scale: 0.9, y: 40 }}
+              animate={{ opacity: 1, scale: 1, y: 0 }}
+              exit={{ opacity: 0, scale: 0.9, y: 40 }}
+              className="w-full max-w-6xl h-full bg-white rounded-[4rem] shadow-[0_50px_150px_rgba(0,0,0,0.5)] border border-white/20 flex flex-col md:flex-row overflow-hidden relative"
             >
-              <div className="bg-civic-navy p-8 flex justify-between items-center text-white relative">
-                <div className="absolute top-0 left-0 w-full h-1 bg-civic-saffron opacity-50" />
-                <div className="flex items-center gap-4">
-                  <div className="w-12 h-12 bg-white/10 rounded-2xl flex items-center justify-center backdrop-blur-md border border-white/20">
-                    <Sparkles className="w-6 h-6 text-civic-saffron" />
-                  </div>
+              <div className="absolute top-0 left-0 w-full h-1.5 bg-gradient-to-r from-google-blue via-purple-500 to-pink-500 z-10" />
+              
+              {/* Workspace Sidebar - File Context */}
+              <div className="w-full md:w-80 bg-gray-50 border-r border-gray-100 p-10 flex flex-col gap-8">
                   <div>
-                    <span className="font-bold text-lg block leading-none">Sovereign Intel</span>
-                    <span className="text-[8px] font-black text-white/40 uppercase tracking-[0.2em] mt-1 block flex items-center gap-2">
-                        <img src="https://www.gstatic.com/lamda/images/gemini_sparkle_v002_d4735304ff6292a690345.svg" className="w-3 h-3" alt="Gemini" />
-                        Powered by Gemini Pro 1.5
-                    </span>
-                  </div>
-                </div>
-                <button onClick={() => setIsChatOpen(false)} className="p-2 hover:bg-white/10 rounded-full transition-colors">
-                  <X className="w-6 h-6 text-white/40" />
-                </button>
-              </div>
-
-              {/* Gemini 1.5 Pro - Long Context Feature Toggle */}
-              <div className="bg-civic-navy/95 border-b border-white/10 p-4 flex items-center justify-between">
-                <div className="flex items-center gap-3">
-                    <div className="w-2 h-2 bg-civic-saffron rounded-full animate-pulse" />
-                    <span className="text-[9px] font-black text-white/60 uppercase tracking-widest">Sovereign Context Engine</span>
-                </div>
-                <div className="flex bg-white/10 rounded-lg p-1">
-                    <button className="px-3 py-1 bg-white/10 text-[8px] font-bold rounded-md text-white">1.5 Pro</button>
-                    <button className="px-3 py-1 text-[8px] font-bold rounded-md text-white/40 hover:text-white transition-all">Standard</button>
-                </div>
-              </div>
-
-              <div className="flex-1 p-8 overflow-y-auto space-y-6 bg-gray-50/30 custom-scrollbar">
-                <div className="bg-white p-6 rounded-[2rem] rounded-tl-none text-[13px] text-gray-600 shadow-sm border border-gray-100 leading-relaxed font-medium">
-                  Namaste! I'm your **Sovereign Intel Coach**. I've analyzed your sector (PC 25) and am ready to assist with your SIR 2026 navigation.
-                </div>
-                {chatMessages.map((m, i) => (
-                  <motion.div 
-                    key={i} 
-                    initial={{ opacity: 0, x: m.role === 'user' ? 20 : -20, scale: 0.95 }}
-                    animate={{ opacity: 1, x: 0, scale: 1 }}
-                    transition={{ type: "spring", stiffness: 260, damping: 20 }}
-                    className="space-y-3"
-                  >
-                    <div 
-                      className={cn(
-                          "p-6 rounded-[2rem] text-[13px] leading-relaxed font-medium shadow-sm transition-all", 
-                          m.role === 'user' 
-                          ? "bg-civic-navy text-white self-end ml-auto rounded-tr-none shadow-xl shadow-civic-navy/10" 
-                          : "bg-white text-gray-600 rounded-tl-none border border-gray-100"
-                      )}
-                    >
-                      {m.text}
-                      
-                      {m.sources && (
-                          <div className="mt-4 pt-4 border-t border-gray-100 space-y-2">
-                              <div className="flex items-center gap-2 text-[8px] font-black text-gray-400 uppercase">
-                                  <BookOpen className="w-3 h-3" /> ECI Federation Sources
+                      <div className="flex items-center gap-3 mb-6">
+                          <Library className="w-6 h-6 text-civic-navy" />
+                          <h4 className="font-display font-bold text-civic-navy">Sovereign Library</h4>
+                      </div>
+                      <div className="space-y-3">
+                          {[
+                              { name: 'ECI_Manual_2026.pdf', size: '12.4 MB' },
+                              { name: 'Sector_PC25_Audit.json', size: '4.2 MB' },
+                              { name: 'SIR_Protocol_v2.docx', size: '1.1 MB' }
+                          ].map(file => (
+                              <div key={file.name} className="p-4 bg-white rounded-2xl border border-gray-200 shadow-sm flex flex-col gap-1">
+                                  <div className="text-[10px] font-bold text-civic-navy truncate">{file.name}</div>
+                                  <div className="text-[8px] font-black text-gray-400 uppercase">{file.size} // Analyzing</div>
                               </div>
-                              <div className="flex flex-wrap gap-1.5">
+                          ))}
+                      </div>
+                  </div>
+                  <div className="mt-auto p-6 bg-civic-navy rounded-3xl text-white">
+                      <div className="flex items-center gap-3 mb-2">
+                          <Cpu className="w-4 h-4 text-civic-saffron animate-pulse" />
+                          <span className="text-[9px] font-black uppercase tracking-widest text-white/60">TPU Cluster Node</span>
+                      </div>
+                      <div className="text-xs font-bold">Krt-South-04</div>
+                  </div>
+              </div>
+
+              {/* Chat Core */}
+              <div className="flex-1 flex flex-col bg-white relative">
+                  <div className="p-10 border-b border-gray-100 flex justify-between items-center">
+                    <div className="flex items-center gap-6">
+                      <div className="w-16 h-16 bg-gray-50 rounded-3xl flex items-center justify-center border border-gray-100 shadow-sm relative group">
+                        <img src="https://www.gstatic.com/lamda/images/gemini_sparkle_v002_d4735304ff6292a690345.svg" className="w-10 h-10" alt="Gemini" />
+                        <div className="absolute inset-0 bg-google-blue/10 animate-ping rounded-3xl opacity-0 group-hover:opacity-100" />
+                      </div>
+                      <div>
+                        <h3 className="text-3xl font-display font-bold text-civic-navy">Gemini 1.5 Pro</h3>
+                        <div className="flex items-center gap-3 mt-1">
+                            <div className="w-2 h-2 bg-civic-green rounded-full animate-pulse" />
+                            <span className="text-[10px] font-black text-gray-400 uppercase tracking-widest">Sovereign Intelligence Active</span>
+                        </div>
+                      </div>
+                    </div>
+                    <button onClick={() => setIsChatOpen(false)} className="p-4 bg-gray-50 rounded-full hover:bg-red-50 transition-all">
+                      <X className="w-6 h-6 text-gray-400" />
+                    </button>
+                  </div>
+
+                  <div className="flex-1 p-12 overflow-y-auto space-y-8 bg-gray-50/20 custom-scrollbar">
+                    <div className="bg-white p-8 rounded-[3rem] rounded-tl-none text-sm text-gray-600 shadow-sm border border-gray-100 leading-relaxed font-medium max-w-2xl">
+                      Welcome to the **Sovereign Gemini Workspace**. I have initialized with the full legislative context of PC 25 (Bengaluru Central). How can I assist your civic journey today?
+                    </div>
+                    {chatMessages.map((m, i) => (
+                      <motion.div 
+                        key={i} 
+                        initial={{ opacity: 0, y: 20 }}
+                        animate={{ opacity: 1, y: 0 }}
+                        className={cn(
+                            "flex flex-col gap-2",
+                            m.role === 'user' ? "items-end" : "items-start"
+                        )}
+                      >
+                        <div 
+                          className={cn(
+                              "p-8 rounded-[3rem] text-sm leading-relaxed font-medium shadow-sm transition-all max-w-2xl", 
+                              m.role === 'user' 
+                              ? "bg-civic-navy text-white rounded-tr-none shadow-2xl shadow-civic-navy/10" 
+                              : "bg-white text-gray-600 rounded-tl-none border border-gray-100"
+                          )}
+                        >
+                          {m.text}
+                          
+                          {m.sources && (
+                              <div className="mt-6 pt-6 border-t border-gray-100 grid grid-cols-2 gap-3">
                                   {m.sources.map(s => (
-                                      <span key={s} className="px-2 py-0.5 bg-gray-50 rounded text-[7px] font-bold text-civic-navy border border-gray-100">{s}</span>
+                                      <div key={s} className="flex items-center gap-2 p-3 bg-gray-50 rounded-xl border border-gray-100">
+                                          <BookOpen className="w-3 h-3 text-civic-navy" />
+                                          <span className="text-[9px] font-bold text-civic-navy">{s}</span>
+                                      </div>
                                   ))}
                               </div>
-                          </div>
-                      )}
+                          )}
+                        </div>
+                      </motion.div>
+                    ))}
+                    {isDeepSearching && (
+                        <div className="p-8 bg-white rounded-[3rem] border border-gray-100 shadow-sm max-w-md space-y-4">
+                            <div className="flex items-center gap-3">
+                                <Loader2 className="w-5 h-5 text-google-blue animate-spin" />
+                                <span className="text-xs font-black text-gray-400 uppercase tracking-widest">Cross-Referencing ECI Database...</span>
+                            </div>
+                            <div className="h-1.5 w-full bg-gray-100 rounded-full overflow-hidden">
+                                <motion.div initial={{ width: 0 }} animate={{ width: '100%' }} transition={{ duration: 3 }} className="h-full bg-google-blue shadow-[0_0_10px_rgba(66,133,244,0.5)]" />
+                            </div>
+                        </div>
+                    )}
+                    <div ref={chatEndRef} />
+                  </div>
+
+                  <div className="p-12 bg-white border-t border-gray-100">
+                    <div className="flex gap-4 p-4 bg-gray-50 rounded-[2.5rem] border border-gray-100 focus-within:bg-white focus-within:shadow-xl focus-within:border-google-blue transition-all">
+                      <input 
+                        value={userInput}
+                        onChange={e => setUserInput(e.target.value)}
+                        onKeyPress={e => e.key === 'Enter' && handleChat()}
+                        placeholder="Type your civic query..."
+                        className="flex-1 px-6 bg-transparent text-sm font-medium focus:outline-none"
+                      />
+                      <button 
+                        onClick={() => handleChat()} 
+                        disabled={isStreaming} 
+                        className="p-5 bg-civic-navy text-white rounded-[1.8rem] shadow-xl shadow-civic-navy/20 hover:scale-105 active:scale-95 transition-all flex items-center gap-3"
+                      >
+                        <span className="text-[10px] font-black uppercase tracking-widest ml-2">Analyze</span>
+                        <Send className="w-5 h-5" />
+                      </button>
                     </div>
-                  </motion.div>
-                ))}
-                {isDeepSearching && (
-                    <motion.div 
-                        initial={{ opacity: 0, y: 10 }}
-                        animate={{ opacity: 1, y: 0 }}
-                        className="flex flex-col gap-3 p-6 bg-white rounded-[2rem] border border-gray-100 shadow-sm"
-                    >
-                        <div className="flex items-center gap-3">
-                            <Loader2 className="w-4 h-4 text-civic-navy animate-spin" />
-                            <span className="text-[10px] font-black text-gray-400 uppercase tracking-widest">Querying Sovereign Archives...</span>
-                        </div>
-                        <div className="h-1 w-full bg-gray-100 rounded-full overflow-hidden">
-                            <motion.div initial={{ width: 0 }} animate={{ width: '100%' }} transition={{ duration: 3.5 }} className="h-full bg-civic-saffron" />
-                        </div>
-                    </motion.div>
-                )}
-                <div ref={chatEndRef} />
-              </div>
-
-              <div className="p-8 bg-white border-t border-gray-100 space-y-6">
-                <div className="flex flex-wrap gap-2">
-                  {[
-                      'Form 6 Guide', 
-                      'SIR 2026', 
-                      'PC 01 Metrics'
-                  ].map(p => (
-                    <button 
-                      key={p} 
-                      onClick={() => handleChat(p)}
-                      className="px-3 py-1.5 bg-gray-50 hover:bg-civic-navy hover:text-white text-[9px] font-black text-civic-navy rounded-xl transition-all uppercase tracking-widest border border-gray-100"
-                    >
-                      {p}
-                    </button>
-                  ))}
-                  <button 
-                    onClick={() => handleChat("Deep Search", true)}
-                    className="px-3 py-1.5 bg-civic-saffron text-civic-navy text-[9px] font-black rounded-xl transition-all uppercase tracking-widest flex items-center gap-2"
-                  >
-                    <Search className="w-3 h-3" /> Deep Search
-                  </button>
-                </div>
-                <div className="flex gap-2">
-                  <input 
-                    value={userInput}
-                    onChange={e => setUserInput(e.target.value)}
-                    onKeyPress={e => e.key === 'Enter' && handleChat()}
-                    placeholder="Ask about your sovereign rights..."
-                    className="flex-1 px-6 py-4 bg-gray-50 border border-gray-100 rounded-[1.5rem] text-sm font-medium focus:outline-none focus:ring-2 focus:ring-civic-navy focus:bg-white transition-all"
-                  />
-                  <button 
-                    onClick={() => handleChat()} 
-                    disabled={isStreaming} 
-                    className="p-4 bg-civic-navy text-white rounded-[1.5rem] shadow-xl shadow-civic-navy/20 hover:scale-105 active:scale-95 transition-all"
-                  >
-                    <Send className="w-6 h-6" />
-                  </button>
-                </div>
+                    <div className="mt-6 flex flex-wrap gap-2">
+                        {['Check Booth Queue', 'Form 6 Checklist', 'SIR Deadlines'].map(p => (
+                            <button key={p} onClick={() => handleChat(p)} className="px-4 py-2 bg-gray-50 hover:bg-civic-navy hover:text-white rounded-xl text-[10px] font-bold text-gray-400 transition-all border border-gray-100">
+                                {p}
+                            </button>
+                        ))}
+                    </div>
+                  </div>
               </div>
             </motion.div>
-          )}
-        </AnimatePresence>
+          </div>
+        )}
+      </AnimatePresence>
 
-        <AnimatePresence>
-          {showChatTooltip && !isChatOpen && (
-            <motion.div
-              initial={{ opacity: 0, y: 10, scale: 0.9 }}
-              animate={{ 
-                opacity: 1, 
-                y: [0, -8, 0], 
-                scale: 1 
-              }}
-              exit={{ opacity: 0, y: 10, scale: 0.9 }}
-              transition={{
-                opacity: { duration: 0.3 },
-                scale: { duration: 0.3 },
-                y: { duration: 3, repeat: Infinity, ease: "easeInOut" }
-              }}
-              className="bg-civic-navy text-white px-6 py-3 rounded-2xl shadow-2xl relative mb-4 mr-2"
-            >
-              <div className="text-[10px] font-bold whitespace-nowrap">Have any issues? I'm here to assist you</div>
-              <div className="absolute -bottom-1 right-8 w-2 h-2 bg-civic-navy rotate-45" />
-            </motion.div>
-          )}
-        </AnimatePresence>
+        {/* Floating Chat Workspace Trigger */}
+        <div className="fixed bottom-12 right-12 z-[3000] flex flex-col items-end gap-6">
+          <AnimatePresence>
+            {showChatTooltip && !isChatOpen && (
+              <motion.div
+                initial={{ opacity: 0, y: 10, scale: 0.9 }}
+                animate={{ 
+                  opacity: 1, 
+                  y: [0, -8, 0], 
+                  scale: 1 
+                }}
+                exit={{ opacity: 0, y: 10, scale: 0.9 }}
+                transition={{
+                  opacity: { duration: 0.3 },
+                  scale: { duration: 0.3 },
+                  y: { duration: 3, repeat: Infinity, ease: "easeInOut" }
+                }}
+                className="bg-civic-navy text-white px-6 py-3 rounded-2xl shadow-2xl relative mb-4 mr-2"
+              >
+                <div className="text-[10px] font-bold whitespace-nowrap">Have any issues? I'm here to assist you</div>
+                <div className="absolute -bottom-1 right-8 w-2 h-2 bg-civic-navy rotate-45" />
+              </motion.div>
+            )}
+          </AnimatePresence>
 
-        <motion.button
-          whileHover={{ scale: 1.1, rotate: 5 }}
-          whileTap={{ scale: 0.9, rotate: -5 }}
-          onClick={() => {
-            setIsChatOpen(!isChatOpen);
-            setShowChatTooltip(false);
-          }}
-          className={cn(
-            "w-20 h-20 rounded-[2.5rem] shadow-[0_30px_60px_rgba(0,0,0,0.35)] flex items-center justify-center transition-all duration-500",
-            isChatOpen ? "bg-white text-civic-navy border-4 border-civic-navy" : "bg-civic-navy text-white"
-          )}
-        >
-          {isChatOpen ? <X className="w-8 h-8" /> : <MessageCircle className="w-8 h-8" />}
-        </motion.button>
+          <motion.button
+            whileHover={{ scale: 1.1, rotate: 5 }}
+            whileTap={{ scale: 0.9, rotate: -5 }}
+            onClick={() => {
+              setIsChatOpen(!isChatOpen);
+              setShowChatTooltip(false);
+            }}
+            className={cn(
+              "w-20 h-20 rounded-[2.5rem] shadow-[0_30px_60px_rgba(0,0,0,0.35)] flex items-center justify-center transition-all duration-500",
+              isChatOpen ? "bg-white text-civic-navy border-4 border-civic-navy" : "bg-civic-navy text-white"
+            )}
+          >
+            {isChatOpen ? <X className="w-8 h-8" /> : <MessageCircle className="w-8 h-8" />}
+          </motion.button>
+        </div>
       </div>
-    </div>
   );
 };

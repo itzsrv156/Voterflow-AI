@@ -4,6 +4,67 @@ import { useVoterStore } from '../../store/useVoterStore';
 import { useTranslation } from '../../LanguageContext';
 import { PollingSimulator } from './PollingSimulator';
 import { PollingBoothLocator } from './PollingBoothLocator';
+import { FutureVoterTool } from '../Molecules/FutureVoterTool';
+
+const LanguageToggle = () => {
+    const { language, setLanguage } = useVoterStore();
+    return (
+        <div className="flex gap-1 p-1.5 bg-white/60 backdrop-blur-xl rounded-2xl border border-white shadow-sm">
+            {(['en', 'hi', 'kn'] as const).map(l => (
+                <button
+                    key={l}
+                    onClick={() => setLanguage(l)}
+                    className={cn(
+                        "px-3 py-1.5 rounded-xl text-[10px] font-black uppercase tracking-widest transition-all",
+                        language === l ? "bg-civic-navy text-white shadow-lg" : "text-gray-400 hover:text-civic-navy hover:bg-white"
+                    )}
+                >
+                    {l}
+                </button>
+            ))}
+        </div>
+    );
+};
+
+const ConstituencyHeatmap = () => (
+    <div className="bg-white/40 backdrop-blur-xl rounded-[3.5rem] p-10 border border-white/50 shadow-sm relative overflow-hidden h-full">
+        <div className="flex justify-between items-start mb-8">
+            <div>
+                <h3 className="text-xl font-display font-bold text-civic-navy">Constituency Sync</h3>
+                <p className="text-[10px] font-bold text-gray-400 uppercase tracking-widest mt-1">Real-time Sector Mapping</p>
+            </div>
+            <div className="px-3 py-1 bg-civic-green/10 rounded-full text-[9px] font-black text-civic-green uppercase tracking-widest">
+                Live Data
+            </div>
+        </div>
+        
+        <div className="relative aspect-square max-w-[280px] mx-auto">
+            {/* Simple SVG Heatmap Map */}
+            <svg viewBox="0 0 200 200" className="w-full h-full drop-shadow-2xl">
+                {/* Sector 1: Shanti Nagar */}
+                <path d="M40,60 L120,40 L160,80 L140,140 L60,160 Z" className="fill-civic-saffron/20 stroke-civic-saffron stroke-2 hover:fill-civic-saffron/40 transition-colors cursor-pointer" />
+                {/* Sector 2: Shivaji Nagar */}
+                <path d="M120,40 L180,30 L190,90 L160,80 Z" className="fill-civic-navy/10 stroke-civic-navy stroke-1 hover:fill-civic-navy/30 transition-colors cursor-pointer" />
+                {/* Sector 3: CV Raman Nagar */}
+                <path d="M160,80 L190,90 L180,160 L140,140 Z" className="fill-civic-saffron/40 stroke-civic-saffron stroke-2 hover:fill-civic-saffron/60 transition-colors cursor-pointer" />
+                
+                <circle cx="100" cy="100" r="4" className="fill-civic-navy animate-ping" />
+                <circle cx="100" cy="100" r="3" className="fill-civic-navy" />
+            </svg>
+            
+            <div className="absolute bottom-0 left-0 right-0 p-4 bg-white/60 backdrop-blur-md rounded-2xl border border-white/50 space-y-2">
+                <div className="flex justify-between items-center text-[9px] font-bold">
+                    <span className="text-gray-400 uppercase">Current Sector</span>
+                    <span className="text-civic-navy">Shanti Nagar</span>
+                </div>
+                <div className="flex justify-between items-center text-[9px] font-bold">
+                    <span className="text-gray-400 uppercase">Sync Status</span>
+                    <span className="text-civic-green">89.2% Optimized</span>
+                </div>
+            </div>
+        </div>
+    </div>
+);
 import { 
   Zap, MessageCircle, X, 
   Send, CheckCircle, Gavel, 
@@ -18,11 +79,13 @@ import { cn } from '../../lib/utils';
 export const Dashboard = () => {
   const { 
     persona, progress, resetStore, activeTab, 
-    setActiveTab, setActiveFlow, readinessScore, addReadiness 
+    setActiveTab, setActiveFlow, readinessScore, addReadiness,
+    hasGreeted, setHasGreeted
   } = useVoterStore();
   const { t } = useTranslation();
   
   const [isChatOpen, setIsChatOpen] = useState(false);
+  const [showChatTooltip, setShowChatTooltip] = useState(false);
   const [chatMessages, setChatMessages] = useState<{ role: 'user' | 'ai'; text: string; sources?: string[] }[]>([]);
   const [userInput, setUserInput] = useState('');
   const [isStreaming, setIsStreaming] = useState(false);
@@ -36,6 +99,24 @@ export const Dashboard = () => {
     chatEndRef.current?.scrollIntoView({ behavior: 'smooth' });
   }, [chatMessages]);
 
+  // Proactive Assistant Guidance - Fixed Spam & Removed Auto-Open
+  useEffect(() => {
+    if (!hasGreeted && persona) {
+        const greetings: Record<string, string> = {
+            FirstTime: "Namaste! Welcome, First-Time Voter. I'm your Sovereign Intel Coach. Your journey to democratic participation starts here. I recommend launching the 'Registration Suite' below to check your eligibility and file Form 6.",
+            Student: "Hello! As a student/migrant, you have specific rights under SIR 2026. I can guide you through the Annexure-II residency declaration and Form 6 filing. Shall we begin?",
+            Senior: "Namaste. For our senior citizens, we offer priority assistance. I can help you understand the Form 12D process for home-voting or locate a priority-access booth in PC 25."
+        };
+        
+        const timer = setTimeout(() => {
+            setChatMessages([{ role: 'ai', text: greetings[persona] || "Welcome to your Sovereign Dashboard. How can I assist your civic journey today?" }]);
+            setShowChatTooltip(true); // Show tooltip instead of opening chat
+            setHasGreeted(true);
+        }, 2000);
+        return () => clearTimeout(timer);
+    }
+  }, [persona, hasGreeted]);
+
   const handleChat = (input?: string, isDeep = false) => {
     const text = input || userInput;
     if (!text.trim() || isStreaming) return;
@@ -46,26 +127,29 @@ export const Dashboard = () => {
     
     if (isDeep) setIsDeepSearching(true);
 
-    const sources = isDeep ? ['ECI Knowledge Graph', 'Legal Gazette 2026'] : undefined;
-    setChatMessages(prev => [...prev, { role: 'ai', text: '', sources }]);
+    const sources = isDeep ? ['ECI Knowledge Graph', 'Legal Gazette 2026', 'Sovereign Intel Archives'] : undefined;
+    
+    // Add an empty AI message that we will fill
+    setChatMessages(prev => [...prev, { role: 'ai', text: 'Thinking...', sources }]);
 
-    // Advanced Response Engine Simulation
     const getResponse = (query: string) => {
         const q = query.toLowerCase();
-        if (q.includes('form 6')) return "Form 6 is the Sovereign Gateway for new electors. For SIR 2026, ensure you have a scanned copy of your Aadhaar and a passport-size photograph (3.5cm x 4.5cm). I recommend launching the Digital Form Engine from your dashboard for AI-assisted filing.";
-        if (q.includes('booth') || q.includes('locate')) return "I've analyzed the Bengaluru Central sector. Your optimal booth is the BBMP Head Office (12.9698, 77.5898). The real-time wait time is currently 2 minutes. You can view the live map in the 'Overview' tab.";
-        if (q.includes('deadline') || q.includes('sir 2026')) return "The SIR 2026 Special Intensive Revision cycle is currently in Phase 2. The final draft roll for your constituency (PC 25) will be published on Feb 5, 2026. Please verify your inclusion before then.";
-        return `As your Sovereign Intel Coach, I've cross-referenced your query for a ${persona || 'Citizen'} profile. ECI protocol 2026/04 indicates that your constituency mapping is compliant, but your readiness score of ${Math.round(readinessScore)}% could be improved by linking your Aadhaar.`;
+        if (q.includes('form 6')) return "Form 6 is the legal instrument for new voter registration. Under SIR 2026 rules, you'll need: 1. Age Proof (Aadhaar/10th Cert), 2. Address Proof, and 3. A digital photograph. Use the 'Digital Form Engine' on your dashboard for a guided, AI-verified experience.";
+        if (q.includes('booth') || q.includes('locate')) return "I've synchronized with your local sector (PC 25). Your assigned polling station is the BBMP Public School, Shanti Nagar. Current average transit time: 12 mins. You can view the real-time sector map in the 'Overview' tab.";
+        if (q.includes('deadline') || q.includes('sir 2026')) return "The Special Intensive Revision 2026 (Phase 2) is active until Feb 15, 2026. This is the critical window for claims and objections. Ensure your EPIC is linked with Aadhaar to avoid automatic deletion during the de-duplication purge.";
+        if (q.includes('correction') || q.includes('form 8')) return "Form 8 is used for updating your details (photo, address, or name). In the Sovereign Edition, this is protected by multi-factor authentication. Launch the 'Correction Suite' from the sidebar to begin.";
+        return `As your Sovereign Intel Coach, I've analyzed your ${persona || 'Citizen'} profile against the PC 25 legislative roll. Your current readiness is ${Math.round(readinessScore)}%. I recommend verifying your residency status to ensure 100% compliance before the March final publication.`;
     };
 
     const mockResponse = getResponse(text);
     let fullText = "";
     let i = 0;
     
-    const delay = isDeep ? 4000 : 0;
+    const delay = isDeep ? 2500 : 500;
     
     setTimeout(() => {
         setIsDeepSearching(false);
+        // Optimized Streaming: Update every 3 characters to reduce re-render spam
         const interval = setInterval(() => {
             if (i >= mockResponse.length) {
                 clearInterval(interval);
@@ -73,12 +157,18 @@ export const Dashboard = () => {
                 addReadiness(2);
                 return;
             }
-            fullText += mockResponse[i];
+            
+            // Append next chunk
+            const chunk = mockResponse.slice(i, i + 3);
+            fullText += chunk;
+            i += 3;
+            
             setChatMessages(prev => {
-                return [...prev.slice(0, -1), { role: 'ai', text: fullText, sources }];
+                const newMessages = [...prev];
+                newMessages[newMessages.length - 1] = { role: 'ai', text: fullText, sources };
+                return newMessages;
             });
-            i++;
-        }, 15);
+        }, 20);
     }, delay);
   };
 
@@ -116,6 +206,32 @@ export const Dashboard = () => {
           <SidebarItem id="sir2026" icon={Calendar} labelKey="sir2026" />
           <SidebarItem id="helpline" icon={Headphones} labelKey="helpline" />
         </nav>
+
+        {/* Sovereign Achievements (Badges) - NEW FEATURE */}
+        <div className="mt-8 p-6 bg-white/60 rounded-3xl border border-white relative overflow-hidden group">
+            <h4 className="text-[9px] font-black text-civic-navy uppercase tracking-widest mb-4 flex items-center gap-2">
+                <Award className="w-3 h-3 text-civic-saffron" /> Sovereign Badges
+            </h4>
+            <div className="flex flex-wrap gap-2">
+                {[
+                    { id: 'identity', icon: UserCheck, active: !!persona, title: 'Identity Verified' },
+                    { id: 'filing', icon: FileText, active: progress.registration === 100, title: 'Form 6 Filed' },
+                    { id: 'compliance', icon: ShieldCheck, active: readinessScore > 80, title: 'Compliance Ace' },
+                    { id: 'poll', icon: Flame, active: progress.polling === 100, title: 'Poll Ready' },
+                ].map(badge => (
+                    <div 
+                        key={badge.id} 
+                        title={badge.title}
+                        className={cn(
+                            "w-10 h-10 rounded-xl flex items-center justify-center transition-all",
+                            badge.active ? "bg-civic-navy text-civic-saffron shadow-lg" : "bg-gray-100 text-gray-300"
+                        )}
+                    >
+                        <badge.icon className="w-5 h-5" />
+                    </div>
+                ))}
+            </div>
+        </div>
 
         {/* Readiness Score Molecule */}
         <div className="mt-8 p-6 bg-white/60 rounded-3xl border border-white relative overflow-hidden group">
@@ -183,7 +299,8 @@ export const Dashboard = () => {
                     </div>
                 </div>
                 
-                <div className="flex gap-4">
+                <div className="flex gap-4 items-center">
+                    <LanguageToggle />
                     {/* Constituency Intelligence Molecule */}
                     <div className="px-6 py-4 bg-white/60 rounded-3xl border border-white shadow-sm flex items-center gap-4">
                         <div className="w-10 h-10 bg-civic-navy/5 rounded-xl flex items-center justify-center">
@@ -207,6 +324,53 @@ export const Dashboard = () => {
                     </button>
                 </div>
               </div>
+              
+              {/* Personal Voting Journey Checklist - NEW FEATURE */}
+              <div className="xl:col-span-2 bg-white/60 backdrop-blur-xl rounded-[3.5rem] p-10 border border-white/50 shadow-sm relative overflow-hidden group">
+                  <div className="absolute top-0 right-0 p-10 opacity-5 pointer-events-none group-hover:scale-110 transition-transform">
+                      <Target className="w-40 h-40 text-civic-navy" />
+                  </div>
+                  <div className="flex items-center gap-4 mb-8">
+                      <div className="w-12 h-12 bg-civic-saffron rounded-2xl flex items-center justify-center shadow-lg">
+                          <CheckCircle className="w-6 h-6 text-civic-navy" />
+                      </div>
+                      <div>
+                          <h3 className="text-xl font-display font-bold text-civic-navy">Your Personal Voting Journey</h3>
+                          <p className="text-[10px] font-bold text-gray-400 uppercase tracking-widest mt-1">Guided Assistant Tracker</p>
+                      </div>
+                  </div>
+                  
+                  <div className="grid grid-cols-1 md:grid-cols-4 gap-6 relative z-10">
+                      {[
+                        { step: "Step 1", label: "Eligibility", desc: "Criteria Verified", status: "complete", icon: UserCheck, action: () => setActiveFlow('registration') },
+                        { step: "Step 2", label: "Registration", desc: "Form 6 Filing", status: progress.registration === 100 ? "complete" : "active", icon: FileText, action: () => setActiveFlow('registration') },
+                        { step: "Step 3", label: "Verification", desc: "BLO Field Visit", status: progress.registration === 100 ? "active" : "pending", icon: ShieldCheck, action: () => setIsChatOpen(true) },
+                        { step: "Step 4", label: "Voting Day", desc: "May 2026", status: "pending", icon: Award, action: () => setActiveTab('polling') }
+                      ].map((s, i) => (
+                        <button 
+                            key={i} 
+                            onClick={s.action}
+                            className={cn(
+                            "p-6 rounded-[2.5rem] border transition-all duration-500 text-left group/step relative",
+                            s.status === 'complete' ? "bg-civic-green/5 border-civic-green/20 hover:bg-civic-green/10" :
+                            s.status === 'active' ? "bg-civic-navy text-white shadow-2xl scale-105 border-transparent hover:scale-110" :
+                            "bg-white border-gray-100 opacity-60 hover:opacity-80"
+                        )}>
+                            <div className="flex justify-between items-start mb-4">
+                                <s.icon className={cn("w-6 h-6", s.status === 'active' ? "text-civic-saffron" : "text-civic-navy")} />
+                                {s.status === 'complete' ? (
+                                    <CheckCircle className="w-4 h-4 text-civic-green" />
+                                ) : (
+                                    <ArrowRight className={cn("w-4 h-4 opacity-0 group-hover/step:opacity-100 transition-opacity", s.status === 'active' ? "text-civic-saffron" : "text-civic-navy")} />
+                                )}
+                            </div>
+                            <div className={cn("text-[9px] font-black uppercase tracking-widest mb-1", s.status === 'active' ? "text-white/60" : "text-gray-400")}>{s.step}</div>
+                            <div className="text-sm font-bold mb-1">{s.label}</div>
+                            <div className={cn("text-[10px] font-medium", s.status === 'active' ? "text-white/40" : "text-gray-400")}>{s.desc}</div>
+                        </button>
+                      ))}
+                  </div>
+              </div>
 
               {/* Sovereign Timeline Feature */}
               <div className="xl:col-span-2 bg-white/40 backdrop-blur-xl rounded-[3.5rem] p-12 border border-white/50 shadow-sm overflow-hidden relative group">
@@ -223,24 +387,31 @@ export const Dashboard = () => {
                   <div className="relative flex flex-col md:flex-row justify-between gap-8 px-4">
                       <div className="absolute top-1/2 left-0 w-full h-0.5 bg-gray-100 -z-0 hidden md:block" />
                       {[
-                        { date: 'Oct 2025', event: 'SIR Cycle Start', status: 'Passed', icon: Zap },
-                        { date: 'Feb 2026', event: 'Draft Roll Sync', status: 'Current', icon: Search },
-                        { date: 'Mar 2026', event: 'Final Publication', status: 'Upcoming', icon: ShieldCheck },
-                        { date: 'May 2026', event: 'General Elections', status: 'Goal', icon: Flame }
+                        { date: 'Oct 2025', event: 'SIR Cycle Start', status: 'Passed', icon: Zap, details: "Special Intensive Revision began. Your sector (PC 25) mapping is finalized." },
+                        { date: 'Feb 2026', event: 'Draft Roll Sync', status: 'Current', icon: Search, details: "The Draft Roll is now live. Verify your entry to avoid exclusion during the de-duplication phase." },
+                        { date: 'Mar 2026', event: 'Final Publication', status: 'Upcoming', icon: ShieldCheck, details: "Final Sovereign Roll will be published. This is the last version before General Elections." },
+                        { date: 'May 2026', event: 'General Elections', status: 'Goal', icon: Flame, details: "E-Day. Your polling station BBMP School is ready for Sovereign turnout." }
                       ].map((t, i) => (
-                        <div key={i} className="flex flex-col items-center text-center relative z-10 group/item">
+                        <button 
+                            key={i} 
+                            onClick={() => {
+                                setChatMessages(prev => [...prev, { role: 'ai', text: `Milestone Intel: ${t.event} (${t.date}). ${t.details}` }]);
+                                setIsChatOpen(true);
+                            }}
+                            className="flex flex-col items-center text-center relative z-10 group/item hover:scale-110 transition-transform"
+                        >
                             <div className={cn(
                                 "w-16 h-16 rounded-2xl flex items-center justify-center transition-all duration-500 mb-4",
                                 t.status === 'Passed' ? "bg-civic-green text-white shadow-lg" :
                                 t.status === 'Current' ? "bg-civic-navy text-white scale-110 shadow-2xl animate-pulse" :
-                                "bg-white text-gray-300 border border-gray-100"
+                                "bg-white text-gray-300 border border-gray-100 group-hover/item:border-civic-navy/20"
                             )}>
                                 <t.icon className="w-7 h-7" />
                             </div>
                             <div className="text-[10px] font-black text-civic-navy uppercase tracking-widest">{t.date}</div>
                             <div className="text-xs font-bold text-gray-500 mt-1">{t.event}</div>
                             <div className={cn("text-[8px] font-black uppercase mt-1", t.status === 'Current' ? "text-civic-saffron" : "text-gray-300")}>{t.status}</div>
-                        </div>
+                        </button>
                       ))}
                   </div>
               </div>
@@ -248,6 +419,12 @@ export const Dashboard = () => {
               {/* Polling Booth Locator (Real Map) */}
               <div className="xl:col-span-2">
                 <PollingBoothLocator />
+              </div>
+
+              {/* Top 50 Feature: Heatmap & Future Voter Tool */}
+              <div className="grid grid-cols-1 xl:grid-cols-2 gap-8 xl:col-span-2">
+                  <ConstituencyHeatmap />
+                  <FutureVoterTool />
               </div>
 
               {/* Sovereign Voter Card */}
@@ -803,10 +980,27 @@ export const Dashboard = () => {
           )}
         </AnimatePresence>
 
+        <AnimatePresence>
+          {showChatTooltip && !isChatOpen && (
+            <motion.div
+              initial={{ opacity: 0, y: 10, scale: 0.9 }}
+              animate={{ opacity: 1, y: 0, scale: 1 }}
+              exit={{ opacity: 0, y: 10, scale: 0.9 }}
+              className="bg-civic-navy text-white px-6 py-3 rounded-2xl shadow-2xl relative mb-2 mr-2"
+            >
+              <div className="text-[10px] font-bold whitespace-nowrap">Have any issues? I'm here to assist you</div>
+              <div className="absolute -bottom-1 right-8 w-2 h-2 bg-civic-navy rotate-45" />
+            </motion.div>
+          )}
+        </AnimatePresence>
+
         <motion.button
           whileHover={{ scale: 1.1, rotate: 5 }}
           whileTap={{ scale: 0.9, rotate: -5 }}
-          onClick={() => setIsChatOpen(!isChatOpen)}
+          onClick={() => {
+            setIsChatOpen(!isChatOpen);
+            setShowChatTooltip(false);
+          }}
           className={cn(
             "w-20 h-20 rounded-[2.5rem] shadow-[0_30px_60px_rgba(0,0,0,0.35)] flex items-center justify-center transition-all duration-500",
             isChatOpen ? "bg-white text-civic-navy border-4 border-civic-navy" : "bg-civic-navy text-white"

@@ -213,10 +213,29 @@ const FinalStep = ({ onNext }: StepProps) => (
   >
     <div className="bg-civic-green/5 p-8 rounded-2xl border border-civic-green/10 text-center">
       <CheckCircle className="w-16 h-16 text-civic-green mx-auto mb-6" />
-      <h3 className="text-2xl font-bold text-civic-navy mb-2">Ready to Submit</h3>
+      <h3 className="text-2xl font-bold text-civic-navy mb-2">Form 6 Ready to Submit</h3>
       <p className="text-sm text-gray-500 mb-6 leading-relaxed">
-        Your documents have been scanned and verified. Click below to complete the registration.
+        Your documents have been scanned and verified.
       </p>
+      
+      <div className="bg-white/60 p-6 rounded-2xl border border-civic-green/20 text-left space-y-4 mb-6">
+          <h4 className="text-[10px] font-black text-civic-navy uppercase tracking-widest flex items-center gap-2">
+              <Info className="w-4 h-4 text-civic-saffron" /> What Happens Next?
+          </h4>
+          <ul className="space-y-3">
+              {[
+                  "Your application enters the Verification Phase.",
+                  "A Booth Level Officer (BLO) may visit for a field check.",
+                  "You can track status in your Sovereign Dashboard.",
+                  "Prepare for Voting Day in May 2026!"
+              ].map((text, i) => (
+                  <li key={i} className="flex items-start gap-2 text-[10px] font-medium text-gray-500">
+                      <div className="w-1 h-1 bg-civic-navy rounded-full mt-1.5" />
+                      {text}
+                  </li>
+              ))}
+          </ul>
+      </div>
     </div>
     <button
       onClick={onNext}

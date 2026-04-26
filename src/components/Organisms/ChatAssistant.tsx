@@ -1,7 +1,7 @@
 import { useState, useRef, useEffect } from 'react';
 import { motion, AnimatePresence } from 'framer-motion';
 import { useVoterStore } from '../../store/useVoterStore';
-import { X, Send, Sparkles, Search, Loader2, ShieldCheck, BookOpen, AlertCircle } from 'lucide-react';
+import { X, Send, Sparkles, Search, Loader2, ShieldCheck, BookOpen, AlertCircle, Headphones } from 'lucide-react';
 import { cn } from '../../lib/utils';
 
 const CHIPS = [
@@ -63,14 +63,15 @@ export const ChatAssistant = ({ isOpen, onClose }: { isOpen: boolean; onClose: (
         'VoterFlow AI Knowledge Graph'
     ] : undefined;
 
-    setMessages(prev => [...prev, { role: 'ai', text: '', sources }]);
+    setMessages(prev => [...prev, { role: 'ai', text: 'Analyzing Sovereign Data...', sources }]);
     
     const getResponse = (q: string) => {
         const lowerQ = q.toLowerCase();
-        if (lowerQ.includes('form 6')) return "Based on ECI protocol 2026/04, Form 6 is the primary instrument for new electors. The qualifying date is 01-01-2026. Required: Aadhaar, Passport Photo, and Address Proof. Verification usually takes 7-10 working days via the BLO dashboard.";
-        if (lowerQ.includes('sir')) return `The Special Intensive Revision (SIR) 2026 is currently in Phase 2 (Claims & Objections). Your current profile readiness is ${Math.round(readinessScore)}%. To reach 100%, ensure your Aadhaar is linked to your EPIC number.`;
-        if (isDeep) return `Sovereign analysis for "${q}" completed. For a ${persona || 'Citizen'} profile, cross-referencing against the 2026 Electoral Roll reveals active revision in your sector (Bengaluru/PC 25). I recommend initiating the Digital Form Suite to ensure data parity.`;
-        return `Analyzing query: "${q}". Current ECI framework for 2026 recommends regular roll verification. How can I assist with your specific registration or correction needs?`;
+        if (lowerQ.includes('form 6')) return "Form 6 is the Sovereign Gateway for new electors. The qualifying date for the current cycle is 01-01-2026. You'll need high-res scans of your identity and address proofs. I recommend using our AI Validator to pre-screen your documents.";
+        if (lowerQ.includes('sir')) return `The Special Intensive Revision (SIR) 2026 is currently in Phase 2. Your readiness is at ${Math.round(readinessScore)}%. To reach 100%, link your Aadhaar and verify your sector mapping in the 'Overview' tab.`;
+        if (lowerQ.includes('deadline')) return "Important: The SIR 2026 window for claims and objections closes on February 15, 2026. Final roll publication is scheduled for March 2026.";
+        if (isDeep) return `Sovereign Deep Search for "${q}" completed. For a ${persona || 'Citizen'} profile in PC 25, our federated engine confirms your sector mapping is active. No immediate action is required beyond the standard Form 6 filing.`;
+        return `I've analyzed your query regarding "${q}". The current ECI 2026 framework emphasizes digital-first registration. Would you like me to open the Digital Form Suite or explain the verification process?`;
     };
 
     const responseText = getResponse(query);
@@ -83,12 +84,16 @@ export const ChatAssistant = ({ isOpen, onClose }: { isOpen: boolean; onClose: (
             setIsStreaming(false);
             return;
         }
-        currentText += responseText[i];
+        const chunk = responseText.slice(i, i + 3);
+        currentText += chunk;
+        i += 3;
+        
         setMessages(prev => {
-            return [...prev.slice(0, -1), { role: 'ai', text: currentText, sources }];
+            const newMsgs = [...prev];
+            newMsgs[newMsgs.length - 1] = { role: 'ai', text: currentText, sources };
+            return newMsgs;
         });
-        i++;
-    }, 12);
+    }, 20);
   };
 
   return (
@@ -136,12 +141,27 @@ export const ChatAssistant = ({ isOpen, onClose }: { isOpen: boolean; onClose: (
             {messages.map((m, i) => (
               <div key={i} className="flex flex-col gap-3">
                 <div className={cn(
-                    "p-6 rounded-[2.5rem] text-sm leading-relaxed shadow-sm font-medium", 
+                    "p-6 rounded-[2.5rem] text-sm leading-relaxed shadow-sm font-medium relative group", 
                     m.role === 'user' 
                     ? "bg-civic-navy text-white self-end ml-12 rounded-tr-none shadow-xl shadow-civic-navy/10" 
                     : "bg-white text-gray-600 self-start mr-12 rounded-tl-none border border-gray-100"
                 )}>
                   {m.text}
+                  
+                  {m.role === 'ai' && (
+                    <button 
+                        onClick={() => {
+                            // Simulating Speech Synthesis
+                            const utterance = new SpeechSynthesisUtterance(m.text);
+                            utterance.rate = 1.1;
+                            window.speechSynthesis.speak(utterance);
+                        }}
+                        className="absolute bottom-4 right-4 p-2 bg-gray-50 rounded-xl hover:bg-civic-saffron hover:text-white transition-all opacity-0 group-hover:opacity-100"
+                        title="Listen to Sovereign Guide"
+                    >
+                        <Headphones className="w-4 h-4" />
+                    </button>
+                  )}
                   
                   {m.sources && (
                       <div className="mt-4 pt-4 border-t border-gray-100 space-y-2">

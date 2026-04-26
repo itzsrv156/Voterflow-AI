@@ -15,6 +15,8 @@ interface VoterState {
     research: number;
     polling: number;
   };
+  hasGreeted: boolean;
+  setHasGreeted: (v: boolean) => void;
   setPersona: (p: Persona | null) => void;
   setView: (v: 'selection' | 'dashboard') => void;
   setActiveTab: (t: any) => void;
@@ -37,6 +39,7 @@ const initialState = {
     research: 0,
     polling: 0,
   },
+  hasGreeted: false,
 };
 
 export const useVoterStore = create<VoterState>()(
@@ -48,6 +51,7 @@ export const useVoterStore = create<VoterState>()(
       setActiveTab: (activeTab) => set({ activeTab }),
       setActiveFlow: (activeFlow) => set({ activeFlow }),
       setLanguage: (language) => set({ language }),
+      setHasGreeted: (hasGreeted) => set({ hasGreeted }),
       addReadiness: (amount) => set((state) => ({ 
         readinessScore: Math.min(100, state.readinessScore + amount) 
       })),

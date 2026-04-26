@@ -191,6 +191,7 @@ const FormStep1 = ({ onNext, data, setData }: FormStepProps) => {
 };
 
 const FormStep2 = ({ onNext, data, setData }: FormStepProps) => {
+  const { persona } = useVoterStore();
   const [scanning, setScanning] = useState<string | null>(null);
   const [files, setFiles] = useState<Record<string, File>>({});
   
@@ -199,11 +200,27 @@ const FormStep2 = ({ onNext, data, setData }: FormStepProps) => {
     if (!file) return;
 
     setScanning(type);
+    
+    // Simulate AI Neural Scan
     setTimeout(() => {
       setFiles(prev => ({ ...prev, [type]: file }));
-      setData({ ...data, [type]: true });
+      
+      const updates: any = { [type]: true };
+      
+      // SMART OCR SIMULATION: Pre-fill data if it's an ID proof
+      if (type === 'idProof') {
+          updates.name = "SARVESH ARUNKUMAR";
+          updates.dob = "2006-05-24";
+          // If the user was a student persona, we can even guess their hostel
+          if (persona === 'Student') {
+              updates.hostelName = "Ganga Residency";
+              updates.wardenName = "Dr. M. S. Kumar";
+          }
+      }
+      
+      setData({ ...data, ...updates });
       setScanning(null);
-    }, 2000);
+    }, 2500);
   };
 
   const isComplete = data.photo && data.addressProof && data.idProof;

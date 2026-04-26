@@ -73,7 +73,7 @@ import {
   PhoneCall, ShieldCheck, MapPin, Info,
   AlertTriangle, UserCheck, Target, Award,
   Flame, Cpu, BookOpen, Download, FileText, Sparkles, Loader2,
-  FileEdit, Globe
+  FileEdit, Globe, Fingerprint
 } from 'lucide-react';
 import { cn } from '../../lib/utils';
 
@@ -468,12 +468,8 @@ export const Dashboard = () => {
                     
                     <div className="relative z-10 flex flex-col md:flex-row justify-between items-start md:items-center gap-8">
                         <div className="flex items-center gap-8">
-                            <div className="w-24 h-24 bg-white/10 backdrop-blur-xl rounded-[2rem] border border-white/20 p-2 relative">
-                                <img 
-                                    src="https://images.unsplash.com/photo-1507003211169-0a1dd7228f2d?auto=format&fit=crop&q=80&w=200" 
-                                    className="w-full h-full object-cover rounded-[1.5rem] grayscale group-hover:grayscale-0 transition-all duration-700" 
-                                    alt="Voter"
-                                />
+                            <div className="w-24 h-24 bg-white/10 backdrop-blur-xl rounded-[2rem] border border-white/20 flex items-center justify-center relative">
+                                <Fingerprint className="w-12 h-12 text-white/40" />
                                 <div className="absolute -bottom-2 -right-2 w-8 h-8 bg-civic-green rounded-full flex items-center justify-center border-4 border-civic-navy">
                                     <CheckCircle className="w-4 h-4 text-white" />
                                 </div>
@@ -632,15 +628,15 @@ export const Dashboard = () => {
 
                   <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-6">
                       {[
-                        { name: 'Dr. Rahul S.', party: 'National Alliance', img: 'https://i.pravatar.cc/150?u=rahul', color: 'bg-orange-500' },
-                        { name: 'Anita Verma', party: 'People First', img: 'https://i.pravatar.cc/150?u=anita', color: 'bg-blue-500' },
-                        { name: 'K. Venkatesh', party: 'State Collective', img: 'https://i.pravatar.cc/150?u=venk', color: 'bg-green-500' },
-                        { name: 'Sarah Khan', party: 'Independent', img: 'https://i.pravatar.cc/150?u=sarah', color: 'bg-gray-500' }
+                        { name: 'Dr. Rahul S.', party: 'National Alliance', initials: 'RS', color: 'bg-orange-500' },
+                        { name: 'Anita Verma', party: 'People First', initials: 'AV', color: 'bg-blue-500' },
+                        { name: 'K. Venkatesh', party: 'State Collective', initials: 'KV', color: 'bg-green-500' },
+                        { name: 'Sarah Khan', party: 'Independent', initials: 'SK', color: 'bg-gray-500' }
                       ].map((c, i) => (
-                        <div key={i} className="p-6 bg-white border border-gray-100 rounded-3xl hover:shadow-xl transition-all group/cand">
-                            <div className="relative w-20 h-20 mx-auto mb-4">
-                                <img src={c.img} className="w-full h-full object-cover rounded-2xl grayscale group-hover/cand:grayscale-0 transition-all" />
-                                <div className={cn("absolute -bottom-1 -right-1 w-6 h-6 rounded-lg border-2 border-white", c.color)} />
+                        <div key={i} className="p-6 bg-white border border-gray-100 rounded-3xl hover:shadow-xl transition-all group/cand text-center">
+                            <div className={cn("w-20 h-20 mx-auto mb-4 rounded-2xl flex items-center justify-center text-white font-display font-bold text-xl shadow-inner relative", c.color)}>
+                                {c.initials}
+                                <div className="absolute inset-0 bg-black/5 rounded-2xl opacity-0 group-hover/cand:opacity-100 transition-opacity" />
                             </div>
                             <div className="text-center">
                                 <div className="text-sm font-bold text-civic-navy mb-1">{c.name}</div>

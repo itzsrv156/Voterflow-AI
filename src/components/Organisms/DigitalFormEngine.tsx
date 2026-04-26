@@ -336,9 +336,10 @@ export const DigitalFormEngine = ({ onClose }: { onClose: () => void }) => {
   const [step, setStep] = useState(1);
   const [formData, setFormData] = useState<FormData>({ residencyType: 'Day Scholar' });
   const [isFinished, setIsFinished] = useState(false);
-  const { updateProgress } = useVoterStore();
+  const { updateProgress, setVoterName } = useVoterStore();
 
   const handleFinish = () => {
+    if (formData.name) setVoterName(formData.name);
     updateProgress('registration', 100);
     setIsFinished(true);
   };

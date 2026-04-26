@@ -16,8 +16,10 @@ export interface VoterState {
     polling: number;
   };
   hasGreeted: boolean;
+  voterName: string | null;
   setHasGreeted: (v: boolean) => void;
   setPersona: (p: Persona | null) => void;
+  setVoterName: (n: string) => void;
   setView: (v: 'selection' | 'dashboard') => void;
   setActiveTab: (t: VoterState['activeTab']) => void;
   setActiveFlow: (f: VoterState['activeFlow']) => void;
@@ -40,6 +42,7 @@ const initialState = {
     polling: 0,
   },
   hasGreeted: false,
+  voterName: null,
 };
 
 export const useVoterStore = create<VoterState>()(
@@ -47,6 +50,7 @@ export const useVoterStore = create<VoterState>()(
     (set) => ({
       ...initialState,
       setPersona: (persona) => set({ persona, view: 'dashboard' }),
+      setVoterName: (voterName) => set({ voterName }),
       setView: (view) => set({ view }),
       setActiveTab: (activeTab) => set({ activeTab }),
       setActiveFlow: (activeFlow) => set({ activeFlow }),

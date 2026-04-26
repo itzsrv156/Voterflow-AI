@@ -110,7 +110,7 @@ export const Dashboard = () => {
   const { 
     persona, progress, resetStore, activeTab, 
     setActiveTab, setActiveFlow, readinessScore, addReadiness,
-    hasGreeted, setHasGreeted
+    hasGreeted, setHasGreeted, voterName
   } = useVoterStore();
   const { t } = useTranslation();
   
@@ -323,7 +323,7 @@ export const Dashboard = () => {
                             <h2 className="text-[10px] font-bold text-civic-saffron uppercase tracking-[0.3em]">{t('active_profile')}</h2>
                         </div>
                         <h1 className="text-4xl font-display font-bold text-civic-navy leading-none">
-                            {persona ? t(`persona_${persona.toLowerCase()}`) : ''} {t('dashboard')}
+                            {voterName ? voterName : (persona ? t(`persona_${persona.toLowerCase()}`) : '')} {t('dashboard')}
                         </h1>
                     </div>
                 </div>
@@ -483,7 +483,7 @@ export const Dashboard = () => {
                                     <span className="px-3 py-1 bg-civic-saffron text-civic-navy text-[8px] font-black uppercase tracking-[0.2em] rounded-full">Sovereign Identity</span>
                                     <span className="text-[10px] font-bold text-white/40 uppercase tracking-widest">EPIC: BEL-2026-0420</span>
                                 </div>
-                                <h3 className="text-3xl font-display font-bold uppercase tracking-tight">Sarvesh Arunkumar</h3>
+                                <h3 className="text-3xl font-display font-bold uppercase tracking-tight">{voterName || 'Sarvesh Arunkumar'}</h3>
                                 <div className="flex items-center gap-4 mt-2">
                                     <div className="text-[10px] font-medium text-white/60">PC: Bengaluru Central</div>
                                     <div className="w-1 h-1 bg-white/20 rounded-full" />

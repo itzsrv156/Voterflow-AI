@@ -990,10 +990,22 @@ export const Dashboard = () => {
                       </div>
                       
                       <div className="p-12 border-t border-gray-100 bg-white flex justify-end gap-4">
-                          <button className="px-10 py-5 bg-gray-100 text-civic-navy font-black rounded-2xl text-xs uppercase tracking-widest flex items-center gap-3">
+                          <button 
+                            onClick={() => {
+                                const toast = document.createElement('div');
+                                toast.className = "fixed top-12 left-1/2 -translate-x-1/2 bg-civic-navy text-white px-8 py-4 rounded-2xl shadow-2xl z-[6000] font-bold flex items-center gap-4 animate-bounce";
+                                toast.innerHTML = `<div class="w-2 h-2 bg-civic-saffron rounded-full animate-pulse"></div> Generating Sovereign PDF Report...`;
+                                document.body.appendChild(toast);
+                                setTimeout(() => {
+                                    window.print();
+                                    document.body.removeChild(toast);
+                                }, 1500);
+                            }}
+                            className="px-10 py-5 bg-gray-100 text-civic-navy font-black rounded-2xl text-xs uppercase tracking-widest flex items-center gap-3 hover:bg-civic-navy hover:text-white transition-all"
+                          >
                               <Download className="w-5 h-5" /> Export PDF
                           </button>
-                          <button onClick={() => setShowReportModal(false)} className="px-10 py-5 bg-civic-navy text-white font-black rounded-2xl text-xs uppercase tracking-widest flex items-center gap-3">
+                          <button onClick={() => setShowReportModal(false)} className="px-10 py-5 bg-civic-navy text-white font-black rounded-2xl text-xs uppercase tracking-widest flex items-center gap-3 hover:scale-105 active:scale-95 transition-all shadow-xl shadow-civic-navy/20">
                               Synchronize with Dashboard
                           </button>
                       </div>

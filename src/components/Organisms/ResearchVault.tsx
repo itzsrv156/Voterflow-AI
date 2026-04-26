@@ -10,8 +10,8 @@ const FORMS_LIBRARY = [
   { id: '6', name: 'Form 6', desc: 'New Registration / Inclusion of Name', link: 'https://voters.eci.gov.in/download-forms?formName=FORM6' },
   { id: '7', name: 'Form 7', desc: 'Objection to Inclusion / Deletion of Name', link: 'https://voters.eci.gov.in/download-forms?formName=FORM7' },
   { id: '8', name: 'Form 8', desc: 'Correction of Entries / Shifted / Duplicate EPIC', link: 'https://voters.eci.gov.in/download-forms?formName=FORM8' },
-  { id: '12D', name: 'Form 12D', desc: 'Postal Ballot for Senior Citizens (85+) & PwD', link: 'https://voters.eci.gov.in/download-forms?formName=FORM12D' },
-  { id: 'A2', name: 'Annexure-II', desc: 'Student Residence Declaration for Hostel Residents', link: '#' },
+  { id: 'Guide', name: 'Voter Guide 2026', desc: 'Official ECI handbook for general citizens and rights.', link: 'https://www.eci.gov.in/files/file/15147-voter-guide/' },
+  { id: 'Manual', name: 'BLO Handbook', desc: 'Technical manual for Booth Level Officers on SIR mapping.', link: 'https://www.eci.gov.in/files/file/15316-handbook-for-voters/' },
 ];
 
 const ELECTION_TIMELINE = [

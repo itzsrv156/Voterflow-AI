@@ -4,7 +4,7 @@ import { useVoterStore } from '../../store/useVoterStore';
 import { 
   X, CheckCircle, ChevronRight, Upload, Loader2, 
   User, Home, FileText, ShieldCheck, 
-  Maximize, ClipboardCheck, AlertCircle
+  Maximize, ClipboardCheck, AlertCircle, Download
 } from 'lucide-react';
 import { cn } from '../../lib/utils';
 
@@ -335,12 +335,61 @@ const FormStep2 = ({ onNext, data, setData }: FormStepProps) => {
 export const DigitalFormEngine = ({ onClose }: { onClose: () => void }) => {
   const [step, setStep] = useState(1);
   const [formData, setFormData] = useState<FormData>({ residencyType: 'Day Scholar' });
+  const [isFinished, setIsFinished] = useState(false);
   const { updateProgress } = useVoterStore();
 
   const handleFinish = () => {
     updateProgress('registration', 100);
-    onClose();
+    setIsFinished(true);
   };
+
+  if (isFinished) {
+    return (
+        <div className="fixed inset-0 z-[3200] flex items-center justify-center p-6 bg-civic-navy/40 backdrop-blur-2xl">
+            <motion.div
+                initial={{ scale: 0.9, opacity: 0 }}
+                animate={{ scale: 1, opacity: 1 }}
+                className="bg-white w-full max-w-2xl rounded-[4rem] p-16 text-center shadow-[0_50px_150px_rgba(0,0,0,0.4)] border border-white/20 relative"
+            >
+                <div className="w-24 h-24 bg-civic-green rounded-[2.5rem] flex items-center justify-center mx-auto mb-8 shadow-2xl shadow-civic-green/20">
+                    <CheckCircle className="w-12 h-12 text-white" />
+                </div>
+                <h2 className="text-4xl font-display font-bold text-civic-navy mb-4">Application Synchronized!</h2>
+                <p className="text-gray-500 font-medium mb-12 max-w-sm mx-auto">
+                    Your sovereign data has been pre-verified against ECI standards. You can now download your digital draft to expedite the official filing.
+                </p>
+                
+                <div className="space-y-4">
+                    <button 
+                        onClick={() => {
+                            const blob = new Blob([JSON.stringify(formData, null, 2)], { type: 'application/json' });
+                            const url = URL.createObjectURL(blob);
+                            const a = document.createElement('a');
+                            a.href = url;
+                            a.download = `VoterFlow_Draft_Form6_${formData.name?.replace(/\s+/g, '_') || 'Citizen'}.json`;
+                            a.click();
+                        }}
+                        className="w-full py-6 bg-civic-navy text-white font-black rounded-3xl text-xs uppercase tracking-widest shadow-2xl shadow-civic-navy/20 flex items-center justify-center gap-3 hover:scale-[1.02] active:scale-95 transition-all"
+                    >
+                        <Download className="w-5 h-5" /> Download Draft Application (.JSON)
+                    </button>
+                    <button 
+                        onClick={() => window.print()}
+                        className="w-full py-6 bg-gray-100 text-civic-navy font-black rounded-3xl text-xs uppercase tracking-widest flex items-center justify-center gap-3 hover:bg-white border border-gray-100 transition-all"
+                    >
+                        <FileText className="w-5 h-5" /> Print Physical Draft
+                    </button>
+                    <button 
+                        onClick={onClose}
+                        className="mt-8 text-gray-400 font-bold text-[10px] uppercase tracking-[0.2em] hover:text-civic-navy transition-colors"
+                    >
+                        Return to Command Center
+                    </button>
+                </div>
+            </motion.div>
+        </div>
+    );
+  }
 
   return (
     <div className="fixed inset-0 z-[3200] flex items-center justify-center p-6 bg-civic-navy/40 backdrop-blur-2xl">

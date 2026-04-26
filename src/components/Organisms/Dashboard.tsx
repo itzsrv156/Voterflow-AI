@@ -90,12 +90,19 @@ const SidebarItem = ({ id, icon: Icon, labelKey, activeTab, setActiveTab, t }: S
     <button
       onClick={() => setActiveTab(id)}
       className={cn(
-        "w-full flex items-center gap-4 px-6 py-4 rounded-2xl transition-all duration-300",
-        activeTab === id ? "bg-civic-navy text-white shadow-xl shadow-civic-navy/20" : "text-gray-500 hover:bg-white/60"
+        "w-full flex items-center gap-4 px-6 py-4 rounded-2xl transition-all duration-500 relative group",
+        activeTab === id ? "text-white" : "text-gray-500 hover:text-civic-navy"
       )}
     >
-      <Icon className="w-5 h-5" />
-      <span className="text-sm font-bold">{t(labelKey).split(' (')[0]}</span>
+      {activeTab === id && (
+        <motion.div 
+          layoutId="sidebar-pill"
+          className="absolute inset-0 bg-civic-navy rounded-2xl shadow-xl shadow-civic-navy/20 -z-0"
+          transition={{ type: "spring", bounce: 0.2, duration: 0.6 }}
+        />
+      )}
+      <Icon className={cn("w-5 h-5 relative z-10 transition-transform duration-500 group-hover:scale-110", activeTab === id ? "text-civic-saffron" : "")} />
+      <span className="text-sm font-bold relative z-10">{t(labelKey).split(' (')[0]}</span>
     </button>
 );
 
@@ -293,15 +300,22 @@ export const Dashboard = () => {
           {activeTab === 'overview' ? (
             <motion.div
               key="overview"
-              initial={{ opacity: 0, y: 20 }}
-              animate={{ opacity: 1, y: 0 }}
-              exit={{ opacity: 0, y: -20 }}
+              initial="hidden"
+              animate="show"
+              exit="hidden"
+              variants={{
+                hidden: { opacity: 0 },
+                show: {
+                  opacity: 1,
+                  transition: { staggerChildren: 0.1 }
+                }
+              }}
               className="grid grid-cols-1 xl:grid-cols-2 gap-8 pb-10"
             >
               {/* Header Info */}
-              <div className="xl:col-span-2 flex justify-between items-center mb-4">
+              <motion.div variants={{ hidden: { y: 20, opacity: 0 }, show: { y: 0, opacity: 1 } }} className="xl:col-span-2 flex justify-between items-center mb-4">
                 <div className="flex items-center gap-6">
-                    <div className="w-16 h-16 bg-civic-navy rounded-3xl flex items-center justify-center text-white shadow-2xl">
+                    <div className="w-16 h-16 bg-civic-navy rounded-3xl flex items-center justify-center text-white shadow-2xl animate-sovereign-pulse">
                         <User className="w-8 h-8" />
                     </div>
                     <div>
@@ -338,10 +352,10 @@ export const Dashboard = () => {
                         </div>
                     </button>
                 </div>
-              </div>
+              </motion.div>
               
               {/* Personal Voting Journey Checklist - NEW FEATURE */}
-              <div className="xl:col-span-2 bg-white/60 backdrop-blur-xl rounded-[3.5rem] p-10 border border-white/50 shadow-sm relative overflow-hidden group">
+              <motion.div variants={{ hidden: { y: 20, opacity: 0 }, show: { y: 0, opacity: 1 } }} className="xl:col-span-2 bg-white/60 backdrop-blur-xl rounded-[3.5rem] p-10 border border-white/50 shadow-sm relative overflow-hidden group">
                   <div className="absolute top-0 right-0 p-10 opacity-5 pointer-events-none group-hover:scale-110 transition-transform">
                       <Target className="w-40 h-40 text-civic-navy" />
                   </div>
@@ -385,10 +399,10 @@ export const Dashboard = () => {
                         </button>
                       ))}
                   </div>
-              </div>
+              </motion.div>
 
               {/* Sovereign Timeline Feature */}
-              <div className="xl:col-span-2 bg-white/40 backdrop-blur-xl rounded-[3.5rem] p-12 border border-white/50 shadow-sm overflow-hidden relative group">
+              <motion.div variants={{ hidden: { y: 20, opacity: 0 }, show: { y: 0, opacity: 1 } }} className="xl:col-span-2 bg-white/40 backdrop-blur-xl rounded-[3.5rem] p-12 border border-white/50 shadow-sm overflow-hidden relative group">
                   <div className="absolute top-0 right-0 p-8 opacity-5 pointer-events-none group-hover:scale-110 transition-transform duration-700">
                       <Calendar className="w-48 h-48 text-civic-navy" />
                   </div>
@@ -429,18 +443,18 @@ export const Dashboard = () => {
                         </button>
                       ))}
                   </div>
-              </div>
+              </motion.div>
 
               {/* Polling Booth Locator (Real Map) */}
-              <div className="xl:col-span-2">
+              <motion.div variants={{ hidden: { y: 20, opacity: 0 }, show: { y: 0, opacity: 1 } }} className="xl:col-span-2">
                 <PollingBoothLocator />
-              </div>
+              </motion.div>
 
               {/* Top 50 Feature: Heatmap & Future Voter Tool */}
-              <div className="grid grid-cols-1 xl:grid-cols-2 gap-8 xl:col-span-2">
+              <motion.div variants={{ hidden: { y: 20, opacity: 0 }, show: { y: 0, opacity: 1 } }} className="grid grid-cols-1 xl:grid-cols-2 gap-8 xl:col-span-2">
                   <ConstituencyHeatmap />
                   <FutureVoterTool />
-              </div>
+              </motion.div>
 
               {/* Sovereign Voter Card */}
               {progress.registration === 100 && (
@@ -487,6 +501,7 @@ export const Dashboard = () => {
 
               {/* Form Assistant Card */}
               <motion.div 
+                variants={{ hidden: { y: 20, opacity: 0 }, show: { y: 0, opacity: 1 } }}
                 whileHover={{ y: -8 }}
                 onClick={() => setActiveFlow('registration')}
                 className="bg-white/70 backdrop-blur-2xl rounded-[3.5rem] p-12 border border-white/50 shadow-sm flex flex-col group relative overflow-hidden cursor-pointer"
@@ -519,6 +534,7 @@ export const Dashboard = () => {
 
               {/* AI Validator Molecule */}
               <motion.div 
+                variants={{ hidden: { y: 20, opacity: 0 }, show: { y: 0, opacity: 1 } }}
                 whileHover={{ y: -8 }}
                 onClick={() => setShowAiValidator(true)}
                 className="bg-white/70 backdrop-blur-2xl rounded-[3.5rem] p-12 border border-white/50 shadow-sm flex flex-col group cursor-pointer relative overflow-hidden"
@@ -546,7 +562,7 @@ export const Dashboard = () => {
               </motion.div>
 
               {/* Ink & Voice Social Pulse */}
-              <div className="xl:col-span-2 bg-civic-saffron/5 border border-civic-saffron/20 rounded-[3.5rem] p-12 overflow-hidden relative group">
+              <motion.div variants={{ hidden: { y: 20, opacity: 0 }, show: { y: 0, opacity: 1 } }} className="xl:col-span-2 bg-civic-saffron/5 border border-civic-saffron/20 rounded-[3.5rem] p-12 overflow-hidden relative group">
                   <div className="flex justify-between items-center relative z-10">
                       <div>
                           <div className="flex items-center gap-3 mb-4">
@@ -582,7 +598,7 @@ export const Dashboard = () => {
                         </div>
                       ))}
                   </div>
-              </div>
+              </motion.div>
             </motion.div>
           ) : activeTab === 'registration' ? (
             <motion.div
@@ -615,7 +631,7 @@ export const Dashboard = () => {
                   </div>
                   <button 
                     onClick={() => setActiveFlow('registration')}
-                    className="w-full py-6 bg-civic-navy text-white font-bold rounded-[2rem] shadow-2xl shadow-civic-navy/30 flex items-center justify-center gap-3 active:scale-95 transition-all group/btn"
+                    className="w-full py-6 bg-civic-navy text-white font-bold rounded-[2rem] shadow-2xl shadow-civic-navy/30 flex items-center justify-center gap-3 active:scale-95 transition-all group/btn animate-sovereign-pulse"
                   >
                     Open Digital Wizard <ArrowRight className="w-5 h-5 group-hover:translate-x-2 transition-transform" />
                   </button>
@@ -651,12 +667,19 @@ export const Dashboard = () => {
           ) : activeTab === 'research' ? (
             <motion.div
               key="research"
-              initial={{ opacity: 0, x: 20 }}
-              animate={{ opacity: 1, x: 0 }}
-              exit={{ opacity: 0, x: -20 }}
+              initial="hidden"
+              animate="show"
+              exit="hidden"
+              variants={{
+                hidden: { opacity: 0 },
+                show: {
+                  opacity: 1,
+                  transition: { staggerChildren: 0.1 }
+                }
+              }}
               className="space-y-10"
             >
-              <header className="flex justify-between items-end">
+              <motion.header variants={{ hidden: { y: 20, opacity: 0 }, show: { y: 0, opacity: 1 } }} className="flex justify-between items-end">
                 <div>
                   <h2 className="text-4xl font-display font-bold text-civic-navy mb-2">Civic Intelligence Hub</h2>
                   <p className="text-gray-500 font-medium">Verify legislative protocols and electoral data integrity.</p>
@@ -667,7 +690,7 @@ export const Dashboard = () => {
                 >
                   <BookOpen className="w-5 h-5" /> Open Research Vault
                 </button>
-              </header>
+              </motion.header>
 
               <div className="grid grid-cols-1 md:grid-cols-3 gap-8">
                   {[
@@ -675,17 +698,17 @@ export const Dashboard = () => {
                       { title: 'Constitutional Rights', desc: 'Articles 324-329 and the Right to Vote framework.', icon: ShieldCheck, color: 'text-orange-500', bg: 'bg-orange-50' },
                       { title: 'Legal Forms Base', desc: 'Deep linking to official ECI Form 6, 7, and 8 portals.', icon: FileEdit, color: 'text-civic-green', bg: 'bg-green-50' },
                   ].map((item, i) => (
-                      <div key={i} className="p-8 bg-white border border-gray-100 rounded-[2.5rem] shadow-sm hover:shadow-xl transition-all group">
+                      <motion.div variants={{ hidden: { y: 20, opacity: 0 }, show: { y: 0, opacity: 1 } }} key={i} className="p-8 bg-white border border-gray-100 rounded-[2.5rem] shadow-sm hover:shadow-xl transition-all group">
                           <div className={cn("w-14 h-14 rounded-2xl flex items-center justify-center mb-6 group-hover:scale-110 transition-transform", item.bg, item.color)}>
                               <item.icon className="w-7 h-7" />
                           </div>
                           <h3 className="text-xl font-bold text-civic-navy mb-3">{item.title}</h3>
                           <p className="text-sm text-gray-500 leading-relaxed">{item.desc}</p>
-                      </div>
+                      </motion.div>
                   ))}
               </div>
 
-              <div className="p-10 bg-gradient-to-br from-civic-navy to-blue-900 rounded-[3rem] text-white relative overflow-hidden">
+              <motion.div variants={{ hidden: { y: 20, opacity: 0 }, show: { y: 0, opacity: 1 } }} className="p-10 bg-gradient-to-br from-civic-navy to-blue-900 rounded-[3rem] text-white relative overflow-hidden">
                   <Globe className="absolute -bottom-20 -right-20 w-80 h-80 opacity-10" />
                   <div className="relative z-10 max-w-xl">
                       <h3 className="text-2xl font-display font-bold mb-4 text-civic-saffron">Sovereign Data Federation</h3>
@@ -697,7 +720,7 @@ export const Dashboard = () => {
                           <div className="px-4 py-2 bg-white/10 rounded-xl border border-white/10 text-[10px] font-bold uppercase tracking-widest">Verified 2026</div>
                       </div>
                   </div>
-              </div>
+              </motion.div>
             </motion.div>
           ) : activeTab === 'polling' ? (
             <motion.div
@@ -1045,7 +1068,13 @@ export const Dashboard = () => {
                   Namaste! I'm your **Sovereign Intel Coach**. I've analyzed your sector (PC 25) and am ready to assist with your SIR 2026 navigation.
                 </div>
                 {chatMessages.map((m, i) => (
-                  <div key={i} className="space-y-3">
+                  <motion.div 
+                    key={i} 
+                    initial={{ opacity: 0, x: m.role === 'user' ? 20 : -20, scale: 0.95 }}
+                    animate={{ opacity: 1, x: 0, scale: 1 }}
+                    transition={{ type: "spring", stiffness: 260, damping: 20 }}
+                    className="space-y-3"
+                  >
                     <div 
                       className={cn(
                           "p-6 rounded-[2rem] text-[13px] leading-relaxed font-medium shadow-sm transition-all", 
@@ -1069,7 +1098,7 @@ export const Dashboard = () => {
                           </div>
                       )}
                     </div>
-                  </div>
+                  </motion.div>
                 ))}
                 {isDeepSearching && (
                     <motion.div 
@@ -1136,9 +1165,18 @@ export const Dashboard = () => {
           {showChatTooltip && !isChatOpen && (
             <motion.div
               initial={{ opacity: 0, y: 10, scale: 0.9 }}
-              animate={{ opacity: 1, y: 0, scale: 1 }}
+              animate={{ 
+                opacity: 1, 
+                y: [0, -8, 0], 
+                scale: 1 
+              }}
               exit={{ opacity: 0, y: 10, scale: 0.9 }}
-              className="bg-civic-navy text-white px-6 py-3 rounded-2xl shadow-2xl relative mb-2 mr-2"
+              transition={{
+                opacity: { duration: 0.3 },
+                scale: { duration: 0.3 },
+                y: { duration: 3, repeat: Infinity, ease: "easeInOut" }
+              }}
+              className="bg-civic-navy text-white px-6 py-3 rounded-2xl shadow-2xl relative mb-4 mr-2"
             >
               <div className="text-[10px] font-bold whitespace-nowrap">Have any issues? I'm here to assist you</div>
               <div className="absolute -bottom-1 right-8 w-2 h-2 bg-civic-navy rotate-45" />

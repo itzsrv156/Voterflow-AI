@@ -2,6 +2,7 @@ import { useState, useEffect, useRef } from 'react';
 import { motion, AnimatePresence } from 'framer-motion';
 import { useVoterStore, type VoterState } from '../../store/useVoterStore';
 import { useTranslation } from '../../LanguageContext';
+import { streamGeminiResponse } from '../../services/geminiCore';
 import { PollingSimulator } from './PollingSimulator';
 import { PollingBoothLocator } from './PollingBoothLocator';
 import { FutureVoterTool } from '../Molecules/FutureVoterTool';
@@ -163,44 +164,33 @@ export const Dashboard = () => {
     // Add an empty AI message that we will fill
     setChatMessages(prev => [...prev, { role: 'ai', text: 'Thinking...', sources }]);
 
-    const getResponse = (query: string) => {
-        const q = query.toLowerCase();
-        if (q.includes('form 6')) return "Form 6 is the legal instrument for new voter registration. Under SIR 2026 rules, you'll need: 1. Age Proof (Aadhaar/10th Cert), 2. Address Proof, and 3. A digital photograph. Use the 'Digital Form Engine' on your dashboard for a guided, AI-verified experience.";
-        if (q.includes('booth') || q.includes('locate')) return "I've synchronized with your local sector (PC 25). Your assigned polling station is the BBMP Public School, Shanti Nagar. Current average transit time: 12 mins. You can view the real-time sector map in the 'Overview' tab.";
-        if (q.includes('deadline') || q.includes('sir 2026')) return "The Special Intensive Revision 2026 (Phase 2) is active until Feb 15, 2026. This is the critical window for claims and objections. Ensure your EPIC is linked with Aadhaar to avoid automatic deletion during the de-duplication purge.";
-        if (q.includes('correction') || q.includes('form 8')) return "Form 8 is used for updating your details (photo, address, or name). In the Sovereign Edition, this is protected by multi-factor authentication. Launch the 'Correction Suite' from the sidebar to begin.";
-        return `As your Sovereign Intel Coach, I've analyzed your ${persona || 'Citizen'} profile against the PC 25 legislative roll. Your current readiness is ${Math.round(readinessScore)}%. I recommend verifying your residency status to ensure 100% compliance before the March final publication.`;
-    };
+    const systemPrompt = `You are the Sovereign ECI Intelligence Core (Gemini 1.5). 
+    Your mission is to assist Indian citizens in navigating the 2026 Special Intensive Revision (SIR) cycle.
+    
+    CURRENT CONTEXT:
+    - User Persona: ${persona || 'General Citizen'}.
+    - Constituency: Bengaluru Central (PC 25).
+    - Current Readiness: ${Math.round(readinessScore)}%.
+    
+    ECI PROTOCOLS:
+    - Form 6: New registration.
+    - Form 7: Deletion/Objection.
+    - Form 8: Correction/Replacement.
+    - SIR 2026: Active cycle with house-to-house mapping.
+    
+    STYLE: Professional, concise, authoritative. Do not use pre-written text. Respond dynamically to the user's specific query.`;
 
-    const mockResponse = getResponse(text);
-    let fullText = "";
-    let i = 0;
-    
-    const delay = isDeep ? 2500 : 500;
-    
-    setTimeout(() => {
+    streamGeminiResponse(text, systemPrompt, (fullText) => {
         setIsDeepSearching(false);
-        // Optimized Streaming: Update every 3 characters to reduce re-render spam
-        const interval = setInterval(() => {
-            if (i >= mockResponse.length) {
-                clearInterval(interval);
-                setIsStreaming(false);
-                addReadiness(2);
-                return;
-            }
-            
-            // Append next chunk
-            const chunk = mockResponse.slice(i, i + 3);
-            fullText += chunk;
-            i += 3;
-            
-            setChatMessages(prev => {
-                const newMessages = [...prev];
-                newMessages[newMessages.length - 1] = { role: 'ai', text: fullText, sources };
-                return newMessages;
-            });
-        }, 20);
-    }, delay);
+        setChatMessages(prev => {
+            const newMessages = [...prev];
+            newMessages[newMessages.length - 1] = { role: 'ai', text: fullText, sources };
+            return newMessages;
+        });
+    }).then(() => {
+        setIsStreaming(false);
+        addReadiness(2);
+    });
   };
 
 
@@ -1191,65 +1181,56 @@ export const Dashboard = () => {
           )}
       </AnimatePresence>
 
-      {/* Gemini Full-Screen Workspace */}
+      {/* Gemini Workspace - Refined Medium Size */}
       <AnimatePresence>
         {isChatOpen && (
-          <div className="fixed inset-0 z-[5000] flex items-center justify-center p-4 md:p-12 bg-civic-navy/40 backdrop-blur-3xl">
+          <div className="fixed inset-0 z-[5000] flex items-center justify-center p-4 md:p-8 bg-civic-navy/20 backdrop-blur-2xl">
             <motion.div
-              initial={{ opacity: 0, scale: 0.9, y: 40 }}
+              initial={{ opacity: 0, scale: 0.95, y: 20 }}
               animate={{ opacity: 1, scale: 1, y: 0 }}
-              exit={{ opacity: 0, scale: 0.9, y: 40 }}
-              className="w-full max-w-6xl h-full bg-white rounded-[4rem] shadow-[0_50px_150px_rgba(0,0,0,0.5)] border border-white/20 flex flex-col md:flex-row overflow-hidden relative"
+              exit={{ opacity: 0, scale: 0.95, y: 20 }}
+              className="w-full max-w-4xl h-[85vh] bg-white rounded-[3.5rem] shadow-[0_50px_150px_rgba(0,0,0,0.4)] border border-white flex flex-col md:flex-row overflow-hidden relative"
             >
               <div className="absolute top-0 left-0 w-full h-1.5 bg-gradient-to-r from-google-blue via-purple-500 to-pink-500 z-10" />
               
-              {/* Workspace Sidebar - File Context */}
-              <div className="w-full md:w-80 bg-gray-50 border-r border-gray-100 p-10 flex flex-col gap-8">
+              {/* Workspace Sidebar - File Context (Hidden on smaller viewports) */}
+              <div className="hidden lg:flex w-72 bg-gray-50 border-r border-gray-100 p-8 flex-col gap-6">
                   <div>
                       <div className="flex items-center gap-3 mb-6">
-                          <Library className="w-6 h-6 text-civic-navy" />
-                          <h4 className="font-display font-bold text-civic-navy">Sovereign Library</h4>
+                          <Library className="w-5 h-5 text-civic-navy" />
+                          <h4 className="font-display font-bold text-civic-navy text-sm">Context</h4>
                       </div>
-                      <div className="space-y-3">
+                      <div className="space-y-2">
                           {[
-                              { name: 'ECI_Manual_2026.pdf', size: '12.4 MB' },
-                              { name: 'Sector_PC25_Audit.json', size: '4.2 MB' },
-                              { name: 'SIR_Protocol_v2.docx', size: '1.1 MB' }
+                              { name: 'ECI_Manual.pdf', size: '12MB' },
+                              { name: 'SIR_Protocol.json', size: '4MB' }
                           ].map(file => (
-                              <div key={file.name} className="p-4 bg-white rounded-2xl border border-gray-200 shadow-sm flex flex-col gap-1">
-                                  <div className="text-[10px] font-bold text-civic-navy truncate">{file.name}</div>
-                                  <div className="text-[8px] font-black text-gray-400 uppercase">{file.size} // Analyzing</div>
+                              <div key={file.name} className="p-3 bg-white rounded-xl border border-gray-100 shadow-sm flex flex-col gap-1">
+                                  <div className="text-[9px] font-bold text-civic-navy truncate">{file.name}</div>
+                                  <div className="text-[7px] font-black text-gray-400 uppercase">Analyzing</div>
                               </div>
                           ))}
                       </div>
-                  </div>
-                  <div className="mt-auto p-6 bg-civic-navy rounded-3xl text-white">
-                      <div className="flex items-center gap-3 mb-2">
-                          <Cpu className="w-4 h-4 text-civic-saffron animate-pulse" />
-                          <span className="text-[9px] font-black uppercase tracking-widest text-white/60">TPU Cluster Node</span>
-                      </div>
-                      <div className="text-xs font-bold">Krt-South-04</div>
                   </div>
               </div>
 
               {/* Chat Core */}
               <div className="flex-1 flex flex-col bg-white relative">
-                  <div className="p-10 border-b border-gray-100 flex justify-between items-center">
-                    <div className="flex items-center gap-6">
-                      <div className="w-16 h-16 bg-gray-50 rounded-3xl flex items-center justify-center border border-gray-100 shadow-sm relative group">
-                        <img src="https://www.gstatic.com/lamda/images/gemini_sparkle_v002_d4735304ff6292a690345.svg" className="w-10 h-10" alt="Gemini" />
-                        <div className="absolute inset-0 bg-google-blue/10 animate-ping rounded-3xl opacity-0 group-hover:opacity-100" />
+                  <div className="p-8 border-b border-gray-100 flex justify-between items-center">
+                    <div className="flex items-center gap-4">
+                      <div className="w-12 h-12 bg-gray-50 rounded-2xl flex items-center justify-center border border-gray-100 shadow-sm relative group">
+                        <img src="https://www.gstatic.com/lamda/images/gemini_sparkle_v002_d4735304ff6292a690345.svg" className="w-8 h-8" alt="Gemini" />
                       </div>
                       <div>
-                        <h3 className="text-3xl font-display font-bold text-civic-navy">Gemini 1.5 Pro</h3>
-                        <div className="flex items-center gap-3 mt-1">
-                            <div className="w-2 h-2 bg-civic-green rounded-full animate-pulse" />
-                            <span className="text-[10px] font-black text-gray-400 uppercase tracking-widest">Sovereign Intelligence Active</span>
+                        <h3 className="text-xl font-display font-bold text-civic-navy">Sovereign Gemini</h3>
+                        <div className="flex items-center gap-2 mt-1">
+                            <div className="w-1.5 h-1.5 bg-civic-green rounded-full animate-pulse" />
+                            <span className="text-[9px] font-black text-gray-400 uppercase tracking-widest leading-none">1.5 Flash Active</span>
                         </div>
                       </div>
                     </div>
-                    <button onClick={() => setIsChatOpen(false)} className="p-4 bg-gray-50 rounded-full hover:bg-red-50 transition-all">
-                      <X className="w-6 h-6 text-gray-400" />
+                    <button onClick={() => setIsChatOpen(false)} className="p-3 bg-gray-50 rounded-full hover:bg-red-50 transition-all">
+                      <X className="w-5 h-5 text-gray-400" />
                     </button>
                   </div>
 

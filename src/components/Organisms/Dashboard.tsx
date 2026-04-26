@@ -34,7 +34,7 @@ const ConstituencyHeatmap = () => (
                 <p className="text-[10px] font-bold text-gray-400 uppercase tracking-widest mt-1">Real-time Sector Mapping</p>
             </div>
             <div className="px-3 py-1 bg-civic-green/10 rounded-full text-[9px] font-black text-civic-green uppercase tracking-widest">
-                Live Data
+                Real-time Data
             </div>
         </div>
         
@@ -286,7 +286,7 @@ export const Dashboard = () => {
         {/* Sovereign Alert Ticker */}
         <div className="bg-civic-navy text-white px-8 py-3 rounded-2xl flex items-center gap-6 overflow-hidden relative">
             <div className="flex items-center gap-2 shrink-0 bg-civic-saffron text-civic-navy px-3 py-1 rounded-lg text-[9px] font-black uppercase tracking-widest z-10">
-                <Zap className="w-3 h-3" /> Live
+                <Zap className="w-3 h-3" /> Alert
             </div>
             <motion.div 
                 animate={{ x: ["100%", "-100%"] }}
@@ -580,7 +580,7 @@ export const Dashboard = () => {
                               <h3 className="text-2xl font-display font-bold text-civic-navy">Bengaluru Sector Pulse</h3>
                           </div>
                           <p className="text-sm text-gray-500 max-w-lg leading-relaxed">
-                              Live community engagement metrics for PC 25. Over **12,400** citizens have verified their SIR 2026 status this week.
+                              Active community engagement metrics for PC 25. Over **12,400** citizens have verified their SIR 2026 status this week.
                           </p>
                       </div>
                       <div className="flex -space-x-4">

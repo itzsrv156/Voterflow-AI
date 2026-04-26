@@ -55,7 +55,7 @@ export const Header = () => {
                     <div className="w-3 h-3 bg-civic-green rounded-full animate-ping absolute" />
                     <div className="w-3 h-3 bg-civic-green rounded-full relative" />
                 </div>
-                <span className="text-[10px] font-bold text-civic-navy uppercase tracking-widest">Live: SIR 2026 Cycle</span>
+                <span className="text-[10px] font-bold text-civic-navy uppercase tracking-widest">SIR 2026 Cycle</span>
             </div>
 
             <div className="h-10 w-px bg-gray-200" />

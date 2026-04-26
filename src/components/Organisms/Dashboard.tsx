@@ -120,6 +120,7 @@ export const Dashboard = () => {
   const [userInput, setUserInput] = useState('');
   const [isStreaming, setIsStreaming] = useState(false);
   const [showAiValidator, setShowAiValidator] = useState(false);
+  const [scanStatus, setScanStatus] = useState<'idle' | 'scanning' | 'result'>('idle');
   const [isDeepSearching, setIsDeepSearching] = useState(false);
   const [showReportModal, setShowReportModal] = useState(false);
 
@@ -939,55 +940,128 @@ export const Dashboard = () => {
         </AnimatePresence>
       </div>
 
-      {/* AI Validator Overlay */}
+      {/* Gemini Multimodal Scanner Overlay */}
       <AnimatePresence>
         {showAiValidator && (
             <div className="fixed inset-0 z-[4000] flex items-center justify-center p-6 bg-civic-navy/60 backdrop-blur-3xl">
                 <motion.div 
-                    initial={{ scale: 0.9, opacity: 0 }}
-                    animate={{ scale: 1, opacity: 1 }}
-                    exit={{ scale: 0.9, opacity: 0 }}
-                    className="bg-white w-full max-w-lg rounded-[3rem] p-12 shadow-2xl relative overflow-hidden"
+                    initial={{ scale: 0.9, opacity: 0, y: 20 }}
+                    animate={{ scale: 1, opacity: 1, y: 0 }}
+                    exit={{ scale: 0.9, opacity: 0, y: 20 }}
+                    className="bg-white w-full max-w-xl rounded-[3.5rem] p-12 shadow-2xl relative overflow-hidden"
                 >
-                    <div className="absolute top-0 left-0 w-full h-2 bg-gradient-to-r from-blue-500 via-purple-500 to-pink-500 animate-pulse" />
-                    <button onClick={() => setShowAiValidator(false)} className="absolute top-8 right-8 p-3 bg-gray-50 rounded-full hover:bg-red-50 transition-all"><X className="w-5 h-5" /></button>
+                    <div className="absolute top-0 left-0 w-full h-2 bg-gradient-to-r from-google-blue via-purple-500 to-pink-500 animate-pulse" />
+                    <button onClick={() => {
+                        setShowAiValidator(false);
+                        setScanStatus('idle');
+                    }} className="absolute top-8 right-8 p-3 bg-gray-50 rounded-full hover:bg-red-50 transition-all"><X className="w-5 h-5" /></button>
                     
                     <div className="text-center mb-10">
-                        <div className="w-20 h-20 bg-civic-navy rounded-[2rem] flex items-center justify-center mx-auto mb-6 shadow-xl">
+                        <div className="w-20 h-20 bg-civic-navy rounded-[2rem] flex items-center justify-center mx-auto mb-6 shadow-xl relative group">
                             <Cpu className="text-civic-saffron w-10 h-10 animate-pulse" />
+                            <div className="absolute inset-0 bg-google-blue/20 rounded-[2rem] animate-ping opacity-0 group-hover:opacity-100" />
                         </div>
-                        <h3 className="text-2xl font-display font-bold text-civic-navy">Sovereign AI Validator</h3>
-                        <p className="text-sm text-gray-500 mt-2 font-medium">ECI Standard Compliance Analysis v2.4</p>
+                        <h3 className="text-2xl font-display font-bold text-civic-navy">Gemini Vision Validator</h3>
+                        <p className="text-[10px] font-black text-gray-400 uppercase tracking-[0.2em] mt-2 font-medium flex items-center justify-center gap-2">
+                             <img src="https://www.gstatic.com/lamda/images/gemini_sparkle_v002_d4735304ff6292a690345.svg" className="w-3 h-3" alt="Gemini" />
+                             Multimodal Analysis Core
+                        </p>
                     </div>
 
-                    <div className="space-y-4 mb-10">
-                        {[
-                            { label: 'Aadhaar Optical Analysis', status: 'Compliant', score: 98 },
-                            { label: 'Biometric Parity Match', status: 'Compliant', score: 94 },
-                            { label: 'Residency Verification', status: 'Pending', score: 0 }
-                        ].map(item => (
-                            <div key={item.label} className="p-5 bg-gray-50 rounded-2xl border border-gray-100 flex justify-between items-center">
-                                <div>
-                                    <div className="text-xs font-bold text-civic-navy">{item.label}</div>
-                                    <div className="text-[10px] text-gray-400 font-bold uppercase mt-1 tracking-tighter">Gemini Intel Core</div>
+                    {scanStatus === 'idle' ? (
+                        <div className="space-y-6">
+                            <div 
+                                onClick={() => setScanStatus('scanning')}
+                                className="p-12 border-2 border-dashed border-gray-100 rounded-[2.5rem] flex flex-col items-center gap-4 hover:border-google-blue hover:bg-blue-50/30 transition-all cursor-pointer group"
+                            >
+                                <div className="w-16 h-16 bg-gray-50 rounded-2xl flex items-center justify-center group-hover:bg-white transition-all shadow-sm">
+                                    <Download className="w-8 h-8 text-gray-400 group-hover:text-google-blue" />
                                 </div>
-                                <div className="text-right">
-                                    <div className={cn("text-[10px] font-black uppercase", item.status === 'Compliant' ? "text-civic-green" : "text-civic-saffron")}>{item.status}</div>
-                                    <div className="text-xs font-bold text-civic-navy">{item.score}% Match</div>
+                                <div className="text-center">
+                                    <p className="font-bold text-civic-navy">Drop Identity Document</p>
+                                    <p className="text-[10px] text-gray-400 font-bold uppercase mt-1">Aadhaar / Voter ID / Passport</p>
                                 </div>
                             </div>
-                        ))}
-                    </div>
-
-                    <button 
-                        onClick={() => {
-                            addReadiness(10);
-                            setShowAiValidator(false);
-                        }}
-                        className="w-full py-5 bg-civic-navy text-white font-black rounded-2xl text-xs uppercase tracking-widest shadow-xl hover:scale-[1.02] active:scale-95 transition-all"
-                    >
-                        Synchronize Results
-                    </button>
+                            <div className="grid grid-cols-2 gap-4">
+                                <div className="p-4 bg-gray-50 rounded-2xl border border-gray-100 flex items-center gap-3">
+                                    <ShieldCheck className="w-4 h-4 text-civic-green" />
+                                    <span className="text-[10px] font-bold text-gray-500">End-to-End Encryption</span>
+                                </div>
+                                <div className="p-4 bg-gray-50 rounded-2xl border border-gray-100 flex items-center gap-3">
+                                    <Globe className="w-4 h-4 text-google-blue" />
+                                    <span className="text-[10px] font-bold text-gray-500">Gemini 1.5 Pro Vision</span>
+                                </div>
+                            </div>
+                        </div>
+                    ) : scanStatus === 'scanning' ? (
+                        <div className="py-12 flex flex-col items-center gap-8">
+                            <div className="w-48 h-64 bg-gray-100 rounded-2xl relative overflow-hidden shadow-inner border border-gray-200">
+                                <div className="absolute inset-0 bg-gradient-to-b from-transparent via-google-blue/10 to-google-blue/20" />
+                                <motion.div 
+                                    animate={{ y: [0, 256, 0] }}
+                                    transition={{ duration: 2, repeat: Infinity, ease: "linear" }}
+                                    className="absolute top-0 left-0 w-full h-1 bg-google-blue shadow-[0_0_15px_rgba(66,133,244,0.8)] z-10"
+                                />
+                                <div className="absolute inset-0 flex items-center justify-center">
+                                    <FileText className="w-12 h-12 text-gray-300 animate-pulse" />
+                                </div>
+                            </div>
+                            <div className="text-center space-y-2">
+                                <h4 className="text-sm font-bold text-civic-navy animate-pulse">Gemini is analyzing legislative markers...</h4>
+                                <p className="text-[10px] font-bold text-gray-400 uppercase tracking-widest">Verifying Holographic Anti-Forgery</p>
+                            </div>
+                            <motion.div 
+                                initial={{ opacity: 0 }}
+                                animate={{ opacity: 1 }}
+                                transition={{ delay: 3 }}
+                                onAnimationComplete={() => setTimeout(() => setScanStatus('result'), 500)}
+                                className="w-full h-1 bg-gray-100 rounded-full overflow-hidden"
+                            >
+                                <motion.div initial={{ width: 0 }} animate={{ width: '100%' }} transition={{ duration: 3 }} className="h-full bg-google-blue" />
+                            </motion.div>
+                        </div>
+                    ) : (
+                        <motion.div 
+                            initial={{ opacity: 0, scale: 0.95 }}
+                            animate={{ opacity: 1, scale: 1 }}
+                            className="space-y-6"
+                        >
+                            <div className="p-8 bg-civic-green/5 border border-civic-green/20 rounded-[2.5rem] relative overflow-hidden">
+                                <div className="flex items-center gap-4 mb-4">
+                                    <div className="w-10 h-10 bg-civic-green rounded-xl flex items-center justify-center text-white">
+                                        <CheckCircle className="w-6 h-6" />
+                                    </div>
+                                    <div>
+                                        <h4 className="font-bold text-civic-navy">Aadhaar Verified</h4>
+                                        <p className="text-[10px] font-bold text-civic-green uppercase">98.4% Probabilistic Match</p>
+                                    </div>
+                                </div>
+                                <p className="text-[11px] text-gray-600 leading-relaxed italic">
+                                    "Gemini analysis confirms the document is a valid Aadhaar Card. Demographic markers (Age, Residence) match your Persona profile for Sector 25."
+                                </p>
+                            </div>
+                            <div className="grid grid-cols-2 gap-4">
+                                <div className="p-5 bg-gray-50 rounded-2xl border border-gray-100">
+                                    <div className="text-[9px] font-black text-gray-400 uppercase tracking-widest mb-1">Face Match</div>
+                                    <div className="text-sm font-bold text-civic-navy">High Integrity</div>
+                                </div>
+                                <div className="p-5 bg-gray-50 rounded-2xl border border-gray-100">
+                                    <div className="text-[9px] font-black text-gray-400 uppercase tracking-widest mb-1">DOB Status</div>
+                                    <div className="text-sm font-bold text-civic-navy">Eligible (18+)</div>
+                                </div>
+                            </div>
+                            <button 
+                                onClick={() => {
+                                    addReadiness(15);
+                                    setShowAiValidator(false);
+                                    setScanStatus('idle');
+                                }}
+                                className="w-full py-5 bg-civic-navy text-white font-black rounded-2xl text-xs uppercase tracking-widest shadow-xl hover:scale-[1.02] active:scale-95 transition-all"
+                            >
+                                Synchronize with ECI Roll
+                            </button>
+                        </motion.div>
+                    )}
                 </motion.div>
             </div>
         )}
@@ -1119,6 +1193,18 @@ export const Dashboard = () => {
                 <button onClick={() => setIsChatOpen(false)} className="p-2 hover:bg-white/10 rounded-full transition-colors">
                   <X className="w-6 h-6 text-white/40" />
                 </button>
+              </div>
+
+              {/* Gemini 1.5 Pro - Long Context Feature Toggle */}
+              <div className="bg-civic-navy/95 border-b border-white/10 p-4 flex items-center justify-between">
+                <div className="flex items-center gap-3">
+                    <div className="w-2 h-2 bg-civic-saffron rounded-full animate-pulse" />
+                    <span className="text-[9px] font-black text-white/60 uppercase tracking-widest">Sovereign Context Engine</span>
+                </div>
+                <div className="flex bg-white/10 rounded-lg p-1">
+                    <button className="px-3 py-1 bg-white/10 text-[8px] font-bold rounded-md text-white">1.5 Pro</button>
+                    <button className="px-3 py-1 text-[8px] font-bold rounded-md text-white/40 hover:text-white transition-all">Standard</button>
+                </div>
               </div>
 
               <div className="flex-1 p-8 overflow-y-auto space-y-6 bg-gray-50/30 custom-scrollbar">

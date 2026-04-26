@@ -76,6 +76,28 @@ import {
 } from 'lucide-react';
 import { cn } from '../../lib/utils';
 
+interface SidebarItemProps {
+    id: 'overview' | 'registration' | 'research' | 'polling' | 'form8' | 'sir2026' | 'helpline';
+    icon: React.ElementType;
+    labelKey: string;
+    activeTab: string;
+    setActiveTab: (id: VoterState['activeTab']) => void;
+    t: (key: string) => string;
+}
+
+const SidebarItem = ({ id, icon: Icon, labelKey, activeTab, setActiveTab, t }: SidebarItemProps) => (
+    <button
+      onClick={() => setActiveTab(id)}
+      className={cn(
+        "w-full flex items-center gap-4 px-6 py-4 rounded-2xl transition-all duration-300",
+        activeTab === id ? "bg-civic-navy text-white shadow-xl shadow-civic-navy/20" : "text-gray-500 hover:bg-white/60"
+      )}
+    >
+      <Icon className="w-5 h-5" />
+      <span className="text-sm font-bold">{t(labelKey).split(' (')[0]}</span>
+    </button>
+);
+
 export const Dashboard = () => {
   const { 
     persona, progress, resetStore, activeTab, 
@@ -115,7 +137,7 @@ export const Dashboard = () => {
         }, 2000);
         return () => clearTimeout(timer);
     }
-  }, [persona, hasGreeted]);
+  }, [persona, hasGreeted, setHasGreeted]);
 
   const handleChat = (input?: string, isDeep = false) => {
     const text = input || userInput;
@@ -172,18 +194,7 @@ export const Dashboard = () => {
     }, delay);
   };
 
-  const SidebarItem = ({ id, icon: Icon, labelKey }: { id: any, icon: any, labelKey: string }) => (
-    <button
-      onClick={() => setActiveTab(id)}
-      className={cn(
-        "w-full flex items-center gap-4 px-6 py-4 rounded-2xl transition-all duration-300",
-        activeTab === id ? "bg-civic-navy text-white shadow-xl shadow-civic-navy/20" : "text-gray-500 hover:bg-white/60"
-      )}
-    >
-      <Icon className="w-5 h-5" />
-      <span className="text-sm font-bold">{t(labelKey).split(' (')[0]}</span>
-    </button>
-  );
+
 
   return (
     <div className="flex gap-8 items-start relative h-[85vh]">
@@ -201,10 +212,10 @@ export const Dashboard = () => {
         </div>
         
         <nav className="space-y-3 flex-1">
-          <SidebarItem id="overview" icon={LayoutDashboard} labelKey="overview" />
-          <SidebarItem id="form8" icon={Gavel} labelKey="form8" />
-          <SidebarItem id="sir2026" icon={Calendar} labelKey="sir2026" />
-          <SidebarItem id="helpline" icon={Headphones} labelKey="helpline" />
+          <SidebarItem id="overview" icon={LayoutDashboard} labelKey="overview" activeTab={activeTab} setActiveTab={setActiveTab} t={t} />
+          <SidebarItem id="form8" icon={Gavel} labelKey="form8" activeTab={activeTab} setActiveTab={setActiveTab} t={t} />
+          <SidebarItem id="sir2026" icon={Calendar} labelKey="sir2026" activeTab={activeTab} setActiveTab={setActiveTab} t={t} />
+          <SidebarItem id="helpline" icon={Headphones} labelKey="helpline" activeTab={activeTab} setActiveTab={setActiveTab} t={t} />
         </nav>
 
         {/* Sovereign Achievements (Badges) - NEW FEATURE */}

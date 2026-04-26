@@ -7,13 +7,26 @@ import {
 } from 'lucide-react';
 import { cn } from '../../lib/utils';
 
-interface FormStepProps {
-  onNext: () => void;
-  data: any;
-  setData: (d: any) => void;
+interface FormData {
+  residencyType?: 'Day Scholar' | 'Hostel';
+  wardenName?: string;
+  hostelAddress?: string;
+  dob?: string;
+  isFutureVoter?: boolean;
+  wantsPostalBallot?: boolean;
+  photo?: boolean;
+  addressProof?: boolean;
+  idProof?: boolean;
+  [key: string]: string | boolean | undefined;
 }
 
-const StudentBranch = ({ data, setData }: { data: any, setData: (d: any) => void }) => {
+interface FormStepProps {
+  onNext: () => void;
+  data: FormData;
+  setData: (d: FormData) => void;
+}
+
+const StudentBranch = ({ data, setData }: { data: FormData, setData: (d: FormData) => void }) => {
   return (
     <div className="space-y-4">
       <div className="flex flex-col gap-2">
@@ -179,7 +192,7 @@ const FormStep2 = ({ onNext, data, setData }: FormStepProps) => {
 
 export const DigitalForm = ({ onClose }: { onClose: () => void }) => {
   const [step, setStep] = useState(1);
-  const [formData, setFormData] = useState<any>({});
+  const [formData, setFormData] = useState<FormData>({});
 
   return (
     <div className="fixed inset-0 z-[200] flex items-center justify-center p-4 bg-civic-navy/40 backdrop-blur-md">

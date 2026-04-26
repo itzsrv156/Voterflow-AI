@@ -8,7 +8,7 @@ const personaData: {
   type: Persona; 
   titleKey: string; 
   descKey: string; 
-  icon: any; 
+  icon: React.ElementType; 
   color: string;
   badge?: string;
 }[] = [

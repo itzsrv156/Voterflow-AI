@@ -10,7 +10,7 @@ import markerIcon2x from 'leaflet/dist/images/marker-icon-2x.png';
 import markerIcon from 'leaflet/dist/images/marker-icon.png';
 import markerShadow from 'leaflet/dist/images/marker-shadow.png';
 
-delete (L.Icon.Default.prototype as any)._getIconUrl;
+delete (L.Icon.Default.prototype as L.Icon.Default & { _getIconUrl?: () => string })._getIconUrl;
 L.Icon.Default.mergeOptions({
   iconRetinaUrl: markerIcon2x,
   iconUrl: markerIcon,
@@ -19,7 +19,18 @@ L.Icon.Default.mergeOptions({
 
 const BENGALURU_CENTER: [number, number] = [12.9716, 77.5946];
 
-const booths = [
+interface Booth {
+  id: number;
+  name: string;
+  distance: string;
+  address: string;
+  status: string;
+  lat: number;
+  lng: number;
+  waitTime: string;
+}
+
+const booths: Booth[] = [
   { id: 1, name: 'BBMP Head Office (City Corp)', distance: '0.4 km', address: 'Hudson Circle, Bengaluru', status: 'Optimal', lat: 12.9698, lng: 77.5898, waitTime: '2 mins' },
   { id: 2, name: "St. Joseph's Indian High School", distance: '1.2 km', address: 'Vittal Mallya Rd, Bengaluru', status: 'Moderate', lat: 12.9650, lng: 77.5960, waitTime: '15 mins' },
   { id: 3, name: 'Visvesvaraya Museum Center', distance: '2.5 km', address: 'Kasturba Rd, Bengaluru', status: 'Low Wait', lat: 12.9810, lng: 77.5930, waitTime: '5 mins' },
@@ -36,7 +47,7 @@ const RecenterMap = ({ coords }: { coords: [number, number] }) => {
 
 export const PollingBoothLocator = () => {
   const [isSearching, setIsSearching] = useState(false);
-  const [selectedBooth, setSelectedBooth] = useState<any>(null);
+  const [selectedBooth, setSelectedBooth] = useState<Booth | null>(null);
   const [mapCenter, setMapCenter] = useState<[number, number]>(BENGALURU_CENTER);
 
   const handleSearch = () => {

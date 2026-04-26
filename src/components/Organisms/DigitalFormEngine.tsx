@@ -8,13 +8,26 @@ import {
 } from 'lucide-react';
 import { cn } from '../../lib/utils';
 
-interface FormStepProps {
-  onNext: () => void;
-  data: any;
-  setData: (d: any) => void;
+interface FormData {
+  name?: string;
+  dob?: string;
+  residencyType?: 'Day Scholar' | 'Hostel Resident';
+  hostelName?: string;
+  wardenName?: string;
+  permanentAddress?: string;
+  wantsPostalBallot?: boolean;
+  photo?: boolean;
+  addressProof?: boolean;
+  idProof?: boolean;
 }
 
-const StudentBranch = ({ data, setData }: { data: any, setData: (d: any) => void }) => {
+interface FormStepProps {
+  onNext: () => void;
+  data: FormData;
+  setData: (d: FormData) => void;
+}
+
+const StudentBranch = ({ data, setData }: { data: FormData, setData: (d: FormData) => void }) => {
   return (
     <div className="space-y-6">
       <div className="flex flex-col gap-3">
@@ -205,7 +218,7 @@ const FormStep2 = ({ onNext, data, setData }: FormStepProps) => {
     setTimeout(() => {
       setFiles(prev => ({ ...prev, [type]: file }));
       
-      const updates: any = { [type]: true };
+      const updates: Partial<FormData> = { [type as keyof FormData]: true };
       
       // SMART OCR SIMULATION: Pre-fill data if it's an ID proof
       if (type === 'idProof') {
@@ -320,7 +333,7 @@ const FormStep2 = ({ onNext, data, setData }: FormStepProps) => {
 
 export const DigitalFormEngine = ({ onClose }: { onClose: () => void }) => {
   const [step, setStep] = useState(1);
-  const [formData, setFormData] = useState<any>({ residencyType: 'Day Scholar' });
+  const [formData, setFormData] = useState<FormData>({ residencyType: 'Day Scholar' });
   const { updateProgress } = useVoterStore();
 
   const handleFinish = () => {

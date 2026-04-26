@@ -1,10 +1,5 @@
-import { createContext, useContext, type ReactNode } from 'react';
-import { useVoterStore } from './store/useVoterStore';
-
-// 1. Explicitly define the available languages
 export type Language = 'en' | 'hi' | 'kn';
 
-// 2. Strict typing for the translation object to prevent "any" errors
 interface TranslationMap {
   [key: string]: Record<Language, string>;
 }
@@ -15,7 +10,7 @@ export const translations: TranslationMap = {
   persona_desc: { en: 'Empowering every voice in the democracy. Choose a profile to begin.', hi: 'लोकतंत्र में हर आवाज को सशक्त बनाना। शुरू करने के लिए एक प्रोफाइल चुनें।', kn: 'ಪ್ರಜಾಪ್ರಭುತ್ವದಲ್ಲಿ ಪ್ರತಿಯೊಂದು ಧ್ವನೆಯನ್ನು ಸಬಲೀಕರಣಗೊಳಿಸುವುದು. ಪ್ರಾರಂಭಿಸಲು ಪ್ರೊಫೈಲ್ ಆಯ್ಕೆಮಾಡಿ.' },
   persona_firsttime: { en: 'First-Time Voter', hi: 'पहली बार मतदाता', kn: 'ಮೊದಲ ಬಾರಿ ಮತದಾರ' },
   persona_student: { en: 'Student / Migrant', hi: 'छात्र / प्रवासी', kn: 'ವಿದ್ಯಾರ್ಥಿ / ವಲಸೆಗಾರ' },
-  persona_senior: { en: 'Senior Citizen', hi: 'वरिष्ठ नागरिक', kn: 'ಹಿರಿಯ ನಾಗರಿಕ' },
+  persona_senior: { en: 'Senior Citizen', hi: 'वरಿಷ್ಠ नागरिक', kn: 'ಹಿರಿಯ ನಾಗರಿಕ' },
   persona_firsttime_desc: { en: 'Just turned 18? Begin your voting journey with step-by-step registration guidance.', hi: 'अभी 18 साल के हुए? चरण-दर-चरण पंजीकरण मार्गदर्शन के साथ अपनी मतदान यात्रा शुरू करें।', kn: 'ಈಗಷ್ಟೇ 18 ವರ್ಷ ತುಂಬಿದೆಯೇ? ಹಂತ-ಹಂತದ ನೋಂದಣಿ ಮಾರ್ಗದರ್ಶನದೊಂದಿಗೆ ನಿಮ್ಮ ಮತದಾನದ ಪ್ರಯಾಣವನ್ನು ಪ್ರಾರಂಭಿಸಿ.' },
   persona_student_desc: { en: 'Studying away from home? Learn about Form 6 and hostel residence rules.', hi: 'घर से दूर पढ़ रहे हैं? फॉर्म 6 और छात्रावास निवास नियमों के बारे में जानें।', kn: 'ಮನೆಯಿಂದ ದೂರ ಓದುತ್ತಿದ್ದೀರಾ? ನಮೂನೆ 6 ಮತ್ತು ಹಾಸ್ಟೆಲ್ ನಿವಾಸದ ನಿಯಮಗಳ ಬಗ್ಗೆ ತಿಳಿಯಿರಿ.' },
   persona_senior_desc: { en: '80+ or a priority voter? Explore home voting options and assisted services.', hi: '80+ या प्राथमिकता वाले मतदाता? होम वोटिंग विकल्पों और सहायता प्राप्त सेवाओं का पता लगाएं।', kn: '80+ ಅಥವಾ ಆದ್ಯತೆಯ ಮತದಾರರೇ? ಮನೆ ಮತದಾನದ ಆಯ್ಕೆಗಳು ಮತ್ತು ನೆರವಿನ ಸೇವೆಗಳನ್ನು ಅನ್ವೇಷಿಸಿ.' },
@@ -35,7 +30,7 @@ export const translations: TranslationMap = {
   // Tabs
   overview: { en: 'Overview', hi: 'अवलोकन', kn: 'ಅವಲೋಕನ' },
   registration: { en: 'Registration', hi: 'पंजीकरण', kn: 'ನೋಂದಣಿ' },
-  research: { en: 'Research Vault', hi: 'अनुसंधान वॉल्ट', kn: 'ಸಂಶೋಧನಾ ವಾಲ್ಟ್' },
+  research: { en: 'Research Vault', hi: 'अनुसंधान वॉल्ट', kn: 'अनुसंधान वॉल्ट' },
   polling: { en: 'EVM Simulator', hi: 'EVM सिम्युलेटर', kn: 'EVM ಸಿಮ್ಯುಲೇಟರ್' },
 
   // Chat
@@ -49,39 +44,4 @@ export const translations: TranslationMap = {
   legal_form8: { en: 'Form 8: Data Integrity', hi: 'फॉर्म 8: डेटा अखंडता', kn: 'ನಮೂನೆ 8: ಡೇಟಾ ಸಮಗ್ರತೆ' },
   legal_polling_booth: { en: 'Constituency Mapping', hi: 'निर्वाचन क्षेत्र मैपिंग', kn: 'ಕ್ಷೇತ್ರ ಮ್ಯಾಪಿಂಗ್' },
   legal_gemini_vision: { en: 'Gemini Multimodal OCR', hi: 'Gemini मल्टीमॉडल OCR', kn: 'Gemini ಮಲ್ಟಿಮೋಡಲ್ OCR' },
-};
-
-interface LanguageContextType {
-  language: Language;
-  setLanguage: (lang: Language) => void;
-  t: (key: string) => string;
-}
-
-const LanguageContext = createContext<LanguageContextType | undefined>(undefined);
-
-export const LanguageProvider = ({ children }: { children: ReactNode }) => {
-  // 3. Destructure directly from store
-  const language = useVoterStore((state) => state.language);
-  const setLanguage = useVoterStore((state) => state.setLanguage);
-
-  // 4. Safe Translation Logic
-  const t = (key: string): string => {
-    const translation = translations[key];
-    if (!translation) {
-      return key;
-    }
-    return translation[language] || key;
-  };
-
-  return (
-    <LanguageContext.Provider value={{ language, setLanguage, t }}>
-      {children}
-    </LanguageContext.Provider>
-  );
-};
-
-export const useTranslation = () => {
-  const context = useContext(LanguageContext);
-  if (!context) throw new Error('useTranslation must be used within LanguageProvider');
-  return context;
 };

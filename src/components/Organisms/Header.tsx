@@ -72,10 +72,10 @@ export const Header = () => {
         {/* Quick Actions & Translation */}
         <div className="flex items-center gap-4 sm:gap-6">
             <div className="flex bg-white/50 backdrop-blur-md p-1.5 rounded-2xl border border-white">
-                {['en', 'hi', 'kn'].map((l) => (
+                {(['en', 'hi', 'kn'] as const).map((l) => (
                     <button
                         key={l}
-                        onClick={() => setLanguage(l as any)}
+                        onClick={() => setLanguage(l)}
                         className={cn(
                             "px-3 sm:px-4 py-2 text-[10px] font-bold rounded-xl transition-all uppercase tracking-widest",
                             language === l ? "bg-civic-navy text-white shadow-lg shadow-civic-navy/20" : "text-gray-400 hover:text-civic-navy"

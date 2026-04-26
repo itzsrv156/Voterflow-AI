@@ -19,8 +19,8 @@ interface VoterState {
   setHasGreeted: (v: boolean) => void;
   setPersona: (p: Persona | null) => void;
   setView: (v: 'selection' | 'dashboard') => void;
-  setActiveTab: (t: any) => void;
-  setActiveFlow: (f: any) => void;
+  setActiveTab: (t: VoterState['activeTab']) => void;
+  setActiveFlow: (f: VoterState['activeFlow']) => void;
   setLanguage: (l: 'en' | 'hi' | 'kn') => void;
   addReadiness: (amount: number) => void;
   updateProgress: (key: keyof VoterState['progress'], val: number) => void;

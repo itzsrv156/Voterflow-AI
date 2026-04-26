@@ -72,7 +72,8 @@ import {
   ChevronLeft, ChevronRight, Headphones, Radio, ArrowRight, User,
   PhoneCall, ShieldCheck, MapPin, Info,
   AlertTriangle, UserCheck, Target, Award,
-  Flame, Cpu, BookOpen, Download, FileText, Sparkles, Loader2
+  Flame, Cpu, BookOpen, Download, FileText, Sparkles, Loader2,
+  FileEdit, Globe
 } from 'lucide-react';
 import { cn } from '../../lib/utils';
 
@@ -211,8 +212,11 @@ export const Dashboard = () => {
           <span className="font-display font-bold text-civic-navy text-sm uppercase tracking-widest">Navigator</span>
         </div>
         
-        <nav className="space-y-3 flex-1">
+        <nav className="space-y-3 flex-1 overflow-y-auto pr-2 custom-scrollbar">
           <SidebarItem id="overview" icon={LayoutDashboard} labelKey="overview" activeTab={activeTab} setActiveTab={setActiveTab} t={t} />
+          <SidebarItem id="registration" icon={UserPlus} labelKey="registration" activeTab={activeTab} setActiveTab={setActiveTab} t={t} />
+          <SidebarItem id="research" icon={BookOpen} labelKey="research" activeTab={activeTab} setActiveTab={setActiveTab} t={t} />
+          <SidebarItem id="polling" icon={MapPin} labelKey="polling" activeTab={activeTab} setActiveTab={setActiveTab} t={t} />
           <SidebarItem id="form8" icon={Gavel} labelKey="form8" activeTab={activeTab} setActiveTab={setActiveTab} t={t} />
           <SidebarItem id="sir2026" icon={Calendar} labelKey="sir2026" activeTab={activeTab} setActiveTab={setActiveTab} t={t} />
           <SidebarItem id="helpline" icon={Headphones} labelKey="helpline" activeTab={activeTab} setActiveTab={setActiveTab} t={t} />
@@ -579,6 +583,131 @@ export const Dashboard = () => {
                       ))}
                   </div>
               </div>
+            </motion.div>
+          ) : activeTab === 'registration' ? (
+            <motion.div
+              key="registration"
+              initial={{ opacity: 0, x: 20 }}
+              animate={{ opacity: 1, x: 0 }}
+              exit={{ opacity: 0, x: -20 }}
+              className="grid grid-cols-1 xl:grid-cols-2 gap-8"
+            >
+              <div className="bg-white/70 backdrop-blur-2xl rounded-[3.5rem] p-12 border border-white/50 shadow-sm flex flex-col group relative overflow-hidden">
+                <div className="absolute top-0 right-0 p-12 opacity-5 pointer-events-none">
+                    <UserPlus className="w-48 h-48 text-civic-navy" />
+                </div>
+                <div className="flex justify-between items-start mb-10 relative z-10">
+                  <div className="w-16 h-16 bg-civic-navy rounded-2xl flex items-center justify-center group-hover:scale-110 group-hover:rotate-6 transition-all duration-500 shadow-xl shadow-civic-navy/10">
+                    <UserPlus className="text-white w-7 h-7" />
+                  </div>
+                  <CheckCircle className={cn("w-8 h-8 transition-all duration-500", progress.registration === 100 ? "text-civic-green scale-110" : "text-gray-100")} />
+                </div>
+                <div className="relative z-10">
+                    <h3 className="text-3xl font-bold text-civic-navy mb-4">Registration Suite</h3>
+                    <p className="text-sm text-gray-500 mb-10 leading-relaxed max-w-sm">
+                      Secure Form 6 engine with automated document verification and BLO mapping.
+                    </p>
+                </div>
+                <div className="mt-auto relative z-10">
+                   <div className="flex justify-between text-[9px] font-bold text-gray-400 mb-3 uppercase tracking-[0.2em]">Application Progress</div>
+                  <div className="h-2 w-full bg-gray-100 rounded-full overflow-hidden mb-8">
+                    <motion.div animate={{ width: `${progress.registration}%` }} className="h-full bg-civic-navy" />
+                  </div>
+                  <button 
+                    onClick={() => setActiveFlow('registration')}
+                    className="w-full py-6 bg-civic-navy text-white font-bold rounded-[2rem] shadow-2xl shadow-civic-navy/30 flex items-center justify-center gap-3 active:scale-95 transition-all group/btn"
+                  >
+                    Open Digital Wizard <ArrowRight className="w-5 h-5 group-hover:translate-x-2 transition-transform" />
+                  </button>
+                </div>
+              </div>
+
+              <div 
+                onClick={() => setShowAiValidator(true)}
+                className="bg-white/70 backdrop-blur-2xl rounded-[3.5rem] p-12 border border-white/50 shadow-sm flex flex-col group cursor-pointer relative overflow-hidden"
+              >
+                 <div className="absolute top-0 right-0 p-12 opacity-5 pointer-events-none">
+                    <Cpu className="w-48 h-48 text-civic-navy" />
+                </div>
+                <div className="flex justify-between items-start mb-10 relative z-10">
+                  <div className="w-16 h-16 bg-civic-navy rounded-2xl flex items-center justify-center group-hover:scale-110 group-hover:-rotate-6 transition-all duration-500 shadow-xl">
+                    <Cpu className="text-civic-saffron w-7 h-7" />
+                  </div>
+                  <span className="px-4 py-2 bg-civic-navy/5 rounded-full text-[9px] font-black text-civic-navy uppercase tracking-widest">Sovereign AI v2.4</span>
+                </div>
+                <div className="relative z-10">
+                    <h3 className="text-3xl font-bold text-civic-navy mb-4">Document Validator</h3>
+                    <p className="text-sm text-gray-500 mb-10 leading-relaxed max-w-sm">
+                      Pre-verify your identity and residency documents against ECI legislative standards.
+                    </p>
+                </div>
+                <div className="mt-auto relative z-10">
+                    <div className="flex items-center gap-3 text-civic-navy font-bold text-[11px] uppercase tracking-[0.2em]">
+                        Analyze Documents <ArrowRight className="w-5 h-5 group-hover:translate-x-2 transition-transform" />
+                    </div>
+                </div>
+              </div>
+            </motion.div>
+          ) : activeTab === 'research' ? (
+            <motion.div
+              key="research"
+              initial={{ opacity: 0, x: 20 }}
+              animate={{ opacity: 1, x: 0 }}
+              exit={{ opacity: 0, x: -20 }}
+              className="space-y-10"
+            >
+              <header className="flex justify-between items-end">
+                <div>
+                  <h2 className="text-4xl font-display font-bold text-civic-navy mb-2">Civic Intelligence Hub</h2>
+                  <p className="text-gray-500 font-medium">Verify legislative protocols and electoral data integrity.</p>
+                </div>
+                <button 
+                  onClick={() => setShowReportModal(true)} 
+                  className="px-8 py-4 bg-civic-navy text-white font-bold rounded-2xl shadow-xl shadow-civic-navy/20 hover:scale-105 active:scale-95 transition-all flex items-center gap-3"
+                >
+                  <BookOpen className="w-5 h-5" /> Open Research Vault
+                </button>
+              </header>
+
+              <div className="grid grid-cols-1 md:grid-cols-3 gap-8">
+                  {[
+                      { title: 'SIR 2026 Revision', desc: 'House-to-house mapping protocol & data verification.', icon: UserCheck, color: 'text-blue-500', bg: 'bg-blue-50' },
+                      { title: 'Constitutional Rights', desc: 'Articles 324-329 and the Right to Vote framework.', icon: ShieldCheck, color: 'text-orange-500', bg: 'bg-orange-50' },
+                      { title: 'Legal Forms Base', desc: 'Deep linking to official ECI Form 6, 7, and 8 portals.', icon: FileEdit, color: 'text-civic-green', bg: 'bg-green-50' },
+                  ].map((item, i) => (
+                      <div key={i} className="p-8 bg-white border border-gray-100 rounded-[2.5rem] shadow-sm hover:shadow-xl transition-all group">
+                          <div className={cn("w-14 h-14 rounded-2xl flex items-center justify-center mb-6 group-hover:scale-110 transition-transform", item.bg, item.color)}>
+                              <item.icon className="w-7 h-7" />
+                          </div>
+                          <h3 className="text-xl font-bold text-civic-navy mb-3">{item.title}</h3>
+                          <p className="text-sm text-gray-500 leading-relaxed">{item.desc}</p>
+                      </div>
+                  ))}
+              </div>
+
+              <div className="p-10 bg-gradient-to-br from-civic-navy to-blue-900 rounded-[3rem] text-white relative overflow-hidden">
+                  <Globe className="absolute -bottom-20 -right-20 w-80 h-80 opacity-10" />
+                  <div className="relative z-10 max-w-xl">
+                      <h3 className="text-2xl font-display font-bold mb-4 text-civic-saffron">Sovereign Data Federation</h3>
+                      <p className="text-white/60 text-sm leading-relaxed mb-8">
+                          The VoterFlow research engine pulls directly from ECI open-data simulations. Every guideline here is verified against the 2026 Electoral Code.
+                      </p>
+                      <div className="flex gap-4">
+                          <div className="px-4 py-2 bg-white/10 rounded-xl border border-white/10 text-[10px] font-bold uppercase tracking-widest">Legislative Mode</div>
+                          <div className="px-4 py-2 bg-white/10 rounded-xl border border-white/10 text-[10px] font-bold uppercase tracking-widest">Verified 2026</div>
+                      </div>
+                  </div>
+              </div>
+            </motion.div>
+          ) : activeTab === 'polling' ? (
+            <motion.div
+              key="polling"
+              initial={{ opacity: 0, x: 20 }}
+              animate={{ opacity: 1, x: 0 }}
+              exit={{ opacity: 0, x: -20 }}
+              className="w-full h-full"
+            >
+              <PollingBoothLocator />
             </motion.div>
           ) : activeTab === 'helpline' ? (
             <motion.div

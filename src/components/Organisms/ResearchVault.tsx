@@ -27,8 +27,46 @@ const TICKER_MESSAGES = [
   "ALERT: Postal Ballot requests for Phase 1 must be submitted via Form 12D by next Friday.",
 ];
 
+const SOVEREIGN_RESOURCES = [
+  { 
+    id: 'sir_guide',
+    title: 'The SIR 2026 Protocol', 
+    category: 'Operational', 
+    summary: 'Special Intensive Revision (SIR) is the final house-to-house verification process before the 2026 General Elections. Booth Level Officers (BLOs) visit every household to verify data integrity.',
+    fullText: 'Special Intensive Revision 2026 is a mission-critical phase. It involves house-to-house visits by BLOs to verify the existence of voters, remove duplicates, and update residency status for migrants and students. This ensures that the electoral roll is 100% accurate before the national polls.'
+  },
+  { 
+    id: 'residency_guide',
+    title: 'Ordinary Residence Rules', 
+    category: 'Legal', 
+    summary: 'Understanding Section 20 of the RP Act, 1950. Learn what qualifies as "Ordinary Residence" for students and migrant workers.',
+    fullText: 'Section 20 of the Representation of the People Act defines ordinary residence as the place where a person normally lives. For students, the ECI provides a special provision allowing them to register at their hostel using Annexure-II, even if they are away from their home constituency.'
+  },
+  { 
+    id: 'voter_id_intel',
+    title: 'Digital EPIC & Aadhaar', 
+    category: 'Technical', 
+    summary: 'The evolution of the Voter ID. How to download your e-EPIC and why Aadhaar linking prevents voter suppression.',
+    fullText: 'The e-EPIC is a portable, secure version of the Voter ID. Linking it with Aadhaar helps in deduplication of the electoral roll, ensuring one person has only one vote across the entire nation, thus strengthening the democratic process.'
+  }
+];
+
 export const ResearchVault = ({ isOpen, onClose }: { isOpen: boolean, onClose: () => void }) => {
   const [timeLeft, setTimeLeft] = useState({ days: 45, hours: 12, mins: 30, secs: 15 });
+  const [isSpeaking, setIsSpeaking] = useState<string | null>(null);
+
+  const handleSpeak = (text: string, id: string) => {
+    if (isSpeaking === id) {
+      window.speechSynthesis.cancel();
+      setIsSpeaking(null);
+      return;
+    }
+    window.speechSynthesis.cancel();
+    const utterance = new SpeechSynthesisUtterance(text);
+    utterance.onend = () => setIsSpeaking(null);
+    window.speechSynthesis.speak(utterance);
+    setIsSpeaking(id);
+  };
 
   useEffect(() => {
     const timer = setInterval(() => {
@@ -144,7 +182,18 @@ export const ResearchVault = ({ isOpen, onClose }: { isOpen: boolean, onClose: (
 
             <section className="bg-gradient-to-br from-civic-saffron to-orange-500 rounded-[3.5rem] p-12 text-civic-navy relative overflow-hidden group shadow-2xl">
                 <ShieldCheck className="absolute -bottom-10 -right-10 w-64 h-64 text-civic-navy/5 group-hover:scale-110 transition-transform duration-1000" />
-                <h3 className="text-3xl font-display font-bold mb-6">Sovereign Rights</h3>
+                <div className="flex justify-between items-start mb-6">
+                    <h3 className="text-3xl font-display font-bold">Sovereign Rights</h3>
+                    <button 
+                        onClick={() => handleSpeak("Your Sovereign Rights include: Right to secret paper-trail, Right to NOTA, Home-voting for citizens aged 85 plus, and Proxy voting for Service Electors.", "rights")}
+                        className={cn(
+                            "p-3 rounded-full transition-all",
+                            isSpeaking === 'rights' ? "bg-civic-navy text-white animate-pulse" : "bg-civic-navy/10 text-civic-navy hover:bg-civic-navy/20"
+                        )}
+                    >
+                        <Globe className="w-5 h-5" />
+                    </button>
+                </div>
                 <ul className="space-y-5 relative z-10">
                     {[
                         'Right to secret paper-trail (VVPAT)',
@@ -215,15 +264,50 @@ export const ResearchVault = ({ isOpen, onClose }: { isOpen: boolean, onClose: (
                 ))}
             </div>
 
-            <div className="mt-16 p-10 bg-white/5 rounded-[3rem] border border-white/5 flex items-center gap-8 relative overflow-hidden">
+            <div className="mt-12 space-y-6">
+                <h4 className="text-[10px] font-black text-white/40 uppercase tracking-[0.2em]">In-Depth Civic Intelligence</h4>
+                <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
+                    {SOVEREIGN_RESOURCES.map(resource => (
+                        <div key={resource.id} className="p-8 bg-white/5 border border-white/5 rounded-[2.5rem] hover:bg-white/10 transition-all group">
+                            <div className="flex justify-between items-start mb-4">
+                                <span className="px-3 py-1 bg-white/10 rounded-full text-[8px] font-black text-white/40 uppercase tracking-widest">{resource.category}</span>
+                                <button 
+                                    onClick={() => handleSpeak(resource.fullText, resource.id)}
+                                    className={cn(
+                                        "p-2 rounded-lg transition-all",
+                                        isSpeaking === resource.id ? "bg-civic-saffron text-civic-navy" : "text-white/20 group-hover:text-civic-saffron"
+                                    )}
+                                >
+                                    <Globe className="w-4 h-4" />
+                                </button>
+                            </div>
+                            <h5 className="text-xl font-bold text-white mb-3">{resource.title}</h5>
+                            <p className="text-xs text-white/40 leading-relaxed">{resource.summary}</p>
+                        </div>
+                    ))}
+                </div>
+            </div>
+
+            <div className="mt-12 p-10 bg-white/5 rounded-[3rem] border border-white/5 flex items-center gap-8 relative overflow-hidden">
                 <div className="absolute -top-10 -left-10 opacity-5">
                     <Database className="w-48 h-48 text-white" />
                 </div>
                 <div className="w-16 h-16 bg-civic-saffron/10 rounded-2xl flex items-center justify-center shrink-0">
                     <Info className="w-8 h-8 text-civic-saffron" />
                 </div>
-                <div className="relative z-10">
-                    <h4 className="text-sm font-bold text-white mb-2 uppercase tracking-widest">Engineering Note</h4>
+                <div className="relative z-10 flex-1">
+                    <div className="flex justify-between items-start">
+                        <h4 className="text-sm font-bold text-white mb-2 uppercase tracking-widest">Engineering Note</h4>
+                        <button 
+                            onClick={() => handleSpeak("This vault utilizes ECI open-data architecture to provide real-time updates for SIR 2026. All links lead to the actual Voter Service Portal for sovereign compliance.", "note")}
+                            className={cn(
+                                "p-2 rounded-lg transition-all",
+                                isSpeaking === 'note' ? "bg-civic-saffron text-civic-navy" : "text-white/20 hover:text-civic-saffron"
+                            )}
+                        >
+                            <Globe className="w-4 h-4" />
+                        </button>
+                    </div>
                     <p className="text-xs text-white/40 leading-relaxed font-medium">
                         This vault utilizes ECI open-data architecture (Simulated) to provide real-time updates for SIR 2026 (Special Intensive Revision). All links lead to the actual Voter Service Portal for sovereign compliance.
                     </p>

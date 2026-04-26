@@ -2,13 +2,13 @@ import { GoogleGenerativeAI } from "@google/generative-ai";
 
 // TO THE USER: Get your API Key from https://aistudio.google.com/app/apikey
 // Replace 'YOUR_API_KEY' with your actual key.
-const API_KEY = "YOUR_API_KEY"; 
+const API_KEY = "AIzaSyCsj9CeilCZEL-coo6rOUQ2pSy9pJwNo30";
 
 const genAI = new GoogleGenerativeAI(API_KEY);
 
 export const getGeminiResponse = async (userPrompt: string, systemContext: string) => {
   try {
-    const model = genAI.getGenerativeModel({ 
+    const model = genAI.getGenerativeModel({
       model: "gemini-1.5-flash",
       systemInstruction: systemContext
     });
@@ -23,18 +23,18 @@ export const getGeminiResponse = async (userPrompt: string, systemContext: strin
 };
 
 export const streamGeminiResponse = async (
-  userPrompt: string, 
-  systemContext: string, 
+  userPrompt: string,
+  systemContext: string,
   onChunk: (text: string) => void
 ) => {
   try {
-    const model = genAI.getGenerativeModel({ 
+    const model = genAI.getGenerativeModel({
       model: "gemini-1.5-flash",
       systemInstruction: systemContext
     });
 
     const result = await model.generateContentStream(userPrompt);
-    
+
     let fullText = "";
     for await (const chunk of result.stream) {
       const chunkText = chunk.text();

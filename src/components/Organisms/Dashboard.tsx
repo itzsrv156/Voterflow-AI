@@ -153,7 +153,8 @@ export const Dashboard = () => {
     const text = input || userInput;
     if (!text.trim() || isStreaming) return;
 
-    setChatMessages(prev => [...prev, { role: 'user', text }]);
+    const newMessages = [...chatMessages, { role: 'user' as const, text }];
+    setChatMessages(newMessages);
     setUserInput('');
     setIsStreaming(true);
     
@@ -164,6 +165,11 @@ export const Dashboard = () => {
     // Add an empty AI message that we will fill
     setChatMessages(prev => [...prev, { role: 'ai', text: 'Thinking...', sources }]);
 
+    // Format history for Gemini (alternating user/model)
+    const history = chatMessages.map(m => 
+        `${m.role === 'user' ? 'User' : 'Assistant'}: ${m.text}`
+    ).join('\n');
+
     const systemPrompt = `You are the Sovereign ECI Intelligence Core (Gemini 1.5). 
     Your mission is to assist Indian citizens in navigating the 2026 Special Intensive Revision (SIR) cycle.
     
@@ -172,20 +178,22 @@ export const Dashboard = () => {
     - Constituency: Bengaluru Central (PC 25).
     - Current Readiness: ${Math.round(readinessScore)}%.
     
-    ECI PROTOCOLS:
-    - Form 6: New registration.
-    - Form 7: Deletion/Objection.
-    - Form 8: Correction/Replacement.
-    - SIR 2026: Active cycle with house-to-house mapping.
+    CHAT HISTORY:
+    ${history}
     
-    STYLE: Professional, concise, authoritative. Do not use pre-written text. Respond dynamically to the user's specific query.`;
+    ECI PROTOCOLS:
+    - Form 6: New registration. Qualifying date 01-01-2026.
+    - Form 8: Correction/Replacement.
+    - SIR 2026: Active house-to-house mapping.
+    
+    STYLE: Professional, concise, authoritative. Respond dynamically based on the conversation history.`;
 
     streamGeminiResponse(text, systemPrompt, (fullText) => {
         setIsDeepSearching(false);
         setChatMessages(prev => {
-            const newMessages = [...prev];
-            newMessages[newMessages.length - 1] = { role: 'ai', text: fullText, sources };
-            return newMessages;
+            const updatedMessages = [...prev];
+            updatedMessages[updatedMessages.length - 1] = { role: 'ai', text: fullText, sources };
+            return updatedMessages;
         });
     }).then(() => {
         setIsStreaming(false);
@@ -1216,7 +1224,7 @@ export const Dashboard = () => {
 
               {/* Chat Core */}
               <div className="flex-1 flex flex-col bg-white relative">
-                  <div className="p-8 border-b border-gray-100 flex justify-between items-center">
+                  <div className="p-8 border-b border-gray-100 flex justify-between items-center bg-white/50 backdrop-blur-md sticky top-0 z-20">
                     <div className="flex items-center gap-4">
                       <div className="w-12 h-12 bg-gray-50 rounded-2xl flex items-center justify-center border border-gray-100 shadow-sm relative group">
                         <img src="https://www.gstatic.com/lamda/images/gemini_sparkle_v002_d4735304ff6292a690345.svg" className="w-8 h-8" alt="Gemini" />
@@ -1225,13 +1233,19 @@ export const Dashboard = () => {
                         <h3 className="text-xl font-display font-bold text-civic-navy">Sovereign Gemini</h3>
                         <div className="flex items-center gap-2 mt-1">
                             <div className="w-1.5 h-1.5 bg-civic-green rounded-full animate-pulse" />
-                            <span className="text-[9px] font-black text-gray-400 uppercase tracking-widest leading-none">1.5 Flash Active</span>
+                            <span className="text-[9px] font-black text-gray-400 uppercase tracking-widest leading-none">Context Memory Active</span>
                         </div>
                       </div>
                     </div>
-                    <button onClick={() => setIsChatOpen(false)} className="p-3 bg-gray-50 rounded-full hover:bg-red-50 transition-all">
-                      <X className="w-5 h-5 text-gray-400" />
-                    </button>
+                    <div className="flex items-center gap-4">
+                        <div className="hidden sm:flex items-center gap-2 px-3 py-1.5 bg-gray-50 rounded-full border border-gray-100">
+                             <ShieldCheck className="w-3 h-3 text-civic-navy" />
+                             <span className="text-[8px] font-black uppercase text-gray-400">High Integrity</span>
+                        </div>
+                        <button onClick={() => setIsChatOpen(false)} className="p-3 bg-gray-50 rounded-full hover:bg-red-50 transition-all">
+                            <X className="w-5 h-5 text-gray-400" />
+                        </button>
+                    </div>
                   </div>
 
                   <div className="flex-1 p-12 overflow-y-auto space-y-8 bg-gray-50/20 custom-scrollbar">

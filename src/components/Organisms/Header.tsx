@@ -1,6 +1,6 @@
 import { motion, AnimatePresence } from 'framer-motion';
 import { useVoterStore } from '../../store/useVoterStore';
-import { ShieldCheck, Vote, Globe, User, ExternalLink } from 'lucide-react';
+import { ShieldCheck, Vote, Globe, User, ExternalLink, Bell, Search } from 'lucide-react';
 import { cn } from '../../lib/utils';
 import { useState } from 'react';
 
@@ -64,14 +64,27 @@ export const Header = () => {
                 <ShieldCheck className="text-civic-navy w-5 h-5" />
                 <div className="text-left">
                     <div className="text-[10px] font-bold text-gray-400 uppercase tracking-tight">Compliance Status</div>
-                    <div className="text-[11px] font-bold text-civic-navy uppercase">ECI Verified Architecture</div>
+                    <div className="text-[11px] font-black text-civic-navy uppercase tracking-[0.05em]">Sovereign Civic Protocol</div>
                 </div>
+            </div>
+        </div>
+
+        {/* Intelligence Stats Bar - NEW PREMIUM FEATURE */}
+        <div className="hidden lg:flex items-center gap-10">
+            <div className="text-center">
+                <div className="text-[8px] font-black text-gray-400 uppercase tracking-widest mb-1">Sector Turnout</div>
+                <div className="text-xs font-bold text-civic-navy">94.2% Goal</div>
+            </div>
+            <div className="h-6 w-px bg-gray-100" />
+            <div className="text-center">
+                <div className="text-[8px] font-black text-gray-400 uppercase tracking-widest mb-1">Registration Health</div>
+                <div className="text-xs font-bold text-civic-green">Optimal</div>
             </div>
         </div>
 
         {/* Quick Actions & Translation */}
         <div className="flex items-center gap-4 sm:gap-6">
-            <div className="flex bg-white/50 backdrop-blur-md p-1.5 rounded-2xl border border-white">
+            <div className="hidden sm:flex bg-white/50 backdrop-blur-md p-1.5 rounded-2xl border border-white">
                 {(['en', 'hi', 'kn'] as const).map((l) => (
                     <button
                         key={l}
@@ -86,14 +99,50 @@ export const Header = () => {
                 ))}
             </div>
 
+            {/* Notification Bell with Dropdown */}
+            <div className="relative group">
+                <button className="w-12 h-12 bg-gray-50 rounded-2xl flex items-center justify-center hover:bg-civic-navy hover:text-white transition-all relative">
+                    <Bell className="w-5 h-5" />
+                    <span className="absolute top-3 right-3 w-2 h-2 bg-civic-saffron rounded-full border-2 border-white animate-pulse" />
+                </button>
+                
+                {/* Floating Notification Panel */}
+                <div className="absolute top-full right-0 mt-4 w-72 bg-white rounded-[2.5rem] shadow-2xl border border-gray-100 p-8 opacity-0 translate-y-4 pointer-events-none group-hover:opacity-100 group-hover:translate-y-0 transition-all z-50">
+                    <div className="flex items-center justify-between mb-6">
+                        <h4 className="text-[10px] font-black text-civic-navy uppercase tracking-widest">Sovereign Alerts</h4>
+                        <span className="px-2 py-0.5 bg-civic-saffron/10 text-civic-saffron text-[8px] font-bold rounded-full">2 NEW</span>
+                    </div>
+                    <div className="space-y-6">
+                        <div className="flex gap-4">
+                            <div className="w-8 h-8 bg-civic-navy/5 rounded-xl flex items-center justify-center shrink-0">
+                                <Search className="w-4 h-4 text-civic-navy" />
+                            </div>
+                            <div>
+                                <p className="text-[10px] text-gray-700 font-bold leading-tight mb-1">SIR 2026 Audit Ready</p>
+                                <p className="text-[9px] text-gray-400 font-medium leading-relaxed">Your sector data mapping is 100% verified by ECI.</p>
+                            </div>
+                        </div>
+                        <div className="flex gap-4">
+                            <div className="w-8 h-8 bg-civic-green/5 rounded-xl flex items-center justify-center shrink-0">
+                                <ShieldCheck className="w-4 h-4 text-civic-green" />
+                            </div>
+                            <div>
+                                <p className="text-[10px] text-gray-700 font-bold leading-tight mb-1">Identity Synchronized</p>
+                                <p className="text-[9px] text-gray-400 font-medium leading-relaxed">Aadhaar-EPIC linking successful for PC 25.</p>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
             {view === 'dashboard' && (
                 <motion.button
                     whileHover={{ scale: 1.05 }}
                     whileTap={{ scale: 0.95 }}
                     onClick={() => setView('selection')}
-                    className="px-6 py-3 bg-civic-navy text-white text-[10px] font-bold uppercase tracking-widest rounded-xl shadow-lg shadow-civic-navy/20"
+                    className="hidden sm:block px-6 py-3 bg-civic-navy text-white text-[10px] font-bold uppercase tracking-widest rounded-xl shadow-lg shadow-civic-navy/20"
                 >
-                    Change Persona
+                    Switch Identity
                 </motion.button>
             )}
 

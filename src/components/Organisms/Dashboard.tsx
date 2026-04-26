@@ -599,6 +599,52 @@ export const Dashboard = () => {
                       ))}
                   </div>
               </motion.div>
+
+              {/* Candidate Intelligence - NEW TOP 50 FEATURE */}
+              <motion.div variants={{ hidden: { y: 20, opacity: 0 }, show: { y: 0, opacity: 1 } }} className="xl:col-span-2 bg-white/60 backdrop-blur-xl rounded-[3.5rem] p-12 border border-white/50 shadow-sm relative overflow-hidden group">
+                  <div className="flex justify-between items-end mb-10">
+                      <div>
+                          <div className="flex items-center gap-3 mb-4">
+                              <Award className="w-6 h-6 text-civic-saffron" />
+                              <h3 className="text-2xl font-display font-bold text-civic-navy tracking-tight">Candidate Intel Preview</h3>
+                          </div>
+                          <p className="text-sm text-gray-500 max-w-lg leading-relaxed">
+                              Contesting candidates for **Bengaluru Central (PC 25)**. Analyze criminal records, educational backgrounds, and asset declarations.
+                          </p>
+                      </div>
+                      <div className="px-6 py-3 bg-civic-navy text-white text-[10px] font-bold uppercase tracking-widest rounded-2xl shadow-xl shadow-civic-navy/20 cursor-pointer hover:scale-105 transition-all">
+                          Full Affidavit Portal
+                      </div>
+                  </div>
+
+                  <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-6">
+                      {[
+                        { name: 'Dr. Rahul S.', party: 'National Alliance', img: 'https://i.pravatar.cc/150?u=rahul', color: 'bg-orange-500' },
+                        { name: 'Anita Verma', party: 'People First', img: 'https://i.pravatar.cc/150?u=anita', color: 'bg-blue-500' },
+                        { name: 'K. Venkatesh', party: 'State Collective', img: 'https://i.pravatar.cc/150?u=venk', color: 'bg-green-500' },
+                        { name: 'Sarah Khan', party: 'Independent', img: 'https://i.pravatar.cc/150?u=sarah', color: 'bg-gray-500' }
+                      ].map((c, i) => (
+                        <div key={i} className="p-6 bg-white border border-gray-100 rounded-3xl hover:shadow-xl transition-all group/cand">
+                            <div className="relative w-20 h-20 mx-auto mb-4">
+                                <img src={c.img} className="w-full h-full object-cover rounded-2xl grayscale group-hover/cand:grayscale-0 transition-all" />
+                                <div className={cn("absolute -bottom-1 -right-1 w-6 h-6 rounded-lg border-2 border-white", c.color)} />
+                            </div>
+                            <div className="text-center">
+                                <div className="text-sm font-bold text-civic-navy mb-1">{c.name}</div>
+                                <div className="text-[10px] font-black text-gray-400 uppercase tracking-widest">{c.party}</div>
+                                <div className="mt-4 flex gap-2 justify-center">
+                                    <div className="w-6 h-6 bg-gray-50 rounded-lg flex items-center justify-center cursor-pointer hover:bg-civic-navy hover:text-white transition-all">
+                                        <Info className="w-3 h-3" />
+                                    </div>
+                                    <div className="w-6 h-6 bg-gray-50 rounded-lg flex items-center justify-center cursor-pointer hover:bg-civic-navy hover:text-white transition-all">
+                                        <Gavel className="w-3 h-3" />
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                      ))}
+                  </div>
+              </motion.div>
             </motion.div>
           ) : activeTab === 'registration' ? (
             <motion.div

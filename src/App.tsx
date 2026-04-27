@@ -3,27 +3,74 @@ import { Hero } from './components/Organisms/Hero';
 import { Dashboard } from './components/Organisms/Dashboard';
 import { DigitalFormEngine } from './components/Organisms/DigitalFormEngine';
 import { ResearchVault } from './components/Organisms/ResearchVault';
+import { ChatAssistant } from './components/Organisms/ChatAssistant';
 import { useVoterStore } from './store/useVoterStore';
 import { motion, AnimatePresence } from 'framer-motion';
 import { ErrorBoundary } from './components/Atoms/ErrorBoundary';
+import { Search, X } from 'lucide-react';
+import { cn } from './lib/utils';
 
 function App() {
-  const { view, activeFlow, setActiveFlow } = useVoterStore();
+  const { view, activeFlow, setActiveFlow, readinessScore, isChatOpen, setIsChatOpen } = useVoterStore();
+
+  // Dynamic colors based on readinessScore
+  const getPulseColor = (base: 'blue' | 'saffron' | 'green') => {
+    if (readinessScore > 80) return 'bg-civic-green';
+    if (readinessScore > 40) return 'bg-civic-saffron';
+    return base === 'blue' ? 'bg-google-blue' : (base === 'saffron' ? 'bg-civic-saffron' : 'bg-civic-green');
+  };
 
   return (
     <ErrorBoundary>
-      <div className="min-h-screen bg-[#FDFDFD] selection:bg-civic-navy/10 relative overflow-hidden">
+      <div className="min-h-screen bg-[#FDFDFD] selection:bg-civic-navy/10 relative">
+        {/* Floating Background Blobs for Glass Depth - Reactive Civic Pulse */}
+        <div className="fixed inset-0 overflow-hidden pointer-events-none z-0">
+          <motion.div 
+            animate={{ 
+              x: [0, 80, 0], 
+              y: [0, 40, 0],
+              scale: [1, 1.1 + (readinessScore / 250), 1],
+              opacity: [0.08, 0.12 + (readinessScore / 600), 0.08]
+            }}
+            transition={{ duration: 25 - (readinessScore / 10), repeat: Infinity, ease: "linear" }}
+            className={cn("absolute -top-[10%] -left-[10%] w-[40%] h-[40%] rounded-full blur-[80px] transition-colors duration-1000", getPulseColor('blue') + '/10')} 
+            style={{ willChange: 'transform' }}
+          />
+          <motion.div 
+            animate={{ 
+              x: [0, -60, 0], 
+              y: [0, 80, 0],
+              scale: [1, 1.05 + (readinessScore / 300), 1],
+              opacity: [0.08, 0.15 + (readinessScore / 500), 0.08]
+            }}
+            transition={{ duration: 30 - (readinessScore / 8), repeat: Infinity, ease: "linear" }}
+            className={cn("absolute top-[20%] -right-[10%] w-[35%] h-[35%] rounded-full blur-[70px] transition-colors duration-1000", getPulseColor('saffron') + '/10')} 
+            style={{ willChange: 'transform' }}
+          />
+          <motion.div 
+            animate={{ 
+              x: [0, 40, 0], 
+              y: [0, -80, 0],
+              scale: [1, 1.2 + (readinessScore / 200), 1],
+              opacity: [0.08, 0.2 + (readinessScore / 400), 0.08]
+            }}
+            transition={{ duration: 22 - (readinessScore / 12), repeat: Infinity, ease: "linear" }}
+            className={cn("absolute -bottom-[10%] left-[20%] w-[45%] h-[45%] rounded-full blur-[90px] transition-colors duration-1000", getPulseColor('green') + '/10')} 
+            style={{ willChange: 'transform' }}
+          />
+        </div>
+
         <Header />
         
-        <main className="relative h-screen">
+        <main className="relative min-h-screen z-10">
           <AnimatePresence mode="wait">
             {view === 'selection' ? (
               <motion.div
                 key="selection"
-                initial={{ opacity: 0 }}
-                animate={{ opacity: 1 }}
-                exit={{ opacity: 0, scale: 0.95, filter: 'blur(10px)' }}
-                transition={{ duration: 0.6 }}
+                initial={{ opacity: 0, scale: 1 }}
+                animate={{ opacity: 1, scale: 1 }}
+                exit={{ opacity: 0, scale: 2, filter: 'blur(20px)' }}
+                transition={{ duration: 0.8, ease: [0.4, 0, 0.2, 1] }}
                 className="h-full"
               >
                 <Hero />
@@ -31,10 +78,10 @@ function App() {
             ) : (
               <motion.div
                 key="dashboard"
-                initial={{ opacity: 0, y: 20 }}
-                animate={{ opacity: 1, y: 0 }}
-                exit={{ opacity: 0, y: -20 }}
-                transition={{ duration: 0.6 }}
+                initial={{ opacity: 0, scale: 1.5, filter: 'blur(10px)' }}
+                animate={{ opacity: 1, scale: 1, filter: 'blur(0px)' }}
+                exit={{ opacity: 0, scale: 0.8 }}
+                transition={{ duration: 0.8, ease: [0.16, 1, 0.3, 1] }}
                 className="pt-32 px-4 pb-20 max-w-[1600px] mx-auto h-full"
               >
                 <Dashboard />
@@ -42,6 +89,50 @@ function App() {
             )}
           </AnimatePresence>
         </main>
+
+        {/* Global Floating Ask Gemini Button - Google AI Mode Style */}
+        {view === 'dashboard' && (
+            <div className="fixed bottom-12 right-12 z-[5000]">
+                <motion.button
+                    whileHover={{ scale: 1.05 }}
+                    whileTap={{ scale: 0.95 }}
+                    onClick={() => setIsChatOpen(!isChatOpen)}
+                    className="relative p-[2px] rounded-full overflow-hidden group shadow-2xl"
+                >
+                    {/* The Rotating Rainbow Border (Conic Gradient) */}
+                    <motion.div 
+                        animate={{ rotate: 360 }}
+                        transition={{ duration: 4, repeat: Infinity, ease: "linear" }}
+                        className="absolute inset-[-100%] bg-[conic-gradient(#4285F4,#EA4335,#FBBC05,#34A853,#4285F4)] opacity-80 group-hover:opacity-100 transition-opacity"
+                    />
+
+                    {/* The Button Content (Glass Backdrop) */}
+                    <div className="relative px-8 py-4 bg-black/40 backdrop-blur-xl rounded-full flex items-center gap-3 text-white border border-white/10">
+                        {isChatOpen ? (
+                            <X className="w-5 h-5" />
+                        ) : (
+                            <>
+                                <Search className="w-5 h-5 text-white/80 group-hover:text-white transition-colors" />
+                                <span className="font-display font-medium text-sm tracking-tight">Ask Gemini</span>
+                                <div className="flex gap-0.5">
+                                    {[1, 2, 3].map(i => (
+                                        <motion.div 
+                                            key={i}
+                                            animate={{ opacity: [0.4, 1, 0.4] }}
+                                            transition={{ repeat: Infinity, duration: 1.5, delay: i * 0.2 }}
+                                            className="w-1 h-1 bg-white rounded-full"
+                                        />
+                                    ))}
+                                </div>
+                            </>
+                        )}
+                    </div>
+
+                    {/* Outer Glow */}
+                    <div className="absolute inset-0 rounded-full bg-google-blue/20 blur-xl opacity-0 group-hover:opacity-100 transition-opacity -z-10" />
+                </motion.button>
+            </div>
+        )}
 
         {/* Global Sovereign Overlays */}
         <AnimatePresence>
@@ -53,8 +144,10 @@ function App() {
           )}
         </AnimatePresence>
 
+        <ChatAssistant />
+
         {/* Dynamic Background Noise/Texture */}
-        <div className="fixed inset-0 pointer-events-none opacity-[0.03] z-[9999] bg-[url('https://grainy-gradients.vercel.app/noise.svg')] mix-blend-overlay" />
+        <div className="fixed inset-0 pointer-events-none opacity-[0.05] z-[9999] bg-[url('https://grainy-gradients.vercel.app/noise.svg')] mix-blend-overlay" />
 
         {/* Sovereign Disclaimer Footer */}
         <footer className="fixed bottom-6 left-6 z-[3500] pointer-events-auto group">

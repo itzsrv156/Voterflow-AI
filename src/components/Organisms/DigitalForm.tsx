@@ -17,7 +17,7 @@ interface FormData {
   photo?: boolean;
   addressProof?: boolean;
   idProof?: boolean;
-  [key: string]: any;
+  [key: string]: unknown;
 }
 
 interface FormStepProps {
@@ -164,7 +164,7 @@ const FormStep2 = ({ onNext, data, setData }: FormStepProps) => {
             </div>
             <button
               onClick={() => handleUpload(doc.id)}
-              disabled={data[doc.id] || !!uploading}
+              disabled={!!data[doc.id] || !!uploading}
               className={cn(
                 "px-4 py-2 rounded-xl text-xs font-bold transition-all",
                 data[doc.id] ? "bg-civic-green text-white" : "bg-white border border-gray-200 text-gray-500"

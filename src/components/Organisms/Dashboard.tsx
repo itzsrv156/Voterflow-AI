@@ -1,9 +1,8 @@
-import { useState, useEffect, useRef } from 'react';
+import { useState, useEffect } from 'react';
 import { motion, AnimatePresence } from 'framer-motion';
 import { useVoterStore, type VoterState } from '../../store/useVoterStore';
 import { useTranslation } from '../../LanguageContext';
-import { streamGeminiResponse } from '../../services/geminiCore';
-import { PollingSimulator } from './PollingSimulator';
+import { TiltCard } from '../Atoms/TiltCard';
 import { PollingBoothLocator } from './PollingBoothLocator';
 import { FutureVoterTool } from '../Molecules/FutureVoterTool';
 
@@ -28,7 +27,8 @@ const LanguageToggle = () => {
 };
 
 const ConstituencyHeatmap = ({ onOpenChat }: { onOpenChat: () => void }) => (
-    <div className="bg-white/40 backdrop-blur-xl rounded-[3.5rem] p-10 border border-white/50 shadow-sm relative overflow-hidden h-full">
+    <TiltCard className="h-full group">
+        <div className="glass-card rounded-[3.5rem] p-10 relative overflow-hidden h-full">
         <div className="flex justify-between items-start mb-8">
             <div>
                 <h3 className="text-xl font-display font-bold text-civic-navy">Constituency Sync</h3>
@@ -72,16 +72,17 @@ const ConstituencyHeatmap = ({ onOpenChat }: { onOpenChat: () => void }) => (
                 </div>
             </div>
         </div>
-    </div>
+        </div>
+    </TiltCard>
 );
 import { 
-  Zap, MessageCircle, X, 
-  Send, CheckCircle, Gavel, 
+  Zap, X, 
+  CheckCircle, Gavel, 
   Calendar, LayoutDashboard, UserPlus, Search, Library, 
   ChevronLeft, ChevronRight, Headphones, Radio, ArrowRight, User,
-  PhoneCall, ShieldCheck, MapPin, Info,
+  PhoneCall, MapPin, Info, ShieldCheck,
   AlertTriangle, UserCheck, Target, Award,
-  Flame, Cpu, BookOpen, Download, FileText, Sparkles, Loader2,
+  Flame, Cpu, BookOpen, Download, FileText,
   FileEdit, Globe, Fingerprint
 } from 'lucide-react';
 import { cn } from '../../lib/utils';
@@ -119,98 +120,33 @@ export const Dashboard = () => {
   const { 
     persona, progress, resetStore, activeTab, 
     setActiveTab, setActiveFlow, readinessScore, addReadiness,
-    hasGreeted, setHasGreeted, voterName
+    hasGreeted, setHasGreeted, voterName, setIsChatOpen, addChatMessage
   } = useVoterStore();
   const { t } = useTranslation();
   
-  const [isChatOpen, setIsChatOpen] = useState(false);
-  const [showChatTooltip, setShowChatTooltip] = useState(false);
-  const [chatMessages, setChatMessages] = useState<{ role: 'user' | 'ai'; text: string; sources?: string[] }[]>([]);
-  const [userInput, setUserInput] = useState('');
-  const [isStreaming, setIsStreaming] = useState(false);
   const [showAiValidator, setShowAiValidator] = useState(false);
   const [scanStatus, setScanStatus] = useState<'idle' | 'scanning' | 'result'>('idle');
-  const [isDeepSearching, setIsDeepSearching] = useState(false);
-
-  const chatEndRef = useRef<HTMLDivElement>(null);
-
-  useEffect(() => {
-    chatEndRef.current?.scrollIntoView({ behavior: 'smooth' });
-  }, [chatMessages]);
 
   // Proactive Assistant Guidance - Fixed Spam & Removed Auto-Open
   useEffect(() => {
     if (!hasGreeted && persona) {
-        const greetings: Record<string, string> = {
-            FirstTime: "Namaste! Welcome, First-Time Voter. I'm your Sovereign Intel Coach. Your journey to democratic participation starts here. I recommend launching the 'Registration Suite' below to check your eligibility and file Form 6.",
-            Student: "Hello! As a student/migrant, you have specific rights under SIR 2026. I can guide you through the Annexure-II residency declaration and Form 6 filing. Shall we begin?",
-            Senior: "Namaste. For our senior citizens, we offer priority assistance. I can help you understand the Form 12D process for home-voting or locate a priority-access booth in PC 25."
-        };
-        
-        const timer = setTimeout(() => {
-            setChatMessages([{ role: 'ai', text: greetings[persona] || "Welcome to your Sovereign Dashboard. How can I assist your civic journey today?" }]);
-            setShowChatTooltip(true); // Show tooltip instead of opening chat
-            setHasGreeted(true);
-        }, 2000);
-        return () => clearTimeout(timer);
+        setHasGreeted(true);
     }
   }, [persona, hasGreeted, setHasGreeted]);
-
-  const handleChat = (input?: string, isDeep = false) => {
-    const text = input || userInput;
-    if (!text.trim() || isStreaming) return;
-
-    const newMessages = [...chatMessages, { role: 'user' as const, text }];
-    setChatMessages(newMessages);
-    setUserInput('');
-    setIsStreaming(true);
-    
-    if (isDeep) setIsDeepSearching(true);
-
-    const sources = isDeep ? ['ECI Knowledge Graph', 'Legal Gazette 2026', 'VoterFlow Archives'] : undefined;
-    
-    // Add an empty AI message that we will fill
-    setChatMessages(prev => [...prev, { role: 'ai', text: 'Thinking...', sources }]);
-
-    // Format history for Gemini
-    const history = chatMessages.map(m => 
-        `${m.role === 'user' ? 'User' : 'Assistant'}: ${m.text}`
-    ).join('\n');
-
-    const systemPrompt = `You are the VoterFlow Intelligence Core (Gemini 1.5). 
-    Your mission is to assist Indian citizens in navigating the 2026 Special Intensive Revision (SIR) cycle.
-    
-    CURRENT CONTEXT:
-    - User Persona: ${persona || 'General Citizen'}.
-    - Constituency: PC 25 (Bengaluru).
-    
-    CHAT HISTORY:
-    ${history}
-    
-    STYLE: Professional, concise, authoritative. Respond dynamically based on history.`;
-
-    streamGeminiResponse(text, systemPrompt, (fullText) => {
-        setIsDeepSearching(false);
-        setChatMessages(prev => {
-            const updatedMessages = [...prev];
-            updatedMessages[updatedMessages.length - 1] = { role: 'ai', text: fullText, sources };
-            return updatedMessages;
-        });
-    }).then(() => {
-        setIsStreaming(false);
-        addReadiness(2);
-    });
-  };
 
 
 
   return (
-    <div className="flex gap-8 items-start relative h-[85vh]">
-      {/* Sticky Left Sidebar */}
+    <div className={cn(
+        "flex min-h-screen bg-[#FDFDFD]/50 transition-all duration-1000",
+        persona === 'Student' ? "persona-student" : 
+        persona === 'Senior' ? "persona-senior" : "persona-new"
+    )}>
+      {/* Sidebar - Desktop Only */}
       <motion.aside
         initial={{ x: -50, opacity: 0 }}
         animate={{ x: 0, opacity: 1 }}
-        className="w-72 bg-white/40 backdrop-blur-xl border border-white/40 rounded-[3rem] p-8 shadow-xl sticky top-32 flex flex-col h-full"
+        className="w-72 glass rounded-[3rem] p-8 shadow-2xl shadow-civic-navy/5 sticky top-32 flex flex-col h-[calc(100vh-160px)]"
       >
         <div className="flex items-center gap-3 mb-12 px-2">
           <div className="w-10 h-10 bg-civic-navy rounded-xl flex items-center justify-center">
@@ -230,7 +166,7 @@ export const Dashboard = () => {
         </nav>
 
         {/* Sovereign Achievements (Badges) - NEW FEATURE */}
-        <div className="mt-8 p-6 bg-white/60 rounded-3xl border border-white relative overflow-hidden group">
+        <div className="mt-8 p-6 glass-dark rounded-3xl relative overflow-hidden group">
             <h4 className="text-[9px] font-black text-civic-navy uppercase tracking-widest mb-4 flex items-center gap-2">
                 <Award className="w-3 h-3 text-civic-saffron" /> Sovereign Badges
             </h4>
@@ -256,7 +192,7 @@ export const Dashboard = () => {
         </div>
 
         {/* Readiness Score Molecule */}
-        <div className="mt-8 p-6 bg-white/60 rounded-3xl border border-white relative overflow-hidden group">
+        <div className="mt-8 p-6 glass-dark rounded-3xl relative overflow-hidden group">
             <div className="flex justify-between items-center mb-4 relative z-10">
                 <Target className="w-5 h-5 text-civic-navy" />
                 <span className="text-[10px] font-black text-civic-navy uppercase tracking-widest">{Math.round(readinessScore)}% Ready</span>
@@ -280,45 +216,25 @@ export const Dashboard = () => {
       </motion.aside>
 
       {/* Main Content Area */}
-      <div className="flex-1 overflow-y-auto pr-4 custom-scrollbar h-full space-y-8 pb-32">
+      <div className="flex-1 space-y-8 pb-32 relative">
+          <div className="absolute inset-0 bg-white/5 backdrop-blur-[2px] -z-10 rounded-[4rem] pointer-events-none" />
           
-          {/* VoterFlow Assistant Access */}
-          <motion.div 
-              whileHover={{ scale: 1.01 }}
-              onClick={() => setIsChatOpen(true)}
-              className="w-full bg-gradient-to-r from-google-blue via-purple-600 to-civic-navy p-1 rounded-[3.5rem] cursor-pointer shadow-2xl shadow-google-blue/20 group"
-          >
-              <div className="bg-white/95 backdrop-blur-xl rounded-[3.3rem] p-10 flex flex-col md:flex-row justify-between items-center gap-8">
-                  <div className="flex items-center gap-8">
-                      <div className="w-24 h-24 bg-gray-50 rounded-[2.5rem] flex items-center justify-center relative overflow-hidden group-hover:bg-white transition-all shadow-inner">
-                          <img src="https://www.gstatic.com/lamda/images/gemini_sparkle_v002_d4735304ff6292a690345.svg" className="w-12 h-12 relative z-10" alt="Gemini" />
-                          <div className="absolute inset-0 bg-gradient-to-tr from-google-blue/10 to-purple-500/10 animate-pulse" />
-                      </div>
-                      <div className="text-left">
-                          <h3 className="text-3xl font-display font-bold text-civic-navy tracking-tight">VoterFlow Assistant</h3>
-                          <p className="text-sm text-gray-500 mt-2 font-medium max-w-md leading-relaxed">
-                              Experience real-time intelligence for the 2026 Revision cycle. Resolve complex civic disputes and verify identity in seconds.
-                          </p>
-                      </div>
-                  </div>
-                  <div className="px-10 py-5 bg-civic-navy text-white font-black rounded-2xl text-xs uppercase tracking-widest flex items-center gap-3 group-hover:bg-google-blue transition-all shadow-xl shadow-civic-navy/20">
-                      <Sparkles className="w-5 h-5 text-civic-saffron" /> Launch AI Assistant
-                  </div>
-              </div>
-          </motion.div>
+          {/* Removed Large VoterFlow Assistant Access Banner */}
 
             {/* VoterFlow Alert Ticker */}
-            <div className="w-full bg-red-50/50 backdrop-blur-md border border-red-100 rounded-3xl p-6 flex items-center gap-6 overflow-hidden">
-                <div className="flex items-center gap-3 px-4 py-2 bg-red-500 text-white rounded-full text-[10px] font-black uppercase tracking-widest animate-pulse">
-                    <Zap className="w-4 h-4 fill-white" /> Emergency Alert
+            <div className="w-full glass-vibrant rounded-3xl p-6 flex items-center gap-6 overflow-hidden relative">
+                <div className="flex items-center gap-3 px-4 py-2 bg-gradient-to-r from-red-600 to-red-500 text-white rounded-full text-[10px] font-black uppercase tracking-widest animate-pulse shadow-lg shadow-red-500/20 shrink-0 z-10">
+                    <Zap className="w-4 h-4 fill-white" /> Urgent
                 </div>
-                <motion.div 
-                    animate={{ x: ["100%", "-100%"] }}
-                    transition={{ duration: 30, repeat: Infinity, ease: "linear" }}
-                    className="whitespace-nowrap text-[10px] font-bold uppercase tracking-widest text-red-900"
-                >
-                    SIR 2026: House-to-House Mapping is active in Karnataka Sectors. // Form 12D Home Voting requests open for Senior Citizens. // Aadhaar-EPIC linking is mandatory for data integrity.
-                </motion.div>
+                <div className="flex-1 overflow-hidden relative h-full flex items-center">
+                    <motion.div 
+                        animate={{ x: ["100%", "-100%"] }}
+                        transition={{ duration: 30, repeat: Infinity, ease: "linear" }}
+                        className="whitespace-nowrap text-[10px] font-bold uppercase tracking-widest text-red-900"
+                    >
+                        SIR 2026: House-to-House Mapping is active in Karnataka Sectors. // Form 12D Home Voting requests open for Senior Citizens. // Aadhaar-EPIC linking is mandatory for data integrity.
+                    </motion.div>
+                </div>
             </div>
 
             <AnimatePresence mode="wait">
@@ -369,7 +285,9 @@ export const Dashboard = () => {
               </motion.div>
               
               {/* Personal Voting Journey Checklist - NEW FEATURE */}
-              <motion.div variants={{ hidden: { y: 20, opacity: 0 }, show: { y: 0, opacity: 1 } }} className="xl:col-span-2 bg-white/60 backdrop-blur-xl rounded-[3.5rem] p-10 border border-white/50 shadow-sm relative overflow-hidden group">
+              <motion.div variants={{ hidden: { y: 20, opacity: 0 }, show: { y: 0, opacity: 1 } }} className="xl:col-span-2 group">
+                  <TiltCard>
+                      <div className="glass-card rounded-[3.5rem] p-10 relative overflow-hidden">
                   <div className="absolute top-0 right-0 p-10 opacity-5 pointer-events-none group-hover:scale-110 transition-transform">
                       <Target className="w-40 h-40 text-civic-navy" />
                   </div>
@@ -413,10 +331,14 @@ export const Dashboard = () => {
                         </button>
                       ))}
                   </div>
+                      </div>
+                  </TiltCard>
               </motion.div>
 
               {/* VoterFlow Timeline Feature */}
-              <motion.div variants={{ hidden: { y: 20, opacity: 0 }, show: { y: 0, opacity: 1 } }} className="xl:col-span-2 bg-white/40 backdrop-blur-xl rounded-[3.5rem] p-12 border border-white/50 shadow-sm overflow-hidden relative group">
+              <motion.div variants={{ hidden: { y: 20, opacity: 0 }, show: { y: 0, opacity: 1 } }} className="xl:col-span-2 group">
+                  <TiltCard>
+                      <div className="glass-card rounded-[3.5rem] p-12 overflow-hidden relative">
                   <div className="absolute top-0 right-0 p-8 opacity-5 pointer-events-none group-hover:scale-110 transition-transform duration-700">
                       <Calendar className="w-48 h-48 text-civic-navy" />
                   </div>
@@ -438,7 +360,7 @@ export const Dashboard = () => {
                         <button 
                             key={i} 
                             onClick={() => {
-                                setChatMessages(prev => [...prev, { role: 'ai', text: `Milestone Intel: ${t.event} (${t.date}). ${t.details}` }]);
+                                addChatMessage({ role: 'ai', text: `Milestone Intel: ${t.event} (${t.date}). ${t.details}` });
                                 setIsChatOpen(true);
                             }}
                             className="flex flex-col items-center text-center relative z-10 group/item hover:scale-110 transition-transform"
@@ -457,17 +379,21 @@ export const Dashboard = () => {
                         </button>
                       ))}
                   </div>
+                      </div>
+                  </TiltCard>
               </motion.div>
 
               {/* Polling Booth Locator (Real Map) */}
               <motion.div variants={{ hidden: { y: 20, opacity: 0 }, show: { y: 0, opacity: 1 } }} className="xl:col-span-2">
-                <PollingBoothLocator />
+                <TiltCard>
+                  <PollingBoothLocator />
+                </TiltCard>
               </motion.div>
 
               {/* Top 50 Feature: Heatmap & Future Voter Tool */}
               <motion.div variants={{ hidden: { y: 20, opacity: 0 }, show: { y: 0, opacity: 1 } }} className="grid grid-cols-1 xl:grid-cols-2 gap-8 xl:col-span-2">
-                  <ConstituencyHeatmap onOpenChat={() => setIsChatOpen(true)} />
-                  <FutureVoterTool />
+                  <TiltCard><ConstituencyHeatmap onOpenChat={() => setIsChatOpen(true)} /></TiltCard>
+                  <TiltCard><FutureVoterTool /></TiltCard>
               </motion.div>
 
               {/* VoterFlow Voter Card */}
@@ -525,67 +451,75 @@ export const Dashboard = () => {
               {/* Form Assistant Card */}
               <motion.div 
                 variants={{ hidden: { y: 20, opacity: 0 }, show: { y: 0, opacity: 1 } }}
-                whileHover={{ y: -8 }}
                 onClick={() => setActiveFlow('registration')}
-                className="bg-white/70 backdrop-blur-2xl rounded-[3.5rem] p-12 border border-white/50 shadow-sm flex flex-col group relative overflow-hidden cursor-pointer"
+                className="xl:col-span-1"
               >
-                <div className="absolute top-0 right-0 p-12 opacity-5 pointer-events-none">
-                    <UserPlus className="w-48 h-48 text-civic-navy" />
-                </div>
-                <div className="flex justify-between items-start mb-10 relative z-10">
-                  <div className="w-16 h-16 bg-civic-navy rounded-2xl flex items-center justify-center group-hover:scale-110 group-hover:rotate-6 transition-all duration-500 shadow-xl shadow-civic-navy/10">
-                    <UserPlus className="text-white w-7 h-7" />
+                <TiltCard className="h-full">
+                  <div className="bg-white/70 backdrop-blur-2xl rounded-[3.5rem] p-12 border border-white/50 shadow-sm flex flex-col group relative overflow-hidden cursor-pointer h-full">
+                    <div className="absolute top-0 right-0 p-12 opacity-5 pointer-events-none">
+                        <UserPlus className="w-48 h-48 text-civic-navy" />
+                    </div>
+                    <div className="flex justify-between items-start mb-10 relative z-10">
+                      <div className="w-16 h-16 bg-civic-navy rounded-2xl flex items-center justify-center group-hover:scale-110 group-hover:rotate-6 transition-all duration-500 shadow-xl shadow-civic-navy/10">
+                        <UserPlus className="text-white w-7 h-7" />
+                      </div>
+                      <CheckCircle className={cn("w-8 h-8 transition-all duration-500", progress.registration === 100 ? "text-civic-green scale-110" : "text-gray-100")} />
+                    </div>
+                    <div className="relative z-10">
+                        <h3 className="text-3xl font-bold text-civic-navy mb-4">{t('registration')} Suite</h3>
+                        <p className="text-sm text-gray-500 mb-10 leading-relaxed max-w-sm">
+                          Secure Form 6 engine with automated document verification and BLO mapping.
+                        </p>
+                    </div>
+                    <div className="mt-auto relative z-10">
+                       <div className="flex justify-between text-[9px] font-bold text-gray-400 mb-3 uppercase tracking-[0.2em]">Application Progress</div>
+                      <div className="h-2 w-full bg-gray-100 rounded-full overflow-hidden mb-8">
+                        <motion.div animate={{ width: `${progress.registration}%` }} className="h-full bg-civic-navy" />
+                      </div>
+                      <button className="w-full py-6 bg-civic-navy text-white font-bold rounded-[2rem] shadow-2xl shadow-civic-navy/30 flex items-center justify-center gap-3 active:scale-95 transition-all group/btn">
+                        Open Digital Wizard <ArrowRight className="w-5 h-5 group-hover:translate-x-2 transition-transform" />
+                      </button>
+                    </div>
                   </div>
-                  <CheckCircle className={cn("w-8 h-8 transition-all duration-500", progress.registration === 100 ? "text-civic-green scale-110" : "text-gray-100")} />
-                </div>
-                <div className="relative z-10">
-                    <h3 className="text-3xl font-bold text-civic-navy mb-4">{t('registration')} Suite</h3>
-                    <p className="text-sm text-gray-500 mb-10 leading-relaxed max-w-sm">
-                      Secure Form 6 engine with automated document verification and BLO mapping.
-                    </p>
-                </div>
-                <div className="mt-auto relative z-10">
-                   <div className="flex justify-between text-[9px] font-bold text-gray-400 mb-3 uppercase tracking-[0.2em]">Application Progress</div>
-                  <div className="h-2 w-full bg-gray-100 rounded-full overflow-hidden mb-8">
-                    <motion.div animate={{ width: `${progress.registration}%` }} className="h-full bg-civic-navy" />
-                  </div>
-                  <button className="w-full py-6 bg-civic-navy text-white font-bold rounded-[2rem] shadow-2xl shadow-civic-navy/30 flex items-center justify-center gap-3 active:scale-95 transition-all group/btn">
-                    Open Digital Wizard <ArrowRight className="w-5 h-5 group-hover:translate-x-2 transition-transform" />
-                  </button>
-                </div>
+                </TiltCard>
               </motion.div>
 
               {/* AI Validator Molecule */}
               <motion.div 
                 variants={{ hidden: { y: 20, opacity: 0 }, show: { y: 0, opacity: 1 } }}
-                whileHover={{ y: -8 }}
                 onClick={() => setShowAiValidator(true)}
-                className="bg-white/70 backdrop-blur-2xl rounded-[3.5rem] p-12 border border-white/50 shadow-sm flex flex-col group cursor-pointer relative overflow-hidden"
+                className="xl:col-span-1"
               >
-                 <div className="absolute top-0 right-0 p-12 opacity-5 pointer-events-none">
-                    <Cpu className="w-48 h-48 text-civic-navy" />
-                </div>
-                <div className="flex justify-between items-start mb-10 relative z-10">
-                  <div className="w-16 h-16 bg-civic-navy rounded-2xl flex items-center justify-center group-hover:scale-110 group-hover:-rotate-6 transition-all duration-500 shadow-xl">
-                    <Cpu className="text-civic-saffron w-7 h-7" />
-                  </div>
-                  <span className="px-4 py-2 bg-civic-navy/5 rounded-full text-[9px] font-black text-civic-navy uppercase tracking-widest">VoterFlow AI v2.4</span>
-                </div>
-                <div className="relative z-10">
-                    <h3 className="text-3xl font-bold text-civic-navy mb-4">Document Validator</h3>
-                    <p className="text-sm text-gray-500 mb-10 leading-relaxed max-w-sm">
-                      Pre-verify your identity and residency documents against ECI legislative standards.
-                    </p>
-                </div>
-                <div className="mt-auto relative z-10">
-                    <div className="flex items-center gap-3 text-civic-navy font-bold text-[11px] uppercase tracking-[0.2em]">
-                        Analyze Documents <ArrowRight className="w-5 h-5 group-hover:translate-x-2 transition-transform" />
+                <TiltCard className="h-full">
+                  <div className="bg-white/70 backdrop-blur-2xl rounded-[3.5rem] p-12 border border-white/50 shadow-sm flex flex-col group cursor-pointer relative overflow-hidden h-full">
+                     <div className="absolute top-0 right-0 p-12 opacity-5 pointer-events-none">
+                        <Cpu className="w-48 h-48 text-civic-navy" />
                     </div>
-                </div>
+                    <div className="flex justify-between items-start mb-10 relative z-10">
+                      <div className="w-16 h-16 bg-civic-navy rounded-2xl flex items-center justify-center group-hover:scale-110 group-hover:-rotate-6 transition-all duration-500 shadow-xl">
+                        <Cpu className="text-civic-saffron w-7 h-7" />
+                      </div>
+                      <span className="px-4 py-2 bg-civic-navy/5 rounded-full text-[9px] font-black text-civic-navy uppercase tracking-widest">VoterFlow AI v2.4</span>
+                    </div>
+                    <div className="relative z-10">
+                        <h3 className="text-3xl font-bold text-civic-navy mb-4">Document Validator</h3>
+                        <p className="text-sm text-gray-500 mb-10 leading-relaxed max-w-sm">
+                          Pre-verify your identity and residency documents against ECI legislative standards.
+                        </p>
+                    </div>
+                    <div className="mt-auto relative z-10">
+                        <div className="flex items-center gap-3 text-civic-navy font-bold text-[11px] uppercase tracking-[0.2em]">
+                            Analyze Documents <ArrowRight className="w-5 h-5 group-hover:translate-x-2 transition-transform" />
+                        </div>
+                    </div>
+                  </div>
+                </TiltCard>
               </motion.div>
 
               {/* Ink & Voice Social Pulse */}
-              <motion.div variants={{ hidden: { y: 20, opacity: 0 }, show: { y: 0, opacity: 1 } }} className="xl:col-span-2 bg-civic-saffron/5 border border-civic-saffron/20 rounded-[3.5rem] p-12 overflow-hidden relative group">
+              <motion.div variants={{ hidden: { y: 20, opacity: 0 }, show: { y: 0, opacity: 1 } }} className="xl:col-span-2">
+                <TiltCard>
+                  <div className="bg-civic-saffron/5 border border-civic-saffron/20 rounded-[3.5rem] p-12 overflow-hidden relative group">
                   <div className="flex justify-between items-center relative z-10">
                       <div>
                           <div className="flex items-center gap-3 mb-4">
@@ -621,10 +555,14 @@ export const Dashboard = () => {
                         </div>
                       ))}
                   </div>
-              </motion.div>
+                </div>
+              </TiltCard>
+            </motion.div>
 
               {/* Candidate Intelligence - NEW TOP 50 FEATURE */}
-              <motion.div variants={{ hidden: { y: 20, opacity: 0 }, show: { y: 0, opacity: 1 } }} className="xl:col-span-2 bg-white/60 backdrop-blur-xl rounded-[3.5rem] p-12 border border-white/50 shadow-sm relative overflow-hidden group">
+              <motion.div variants={{ hidden: { y: 20, opacity: 0 }, show: { y: 0, opacity: 1 } }} className="xl:col-span-2 group">
+                  <TiltCard>
+                      <div className="glass-card rounded-[3.5rem] p-12 relative overflow-hidden">
                   <div className="flex justify-between items-end mb-10">
                       <div>
                           <div className="flex items-center gap-3 mb-4">
@@ -667,6 +605,8 @@ export const Dashboard = () => {
                         </div>
                       ))}
                   </div>
+                      </div>
+                  </TiltCard>
               </motion.div>
             </motion.div>
           ) : activeTab === 'registration' ? (
@@ -1080,155 +1020,6 @@ export const Dashboard = () => {
         )}
       </AnimatePresence>
 
-      {/* VoterFlow Assistant - Right Sidebar Overlay */}
-      <AnimatePresence>
-        {isChatOpen && (
-          <div className="fixed inset-0 z-[5000] flex justify-end bg-civic-navy/10 backdrop-blur-md">
-            <motion.div
-              initial={{ x: 500, opacity: 0 }}
-              animate={{ x: 0, opacity: 1 }}
-              exit={{ x: 500, opacity: 0 }}
-              transition={{ type: "spring", damping: 30, stiffness: 300 }}
-              className="w-full max-w-lg h-full bg-white shadow-2xl flex flex-col relative"
-            >
-              {/* Chat Header */}
-              <div className="p-8 border-b border-gray-100 flex justify-between items-center bg-white/80 backdrop-blur-md sticky top-0 z-20">
-                <div className="flex items-center gap-4">
-                  <div className="w-12 h-12 bg-gray-50 rounded-2xl flex items-center justify-center border border-gray-100">
-                    <img src="https://www.gstatic.com/lamda/images/gemini_sparkle_v002_d4735304ff6292a690345.svg" className="w-8 h-8" alt="Gemini" />
-                  </div>
-                  <div>
-                    <h3 className="text-xl font-display font-bold text-civic-navy">VoterFlow AI</h3>
-                    <div className="flex items-center gap-2 mt-1">
-                        <div className="w-1.5 h-1.5 bg-civic-green rounded-full animate-pulse" />
-                        <span className="text-[9px] font-black text-gray-400 uppercase tracking-widest leading-none">Ready for Query</span>
-                    </div>
-                  </div>
-                </div>
-                <button onClick={() => setIsChatOpen(false)} className="p-3 bg-gray-50 rounded-full hover:bg-red-50 transition-all">
-                    <X className="w-5 h-5 text-gray-400" />
-                </button>
-              </div>
-
-              {/* Chat Area */}
-              <div className="flex-1 p-8 overflow-y-auto space-y-6 bg-gray-50/10 custom-scrollbar">
-                {chatMessages.length === 0 ? (
-                  <div className="h-full flex flex-col items-center justify-center text-center p-8">
-                    <div className="w-20 h-20 bg-gray-50 rounded-[2rem] flex items-center justify-center mb-6">
-                        <MessageCircle className="w-10 h-10 text-gray-300" />
-                    </div>
-                    <h4 className="text-xl font-display font-bold text-civic-navy">How can I help you today?</h4>
-                    <p className="text-sm text-gray-400 mt-2 max-w-xs leading-relaxed">
-                        I can help with Form 6 registration, EPIC corrections, or SIR 2026 deadlines.
-                    </p>
-                  </div>
-                ) : (
-                  chatMessages.map((m, idx) => (
-                    <motion.div 
-                      key={idx} 
-                      initial={{ opacity: 0, y: 10 }}
-                      animate={{ opacity: 1, y: 0 }}
-                      className={cn(
-                        "p-6 rounded-[2rem] max-w-[90%] shadow-sm",
-                        m.role === 'user' ? "bg-civic-navy text-white ml-auto rounded-tr-none" : "bg-white text-civic-navy border border-gray-100 rounded-tl-none"
-                      )}
-                    >
-                      <div className="text-[13px] font-medium leading-relaxed">{m.text}</div>
-                      {m.sources && (
-                        <div className="mt-4 pt-4 border-t border-gray-100 grid grid-cols-2 gap-2">
-                          {m.sources.map(s => (
-                            <div key={s} className="flex items-center gap-2 p-2 bg-gray-50 rounded-lg">
-                              <BookOpen className="w-3 h-3 text-civic-navy" />
-                              <span className="text-[8px] font-bold text-civic-navy">{s}</span>
-                            </div>
-                          ))}
-                        </div>
-                      )}
-                    </motion.div>
-                  ))
-                )}
-                {isDeepSearching && (
-                  <div className="p-6 bg-white rounded-[2rem] border border-gray-100 shadow-sm max-w-[80%] space-y-3">
-                    <div className="flex items-center gap-3">
-                      <Loader2 className="w-4 h-4 text-google-blue animate-spin" />
-                      <span className="text-[10px] font-black text-gray-400 uppercase tracking-widest">Accessing VoterFlow Archives...</span>
-                    </div>
-                  </div>
-                )}
-                <div ref={chatEndRef} />
-              </div>
-
-              {/* Chat Input */}
-              <div className="p-8 bg-white border-t border-gray-100">
-                <div className="flex gap-4 p-3 bg-gray-50 rounded-[2rem] border border-gray-100 focus-within:bg-white transition-all">
-                  <input 
-                    value={userInput}
-                    onChange={e => setUserInput(e.target.value)}
-                    onKeyPress={e => e.key === 'Enter' && handleChat()}
-                    placeholder="Ask about registration..."
-                    className="flex-1 px-4 bg-transparent text-sm font-medium focus:outline-none"
-                  />
-                  <button 
-                    onClick={() => handleChat()} 
-                    disabled={isStreaming} 
-                    className="p-4 bg-civic-navy text-white rounded-2xl hover:scale-105 active:scale-95 transition-all"
-                  >
-                    <Send className="w-5 h-5" />
-                  </button>
-                </div>
-                <div className="mt-6 flex flex-wrap gap-2">
-                    {['Check Booth Queue', 'Form 6 Checklist'].map(p => (
-                        <button key={p} onClick={() => handleChat(p)} className="px-4 py-2 bg-gray-50 hover:bg-civic-navy hover:text-white rounded-xl text-[10px] font-bold text-gray-400 transition-all border border-gray-100">
-                            {p}
-                        </button>
-                    ))}
-                </div>
-              </div>
-            </motion.div>
-          </div>
-        )}
-      </AnimatePresence>
-
-        {/* Floating Chat Workspace Trigger */}
-        <div className="fixed bottom-12 right-12 z-[3000] flex flex-col items-end gap-6">
-          <AnimatePresence>
-            {showChatTooltip && !isChatOpen && (
-              <motion.div
-                initial={{ opacity: 0, y: 10, scale: 0.9 }}
-                animate={{ 
-                  opacity: 1, 
-                  y: [0, -8, 0], 
-                  scale: 1 
-                }}
-                exit={{ opacity: 0, y: 10, scale: 0.9 }}
-                transition={{
-                  opacity: { duration: 0.3 },
-                  scale: { duration: 0.3 },
-                  y: { duration: 3, repeat: Infinity, ease: "easeInOut" }
-                }}
-                className="bg-civic-navy text-white px-6 py-3 rounded-2xl shadow-2xl relative mb-4 mr-2"
-              >
-                <div className="text-[10px] font-bold whitespace-nowrap">Have any issues? I'm here to assist you</div>
-                <div className="absolute -bottom-1 right-8 w-2 h-2 bg-civic-navy rotate-45" />
-              </motion.div>
-            )}
-          </AnimatePresence>
-
-          <motion.button
-            whileHover={{ scale: 1.1, rotate: 5 }}
-            whileTap={{ scale: 0.9, rotate: -5 }}
-            onClick={() => {
-              setIsChatOpen(!isChatOpen);
-              setShowChatTooltip(false);
-            }}
-            className={cn(
-              "w-20 h-20 rounded-[2.5rem] shadow-[0_30px_60px_rgba(0,0,0,0.35)] flex items-center justify-center transition-all duration-500",
-              isChatOpen ? "bg-white text-civic-navy border-4 border-civic-navy" : "bg-civic-navy text-white"
-            )}
-          >
-            {isChatOpen ? <X className="w-8 h-8" /> : <MessageCircle className="w-8 h-8" />}
-          </motion.button>
-        </div>
-      </div>
+    </div>
   );
 };

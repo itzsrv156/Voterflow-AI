@@ -14,7 +14,7 @@ export const Header = () => {
       animate={{ y: 0 }}
       className="fixed top-0 left-0 right-0 z-[1000] px-10 py-6"
     >
-      <div className="max-w-[1600px] mx-auto flex items-center justify-between bg-white/40 backdrop-blur-3xl border border-white/40 rounded-[2.5rem] px-10 py-5 shadow-2xl">
+      <div className="max-w-[1600px] mx-auto flex items-center justify-between glass rounded-[2.5rem] px-10 py-5 shadow-2xl">
         {/* Logo - Click to Reload/Home */}
         <button 
           onClick={() => resetStore()}
@@ -107,7 +107,7 @@ export const Header = () => {
                 </button>
                 
                 {/* Floating Notification Panel */}
-                <div className="absolute top-full right-0 mt-4 w-72 bg-white rounded-[2.5rem] shadow-2xl border border-gray-100 p-8 opacity-0 translate-y-4 pointer-events-none group-hover:opacity-100 group-hover:translate-y-0 transition-all z-50">
+                <div className="absolute top-full right-0 mt-4 w-72 glass-card rounded-[2.5rem] p-8 opacity-0 translate-y-4 pointer-events-none group-hover:opacity-100 group-hover:translate-y-0 transition-all z-50">
                     <div className="flex items-center justify-between mb-6">
                         <h4 className="text-[10px] font-black text-civic-navy uppercase tracking-widest">Sovereign Alerts</h4>
                         <span className="px-2 py-0.5 bg-civic-saffron/10 text-civic-saffron text-[8px] font-bold rounded-full">2 NEW</span>
@@ -166,7 +166,7 @@ export const Header = () => {
                             initial={{ opacity: 0, y: 10, scale: 0.95 }}
                             animate={{ opacity: 1, y: 0, scale: 1 }}
                             exit={{ opacity: 0, y: 10, scale: 0.95 }}
-                            className="absolute right-0 mt-4 w-64 bg-white rounded-[2rem] shadow-2xl border border-gray-100 p-8 z-[1010]"
+                            className="absolute right-0 mt-4 w-64 glass-card rounded-[2rem] p-8 z-[1010]"
                         >
                             <div className="flex flex-col items-center text-center">
                                 <div className="w-16 h-16 bg-civic-navy rounded-full flex items-center justify-center mb-4 shadow-xl">

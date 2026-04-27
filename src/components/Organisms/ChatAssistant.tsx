@@ -1,8 +1,14 @@
-import { useState, useRef, useEffect } from 'react';
+import React, { useState, useRef, useEffect } from 'react';
 import { motion, AnimatePresence } from 'framer-motion';
 import { useVoterStore } from '../../store/useVoterStore';
-import { X, Send, Sparkles, Search, Loader2, ShieldCheck, BookOpen, AlertCircle, Headphones } from 'lucide-react';
+import { streamGeminiResponse } from '../../services/geminiCore';
+import { 
+    X, Send, Sparkles, Search, 
+    BookOpen, MessageCircle 
+} from 'lucide-react';
 import { cn } from '../../lib/utils';
+import { Waveform } from '../Atoms/Waveform';
+import { NeuralLogicGraph } from '../Atoms/NeuralLogicGraph';
 
 const CHIPS = [
   { label: 'Form 6: New Registration', icon: '🗳️' },
@@ -11,253 +17,191 @@ const CHIPS = [
   { label: 'Home Voting (Form 12D)', icon: '🏠' },
 ];
 
-const SEARCH_STAGES = [
-  "Initializing Federated Search Engine...",
-  "Querying ECI Open Data Archives (2025-2026)...",
-  "Analyzing Legislative Amendments (Form 6/8/12D)...",
-  "Synthesizing Sovereign Intelligence Report...",
-];
-
-export const ChatAssistant = ({ isOpen, onClose }: { isOpen: boolean; onClose: () => void }) => {
-  const { persona, readinessScore } = useVoterStore();
-  const [messages, setMessages] = useState<{ role: 'user' | 'ai'; text: string; sources?: string[] }[]>([]);
-  const [userInput, setUserInput] = useState('');
-  const [isStreaming, setIsStreaming] = useState(false);
-  const [searchStage, setSearchStage] = useState<string | null>(null);
-  const chatEndRef = useRef<HTMLDivElement>(null);
-
-  useEffect(() => {
-    chatEndRef.current?.scrollIntoView({ behavior: 'smooth' });
-  }, [messages, searchStage]);
-
-  const handleSend = (text?: string, deepSearch = false) => {
-    const message = text || userInput;
-    if (!message.trim() || isStreaming) return;
-
-    setMessages(prev => [...prev, { role: 'user', text: message }]);
-    setUserInput('');
-    setIsStreaming(true);
+export const ChatAssistant: React.FC = () => {
+    const { 
+        isChatOpen, setIsChatOpen, persona, 
+        addReadiness, hasGreeted, setHasGreeted,
+        chatMessages: messages, addChatMessage, updateLastChatMessage
+    } = useVoterStore();
     
-    if (deepSearch) {
-        let stageIdx = 0;
-        setSearchStage(SEARCH_STAGES[0]);
-        const stageInterval = setInterval(() => {
-            stageIdx++;
-            if (stageIdx < SEARCH_STAGES.length) {
-                setSearchStage(SEARCH_STAGES[stageIdx]);
-            } else {
-                clearInterval(stageInterval);
-                setSearchStage(null);
-                processResponse(message, true);
-            }
-        }, 1200);
-    } else {
-        processResponse(message, false);
-    }
-  };
+    const [userInput, setUserInput] = useState('');
+    const [isStreaming, setIsStreaming] = useState(false);
+    const [isDeepSearching, setIsDeepSearching] = useState(false);
+    const chatEndRef = useRef<HTMLDivElement>(null);
 
-  const processResponse = (query: string, isDeep: boolean) => {
-    const sources = isDeep ? [
-        'ECI Circular 2026/04/SIR',
-        'Representation of the People Act, 1950 (Amended)',
-        'VoterFlow AI Knowledge Graph'
-    ] : undefined;
+    useEffect(() => {
+        chatEndRef.current?.scrollIntoView({ behavior: 'smooth' });
+    }, [messages, isDeepSearching]);
 
-    setMessages(prev => [...prev, { role: 'ai', text: 'Analyzing Sovereign Data...', sources }]);
-    
-    const getResponse = (q: string) => {
-        const lowerQ = q.toLowerCase();
-        if (lowerQ.includes('form 6')) return "Form 6 is the Sovereign Gateway for new electors. The qualifying date for the current cycle is 01-01-2026. You'll need high-res scans of your identity and address proofs. I recommend using our AI Validator to pre-screen your documents.";
-        if (lowerQ.includes('sir')) return `The Special Intensive Revision (SIR) 2026 is currently in Phase 2. Your readiness is at ${Math.round(readinessScore)}%. To reach 100%, link your Aadhaar and verify your sector mapping in the 'Overview' tab.`;
-        if (lowerQ.includes('deadline')) return "Important: The SIR 2026 window for claims and objections closes on February 15, 2026. Final roll publication is scheduled for March 2026.";
-        if (isDeep) return `Sovereign Deep Search for "${q}" completed. For a ${persona || 'Citizen'} profile in PC 25, our federated engine confirms your sector mapping is active. No immediate action is required beyond the standard Form 6 filing.`;
-        return `I've analyzed your query regarding "${q}". The current ECI 2026 framework emphasizes digital-first registration. Would you like me to open the Digital Form Suite or explain the verification process?`;
+    // Initial Greeting Logic
+    useEffect(() => {
+        if (!hasGreeted && persona && isChatOpen) {
+            const greetings: Record<string, string> = {
+                FirstTime: "Namaste! Welcome, First-Time Voter. I'm your Sovereign Intel Coach. Your journey to democratic participation starts here. I recommend launching the 'Registration Suite' to check your eligibility.",
+                Student: "Hello! As a student, you have specific rights under SIR 2026. I can guide you through the Annexure-II residency declaration and Form 6 filing. Shall we begin?",
+                Senior: "Namaste. For our senior citizens, we offer priority assistance. I can help you understand the Form 12D process for home-voting in PC 25."
+            };
+            
+            setTimeout(() => {
+                addChatMessage({ role: 'ai', text: greetings[persona] || "Welcome to your Sovereign Dashboard. How can I assist your civic journey today?" });
+                setHasGreeted(true);
+            }, 0);
+        }
+    }, [persona, hasGreeted, setHasGreeted, isChatOpen, addChatMessage]);
+
+    const handleSend = (input?: string, isDeep = false) => {
+        const text = input || userInput;
+        if (!text.trim() || isStreaming) return;
+
+        addChatMessage({ role: 'user', text });
+        setUserInput('');
+        setIsStreaming(true);
+        if (isDeep) setIsDeepSearching(true);
+
+        const sources = isDeep ? ['ECI Knowledge Graph', 'Legal Gazette 2026', 'VoterFlow Archives'] : undefined;
+        addChatMessage({ role: 'ai', text: 'Synthesizing Sovereign Response...', sources });
+
+        const history = messages.map(m => `${m.role === 'user' ? 'User' : 'Assistant'}: ${m.text}`).join('\n');
+        const systemPrompt = `You are the VoterFlow Intelligence Core (Gemini 1.5). 
+        Assist Indian citizens in the 2026 SIR cycle. Persona: ${persona || 'Citizen'}. 
+        Style: Professional, concise, authoritative. \n\nHistory: ${history}`;
+
+        streamGeminiResponse(text, systemPrompt, (fullText) => {
+            setIsDeepSearching(false);
+            updateLastChatMessage(fullText, sources);
+        }).then(() => {
+            setIsStreaming(false);
+            addReadiness(2);
+        });
     };
 
-    const responseText = getResponse(query);
-    let currentText = "";
-    let i = 0;
-    
-    const interval = setInterval(() => {
-        if (i >= responseText.length) {
-            clearInterval(interval);
-            setIsStreaming(false);
-            return;
-        }
-        const chunk = responseText.slice(i, i + 3);
-        currentText += chunk;
-        i += 3;
-        
-        setMessages(prev => {
-            const newMsgs = [...prev];
-            newMsgs[newMsgs.length - 1] = { role: 'ai', text: currentText, sources };
-            return newMsgs;
-        });
-    }, 20);
-  };
-
-  return (
-    <AnimatePresence>
-      {isOpen && (
-        <motion.div
-          initial={{ x: '100%', opacity: 0 }}
-          animate={{ x: 0, opacity: 1 }}
-          exit={{ x: '100%', opacity: 0 }}
-          transition={{ type: 'spring', damping: 30, stiffness: 300 }}
-          className="fixed inset-y-0 right-0 w-full max-w-md bg-white/95 backdrop-blur-2xl shadow-[0_0_100px_rgba(0,0,0,0.1)] z-[1200] flex flex-col border-l border-gray-100"
-        >
-          {/* Header */}
-          <div className="bg-civic-navy p-8 flex justify-between items-center text-white relative overflow-hidden shrink-0">
-            <div className="absolute top-0 right-0 w-32 h-32 bg-civic-saffron/10 rounded-full -mr-16 -mt-16 blur-3xl" />
-            <div className="flex items-center gap-4 relative z-10">
-              <div className="w-12 h-12 bg-white/10 rounded-2xl flex items-center justify-center backdrop-blur-md border border-white/20">
-                <Sparkles className="w-6 h-6 text-civic-saffron" />
-              </div>
-              <div>
-                <h3 className="font-display font-bold text-xl leading-tight">Sovereign Coach</h3>
-                <div className="flex items-center gap-2">
-                    <div className="w-1.5 h-1.5 bg-green-400 rounded-full animate-pulse" />
-                    <p className="text-[9px] text-white/60 font-black uppercase tracking-[0.2em]">Federated Search Active</p>
-                </div>
-              </div>
-            </div>
-            <button onClick={onClose} className="p-3 hover:bg-white/10 rounded-2xl transition-all relative z-10">
-              <X className="w-6 h-6 text-white/40" />
-            </button>
-          </div>
-
-          {/* Messages */}
-          <div className="flex-1 overflow-y-auto p-8 space-y-8 bg-gray-50/50 custom-scrollbar">
-            <div className="flex flex-col gap-2">
-                <div className="bg-white p-6 rounded-[2rem] rounded-tl-none text-sm text-gray-600 shadow-sm border border-gray-100 leading-relaxed font-medium">
-                  Namaste! I am your **Sovereign Voter Intelligence Assistant**. How can I help you navigate the 2026 Electoral cycle today?
-                </div>
-                <div className="flex items-center gap-2 ml-4">
-                    <ShieldCheck className="w-3 h-3 text-civic-green" />
-                    <span className="text-[9px] font-bold text-gray-300 uppercase tracking-widest">ECI Trusted Agent</span>
-                </div>
-            </div>
-
-            {messages.map((m, i) => (
-              <div key={i} className="flex flex-col gap-3">
-                <div className={cn(
-                    "p-6 rounded-[2.5rem] text-sm leading-relaxed shadow-sm font-medium relative group", 
-                    m.role === 'user' 
-                    ? "bg-civic-navy text-white self-end ml-12 rounded-tr-none shadow-xl shadow-civic-navy/10" 
-                    : "bg-white text-gray-600 self-start mr-12 rounded-tl-none border border-gray-100"
-                )}>
-                  {m.text}
-                  
-                  {m.role === 'ai' && (
-                    <button 
-                        onClick={() => {
-                            // Simulating Speech Synthesis
-                            const utterance = new SpeechSynthesisUtterance(m.text);
-                            utterance.rate = 1.1;
-                            window.speechSynthesis.speak(utterance);
-                        }}
-                        className="absolute bottom-4 right-4 p-2 bg-gray-50 rounded-xl hover:bg-civic-saffron hover:text-white transition-all opacity-0 group-hover:opacity-100"
-                        title="Listen to Sovereign Guide"
+    return (
+        <AnimatePresence>
+            {isChatOpen && (
+                <div className="fixed bottom-24 right-12 z-[5000]">
+                    <motion.div
+                        initial={{ y: 50, opacity: 0, scale: 0.95 }}
+                        animate={{ y: 0, opacity: 1, scale: 1 }}
+                        exit={{ y: 50, opacity: 0, scale: 0.95 }}
+                        transition={{ type: "spring", damping: 30, stiffness: 300 }}
+                        className="w-[450px] h-[650px] glass rounded-[3rem] flex flex-col relative overflow-hidden shadow-[0_32px_128px_rgba(0,0,0,0.15)] border border-white/40"
                     >
-                        <Headphones className="w-4 h-4" />
-                    </button>
-                  )}
-                  
-                  {m.sources && (
-                      <div className="mt-4 pt-4 border-t border-gray-100 space-y-2">
-                          <div className="flex items-center gap-2 text-[9px] font-black text-gray-400 uppercase tracking-widest">
-                              <BookOpen className="w-3 h-3" /> Sources Verified
-                          </div>
-                          <div className="flex flex-wrap gap-2">
-                              {m.sources.map(s => (
-                                  <span key={s} className="px-2 py-1 bg-gray-50 rounded text-[8px] font-bold text-civic-navy border border-gray-100">{s}</span>
-                              ))}
-                          </div>
-                      </div>
-                  )}
-                </div>
-                <span className={cn(
-                    "text-[9px] font-black uppercase tracking-widest",
-                    m.role === 'user' ? "text-right mr-4 text-civic-navy/40" : "ml-4 text-civic-saffron"
-                )}>
-                    {m.role === 'user' ? 'Citizen Query' : 'Sovereign Intel Response'}
-                </span>
-              </div>
-            ))}
-            
-            {searchStage && (
-                <motion.div 
-                    initial={{ opacity: 0, y: 10 }}
-                    animate={{ opacity: 1, y: 0 }}
-                    className="flex flex-col gap-3 p-6 bg-white rounded-[2.5rem] border border-gray-100 shadow-sm"
-                >
-                    <div className="flex items-center gap-3">
-                        <Loader2 className="w-4 h-4 text-civic-navy animate-spin" />
-                        <span className="text-[10px] font-black text-civic-navy uppercase tracking-widest">{searchStage}</span>
-                    </div>
-                    <div className="h-1 w-full bg-gray-100 rounded-full overflow-hidden">
-                        <motion.div 
-                            initial={{ width: 0 }}
-                            animate={{ width: '100%' }}
-                            transition={{ duration: 4.8, ease: "linear" }}
-                            className="h-full bg-civic-saffron" 
-                        />
-                    </div>
-                </motion.div>
-            )}
-            <div ref={chatEndRef} />
-          </div>
+                        {/* Header */}
+                        <div className="p-6 border-b border-white/20 flex justify-between items-center bg-white/20 backdrop-blur-md sticky top-0 z-20">
+                            <div className="flex items-center gap-4">
+                                <div className="w-12 h-12 bg-white/40 rounded-2xl flex items-center justify-center border border-white/40 shadow-inner">
+                                    <Sparkles className="w-6 h-6 text-civic-navy animate-logo-glow" />
+                                </div>
+                                <div>
+                                    <h3 className="text-xl font-display font-bold text-civic-navy">Sovereign Intel</h3>
+                                    <div className="flex items-center gap-2">
+                                        <div className="w-1.5 h-1.5 bg-civic-green rounded-full animate-pulse shadow-[0_0_8px_rgba(18,136,7,0.6)]" />
+                                        <span className="text-[9px] font-black text-gray-400 uppercase tracking-widest leading-none">Federated Search Active</span>
+                                    </div>
+                                </div>
+                            </div>
+                            <button onClick={() => setIsChatOpen(false)} className="p-3 bg-gray-50 rounded-full hover:bg-red-50 transition-all text-gray-400">
+                                <X className="w-5 h-5" />
+                            </button>
+                        </div>
 
-          {/* Input Area */}
-          <div className="p-8 bg-white border-t border-gray-100 space-y-6 shrink-0">
-            <div className="flex flex-wrap gap-2">
-              {CHIPS.map(chip => (
-                <button
-                  key={chip.label}
-                  onClick={() => handleSend(chip.label)}
-                  disabled={isStreaming || !!searchStage}
-                  className="px-4 py-2 bg-gray-50 hover:bg-civic-navy hover:text-white text-[10px] font-black text-civic-navy rounded-xl transition-all flex items-center gap-2 border border-gray-100 hover:border-civic-navy shadow-sm disabled:opacity-50"
-                >
-                  <span className="text-xs">{chip.icon}</span>
-                  {chip.label}
-                </button>
-              ))}
-            </div>
-            
-            <div className="flex gap-3">
-              <div className="flex-1 relative group">
-                  <input 
-                    value={userInput}
-                    onChange={e => setUserInput(e.target.value)}
-                    onKeyPress={e => e.key === 'Enter' && handleSend()}
-                    placeholder="Ask about Form 6, SIR 2026..."
-                    disabled={isStreaming || !!searchStage}
-                    className="w-full pl-6 pr-12 py-4 bg-gray-50 border border-gray-100 rounded-[1.5rem] text-sm focus:outline-none focus:ring-2 focus:ring-civic-navy focus:bg-white transition-all font-medium disabled:opacity-50"
-                  />
-                  <button 
-                    onClick={() => handleSend(undefined, true)}
-                    disabled={isStreaming || !!searchStage}
-                    className="absolute right-4 top-1/2 -translate-y-1/2 text-gray-300 hover:text-civic-navy transition-colors p-1 disabled:opacity-50"
-                    title="Initiate Deep Sovereign Search"
-                  >
-                    <Search className="w-5 h-5" />
-                  </button>
-              </div>
-              <button 
-                onClick={() => handleSend()} 
-                disabled={isStreaming || !!searchStage || !userInput.trim()} 
-                className="p-4 bg-civic-navy text-white rounded-[1.5rem] shadow-xl shadow-civic-navy/20 active:scale-95 transition-all hover:shadow-2xl disabled:opacity-50 disabled:scale-100"
-              >
-                <Send className="w-6 h-6" />
-              </button>
-            </div>
-            
-            <div className="flex items-center justify-center gap-2 text-[8px] font-black text-gray-300 uppercase tracking-widest">
-                <AlertCircle className="w-3 h-3" /> All responses are based on simulated ECI data 2026
-            </div>
-          </div>
-        </motion.div>
-      )}
-    </AnimatePresence>
-  );
+                        {/* Chat Area */}
+                        <div className="flex-1 p-6 overflow-y-auto space-y-6 bg-gray-50/10 custom-scrollbar">
+                            {messages.length === 0 ? (
+                                <div className="h-full flex flex-col items-center justify-center text-center p-8">
+                                    <div className="w-20 h-20 bg-gray-50 rounded-[2.5rem] flex items-center justify-center mb-6 shadow-inner">
+                                        <MessageCircle className="w-10 h-10 text-gray-200" />
+                                    </div>
+                                    <h4 className="text-xl font-display font-bold text-civic-navy">Sovereign Assistant</h4>
+                                    <p className="text-sm text-gray-400 mt-2 max-w-xs leading-relaxed">
+                                        Authorized intelligence for the 2026 Special Intensive Revision. How may I assist your civic duty?
+                                    </p>
+                                </div>
+                            ) : (
+                                messages.map((m, idx) => (
+                                    <motion.div 
+                                        key={idx} 
+                                        initial={{ opacity: 0, y: 10 }}
+                                        animate={{ opacity: 1, y: 0 }}
+                                        className={cn(
+                                            "p-6 rounded-[2rem] max-w-[90%] shadow-sm text-sm font-medium leading-relaxed relative group",
+                                            m.role === 'user' 
+                                            ? "bg-civic-navy text-white ml-auto rounded-tr-none shadow-xl shadow-civic-navy/10" 
+                                            : "bg-white text-gray-600 border border-gray-100 rounded-tl-none"
+                                        )}
+                                    >
+                                        {m.text}
+                                        {m.sources && (
+                                            <div className="mt-4 pt-4 border-t border-gray-100 flex flex-wrap gap-2">
+                                                {m.sources.map(s => (
+                                                    <div key={s} className="flex items-center gap-2 px-2 py-1 bg-gray-50 rounded-lg border border-gray-100">
+                                                        <BookOpen className="w-3 h-3 text-civic-navy" />
+                                                        <span className="text-[8px] font-bold text-civic-navy">{s}</span>
+                                                    </div>
+                                                ))}
+                                            </div>
+                                        )}
+                                    </motion.div>
+                                ))
+                            )}
+                            
+                            {isDeepSearching && (
+                                <motion.div 
+                                    initial={{ opacity: 0, y: 10 }}
+                                    animate={{ opacity: 1, y: 0 }}
+                                    className="flex flex-col gap-4 p-6 bg-white rounded-[2.5rem] border border-gray-100 shadow-sm"
+                                >
+                                    <div className="flex items-center gap-4">
+                                        <Waveform />
+                                        <span className="text-[10px] font-black text-civic-navy uppercase tracking-widest">Analyzing Sovereign Repositories...</span>
+                                    </div>
+                                    <NeuralLogicGraph isActive={true} className="h-28" />
+                                </motion.div>
+                            )}
+                            <div ref={chatEndRef} />
+                        </div>
+
+                        {/* Input Area */}
+                        <div className="p-6 bg-white border-t border-gray-100 space-y-4">
+                            <div className="flex flex-wrap gap-2 mb-2">
+                                {CHIPS.map(chip => (
+                                    <button
+                                        key={chip.label}
+                                        onClick={() => handleSend(chip.label)}
+                                        disabled={isStreaming}
+                                        className="px-3 py-1.5 bg-gray-50 hover:bg-civic-navy hover:text-white rounded-xl text-[9px] font-black uppercase tracking-widest text-gray-400 border border-gray-100 transition-all"
+                                    >
+                                        {chip.label}
+                                    </button>
+                                ))}
+                            </div>
+                            <div className="flex gap-2 p-2 bg-gray-50 rounded-[1.5rem] border border-gray-100 focus-within:bg-white focus-within:ring-2 focus-within:ring-civic-navy transition-all">
+                                <input 
+                                    value={userInput}
+                                    onChange={e => setUserInput(e.target.value)}
+                                    onKeyPress={e => e.key === 'Enter' && handleSend()}
+                                    placeholder="Ask anything..."
+                                    className="flex-1 px-4 bg-transparent text-sm font-medium focus:outline-none"
+                                />
+                                <button 
+                                    onClick={() => handleSend(undefined, true)}
+                                    className="p-3 text-gray-300 hover:text-civic-navy transition-colors"
+                                    title="Deep Sovereign Search"
+                                >
+                                    <Search className="w-5 h-5" />
+                                </button>
+                                <button 
+                                    onClick={() => handleSend()} 
+                                    disabled={isStreaming || !userInput.trim()} 
+                                    className="p-3 bg-civic-navy text-white rounded-xl shadow-lg hover:scale-105 active:scale-95 disabled:opacity-50 transition-all"
+                                >
+                                    <Send className="w-5 h-5" />
+                                </button>
+                            </div>
+                        </div>
+                    </motion.div>
+                </div>
+            )}
+        </AnimatePresence>
+    );
 };

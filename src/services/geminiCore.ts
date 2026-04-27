@@ -8,7 +8,7 @@ const genAI = new GoogleGenerativeAI(API_KEY);
 export const getGeminiResponse = async (userPrompt: string, systemContext: string) => {
   try {
     const model = genAI.getGenerativeModel({
-      model: "gemini-flash-latest",
+      model: "gemini-2.5-flash",
       systemInstruction: systemContext
     });
 
@@ -28,7 +28,7 @@ export const streamGeminiResponse = async (
 ) => {
   try {
     const model = genAI.getGenerativeModel({
-      model: "gemini-flash-latest",
+      model: "gemini-2.5-flash",
       systemInstruction: systemContext
     });
 
@@ -40,9 +40,9 @@ export const streamGeminiResponse = async (
       fullText += chunkText;
       onChunk(fullText);
     }
-  } catch (error: any) {
+  } catch (error: unknown) {
     console.error("Gemini Streaming Error:", error);
-    const errorMessage = error?.message || "Check your network or API key.";
+    const errorMessage = error instanceof Error ? error.message : "Check your network or API key.";
     onChunk(`Connection failed: ${errorMessage}`);
   }
 };

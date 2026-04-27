@@ -1,4 +1,4 @@
-import { useState } from 'react';
+import { useState, useEffect } from 'react';
 import { motion, AnimatePresence } from 'framer-motion';
 import { useVoterStore } from '../../store/useVoterStore';
 import { 
@@ -7,6 +7,7 @@ import {
   Maximize, ClipboardCheck, AlertCircle, Download
 } from 'lucide-react';
 import { cn } from '../../lib/utils';
+import { ParticleExplosion } from '../Atoms/ParticleExplosion';
 
 interface FormData {
   name?: string;
@@ -19,7 +20,7 @@ interface FormData {
   photo?: boolean;
   addressProof?: boolean;
   idProof?: boolean;
-  [key: string]: any;
+  [key: string]: unknown;
 }
 
 interface FormStepProps {
@@ -27,6 +28,91 @@ interface FormStepProps {
   data: FormData;
   setData: (d: FormData) => void;
 }
+
+const ScramblingText = ({ target, isScanning }: { target: string, isScanning: boolean }) => {
+  const [text, setText] = useState(isScanning ? '' : target);
+  const chars = "ABCDEFGHIJKLMNOPQRSTUVWXYZ0123456789@#$%&*";
+
+  useEffect(() => {
+    if (!isScanning) {
+        return;
+    }
+    
+    let iterations = 0;
+    const interval = setInterval(() => {
+      setText(
+        target.split("")
+          .map((char, index) => {
+            if (index < iterations) return target[index];
+            return chars[Math.floor(Math.random() * chars.length)];
+          })
+          .join("")
+      );
+      
+      if (iterations >= target.length) clearInterval(interval);
+      iterations += 1/3;
+    }, 40);
+    
+    return () => clearInterval(interval);
+  }, [isScanning, target]);
+
+  return <span className="font-mono">{text}</span>;
+};
+
+const BiometricRipple = ({ isActive }: { isActive: boolean }) => {
+  return (
+    <AnimatePresence>
+      {isActive && (
+        <motion.div 
+            initial={{ opacity: 0 }}
+            animate={{ opacity: 1 }}
+            exit={{ opacity: 0 }}
+            className="fixed inset-0 z-[5000] pointer-events-none flex items-center justify-center overflow-hidden"
+        >
+            <motion.div 
+                animate={{ 
+                    scale: [0, 4],
+                    opacity: [0.5, 0]
+                }}
+                transition={{ duration: 2, repeat: Infinity, ease: "easeOut" }}
+                className="w-[100vw] h-[100vw] rounded-full bg-civic-saffron/20 blur-3xl"
+            />
+            <motion.div 
+                animate={{ 
+                    scale: [0, 3],
+                    opacity: [0.3, 0]
+                }}
+                transition={{ duration: 2, repeat: Infinity, ease: "easeOut", delay: 0.5 }}
+                className="w-[100vw] h-[100vw] rounded-full bg-civic-navy/20 blur-3xl"
+            />
+            <motion.div 
+                animate={{ 
+                    scale: [0.8, 1.2, 0.8],
+                    opacity: [0.1, 0.2, 0.1]
+                }}
+                transition={{ duration: 3, repeat: Infinity, ease: "easeInOut" }}
+                className="absolute inset-0 bg-civic-navy/40 backdrop-blur-sm"
+            />
+        </motion.div>
+      )}
+    </AnimatePresence>
+  );
+};
+
+const FlashEffect = ({ isActive }: { isActive: boolean }) => {
+    return (
+        <AnimatePresence>
+            {isActive && (
+                <motion.div 
+                    initial={{ opacity: 0 }}
+                    animate={{ opacity: 1 }}
+                    exit={{ opacity: 0 }}
+                    className="fixed inset-0 z-[6000] bg-white pointer-events-none"
+                />
+            )}
+        </AnimatePresence>
+    );
+};
 
 const StudentBranch = ({ data, setData }: { data: FormData, setData: (d: FormData) => void }) => {
   return (
@@ -208,6 +294,7 @@ const FormStep2 = ({ onNext, data, setData }: FormStepProps) => {
   const { persona } = useVoterStore();
   const [scanning, setScanning] = useState<string | null>(null);
   const [files, setFiles] = useState<Record<string, File>>({});
+  const [isAuthenticating, setIsAuthenticating] = useState(false);
   
   const handleFileUpload = (type: string, e: React.ChangeEvent<HTMLInputElement>) => {
     const file = e.target.files?.[0];
@@ -253,12 +340,18 @@ const FormStep2 = ({ onNext, data, setData }: FormStepProps) => {
                 scanning === doc.id ? "border-civic-navy ring-4 ring-civic-navy/5" : "border-gray-100 hover:border-gray-200"
             )}>
               {scanning === doc.id && (
-                  <motion.div 
-                    initial={{ y: -100 }}
-                    animate={{ y: 200 }}
-                    transition={{ duration: 1.5, repeat: Infinity, ease: "linear" }}
-                    className="absolute inset-0 bg-gradient-to-b from-civic-navy/0 via-civic-navy/20 to-civic-navy/0 h-24 w-full z-0"
-                  />
+                  <>
+                      <motion.div 
+                        initial={{ y: "-100%" }}
+                        animate={{ y: "100%" }}
+                        transition={{ duration: 1.5, repeat: Infinity, ease: "linear" }}
+                        className="absolute inset-0 z-0 flex flex-col pointer-events-none"
+                      >
+                          <div className="h-full bg-gradient-to-b from-transparent to-civic-saffron/10" />
+                          <div className="h-1 bg-civic-saffron shadow-[0_0_15px_#FF9933] w-full" />
+                      </motion.div>
+                      <div className="absolute inset-0 bg-civic-saffron/5 animate-pulse mix-blend-overlay pointer-events-none" />
+                  </>
               )}
 
               <div className="flex items-center gap-5 relative z-10">
@@ -269,8 +362,12 @@ const FormStep2 = ({ onNext, data, setData }: FormStepProps) => {
                   {data[doc.id] ? <CheckCircle className="w-7 h-7" /> : <doc.icon className="w-7 h-7" />}
                 </div>
                 <div>
-                  <span className="text-sm font-bold text-civic-navy block mb-0.5">{doc.label}</span>
-                  <span className="text-[10px] text-gray-400 font-bold uppercase tracking-tight">{doc.desc}</span>
+                  <span className="text-sm font-bold text-civic-navy block mb-0.5">
+                    {scanning === doc.id ? <ScramblingText target={doc.label} isScanning={true} /> : doc.label}
+                  </span>
+                  <span className="text-[10px] text-gray-400 font-bold uppercase tracking-tight">
+                    {scanning === doc.id ? <ScramblingText target={doc.desc} isScanning={true} /> : doc.desc}
+                  </span>
                   {files[doc.id] && (
                     <span className="text-[9px] text-civic-navy/60 font-bold truncate max-w-[150px] block mt-1">
                         {files[doc.id].name} ({(files[doc.id].size / 1024).toFixed(1)} KB)
@@ -314,19 +411,45 @@ const FormStep2 = ({ onNext, data, setData }: FormStepProps) => {
       </div>
 
       <div className="pt-4">
-        <button
-          onClick={onNext}
-          disabled={!isComplete}
-          className={cn(
-            "w-full py-7 font-black rounded-[2.5rem] flex items-center justify-center gap-3 transition-all uppercase tracking-[0.2em] text-sm",
-            isComplete 
-                ? "bg-civic-green text-white shadow-2xl shadow-civic-green/30 hover:scale-[1.02] active:scale-95" 
-                : "bg-gray-100 text-gray-400 cursor-not-allowed"
-          )}
-        >
-          {isComplete ? 'Submit Sovereign Application' : 'Awaiting Field Completion'}
-          {isComplete && <ShieldCheck className="w-6 h-6" />}
-        </button>
+      <div className="pt-4 relative">
+        <BiometricRipple isActive={isAuthenticating} />
+        {!isComplete ? (
+            <button disabled className="w-full py-7 font-black rounded-[2.5rem] bg-gray-100 text-gray-400 cursor-not-allowed uppercase tracking-[0.2em] text-sm">
+                Awaiting Field Completion
+            </button>
+        ) : (
+            <motion.button
+                whileHover={{ scale: 1.02 }}
+                whileTap={{ scale: 0.95 }}
+                onClick={() => {
+                    setIsAuthenticating(true);
+                    setTimeout(() => {
+                        onNext();
+                    }, 2000);
+                }}
+                disabled={isAuthenticating}
+                className={cn(
+                    "w-full py-7 font-black rounded-[2.5rem] flex items-center justify-center gap-4 transition-all uppercase tracking-[0.2em] text-sm relative overflow-hidden",
+                    isAuthenticating ? "bg-civic-navy text-white" : "bg-civic-green text-white shadow-2xl shadow-civic-green/30"
+                )}
+            >
+                {isAuthenticating ? (
+                    <>
+                        <div className="absolute inset-0 bg-civic-saffron/20 animate-pulse" />
+                        <Loader2 className="w-6 h-6 animate-spin relative z-10" />
+                        <span className="relative z-10">Biometric Scan Active...</span>
+                    </>
+                ) : (
+                    <>
+                        Hold to Authenticate
+                        <div className="w-8 h-8 rounded-full bg-white/20 flex items-center justify-center">
+                            <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round"><path d="M12 12m-9 0a9 9 0 1 0 18 0a9 9 0 1 0 -18 0"/><path d="M12 12m-3 0a3 3 0 1 0 6 0a3 3 0 1 0 -6 0"/></svg>
+                        </div>
+                    </>
+                )}
+            </motion.button>
+        )}
+      </div>
       </div>
     </div>
   );
@@ -336,27 +459,33 @@ export const DigitalFormEngine = ({ onClose }: { onClose: () => void }) => {
   const [step, setStep] = useState(1);
   const [formData, setFormData] = useState<FormData>({ residencyType: 'Day Scholar' });
   const [isFinished, setIsFinished] = useState(false);
+  const [showFlash, setShowFlash] = useState(false);
   const { updateProgress, setVoterName } = useVoterStore();
 
   const handleFinish = () => {
-    if (formData.name) setVoterName(formData.name);
-    updateProgress('registration', 100);
-    setIsFinished(true);
+    setShowFlash(true);
+    setTimeout(() => {
+        if (formData.name) setVoterName(formData.name);
+        updateProgress('registration', 100);
+        setIsFinished(true);
+        setShowFlash(false);
+    }, 400);
   };
 
   if (isFinished) {
     return (
-        <div className="fixed inset-0 z-[3200] flex items-center justify-center p-6 bg-civic-navy/40 backdrop-blur-2xl">
+        <div className="fixed inset-0 z-[3200] flex items-center justify-center p-6 bg-civic-navy/20 backdrop-blur-3xl">
             <motion.div
                 initial={{ scale: 0.9, opacity: 0 }}
                 animate={{ scale: 1, opacity: 1 }}
-                className="bg-white w-full max-w-2xl rounded-[4rem] p-16 text-center shadow-[0_50px_150px_rgba(0,0,0,0.4)] border border-white/20 relative"
+                className="glass w-full max-w-2xl rounded-[4rem] p-16 text-center border border-white/40 relative shadow-2xl shadow-black/10"
             >
-                <div className="w-24 h-24 bg-civic-green rounded-[2.5rem] flex items-center justify-center mx-auto mb-8 shadow-2xl shadow-civic-green/20">
+                <ParticleExplosion isVisible={true} count={60} />
+                <div className="w-24 h-24 bg-civic-green rounded-[2.5rem] flex items-center justify-center mx-auto mb-8 shadow-2xl shadow-civic-green/20 relative z-10">
                     <CheckCircle className="w-12 h-12 text-white" />
                 </div>
-                <h2 className="text-4xl font-display font-bold text-civic-navy mb-4">Application Synchronized!</h2>
-                <p className="text-gray-500 font-medium mb-12 max-w-sm mx-auto">
+                <h2 className="text-4xl font-display font-bold text-civic-navy mb-4 relative z-10">Application Synchronized!</h2>
+                <p className="text-gray-500 font-medium mb-12 max-w-sm mx-auto relative z-10">
                     Your sovereign data has been pre-verified against ECI standards. You can now download your digital draft to expedite the official filing.
                 </p>
                 
@@ -415,12 +544,13 @@ export const DigitalFormEngine = ({ onClose }: { onClose: () => void }) => {
   }
 
   return (
-    <div className="fixed inset-0 z-[3200] flex items-center justify-center p-6 bg-civic-navy/40 backdrop-blur-2xl">
+    <div className="fixed inset-0 z-[3200] flex items-center justify-center p-6 bg-civic-navy/10 backdrop-blur-2xl">
+      <FlashEffect isActive={showFlash} />
       <motion.div
         initial={{ scale: 0.9, opacity: 0, y: 40 }}
         animate={{ scale: 1, opacity: 1, y: 0 }}
         exit={{ scale: 0.9, opacity: 0, y: 40 }}
-        className="bg-white w-full max-w-2xl rounded-[4rem] shadow-[0_50px_150px_rgba(0,0,0,0.4)] overflow-hidden relative border border-white/20"
+        className="glass w-full max-w-2xl rounded-[4rem] overflow-hidden relative border border-white/40 shadow-2xl shadow-black/10"
       >
         <button 
             onClick={onClose} 

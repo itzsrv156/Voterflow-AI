@@ -7,6 +7,16 @@
   --color-civic-green: #128807;
   --color-civic-navy: #000080;
   --color-google-blue: #4285F4;
+
+  /* Persona Themes */
+  --persona-student-accent: #4285F4;
+  --persona-student-glow: rgba(66, 133, 244, 0.2);
+  
+  --persona-senior-accent: #000080;
+  --persona-senior-glow: rgba(0, 0, 128, 0.1);
+  
+  --persona-new-accent: #FF9933;
+  --persona-new-glow: rgba(255, 153, 51, 0.2);
   
   --font-sans: "Inter", system-ui, -apple-system, sans-serif;
   --font-display: "Outfit", sans-serif;
@@ -15,11 +25,13 @@
 @layer base {
   body {
     @apply bg-[#FDFDFD] text-slate-900 antialiased selection:bg-civic-navy/10 selection:text-civic-navy;
-    background-image: 
-      radial-gradient(#00008011 1px, transparent 1px),
-      radial-gradient(#00008011 1px, transparent 1px);
-    background-size: 40px 40px;
-    background-position: 0 0, 20px 20px;
+    background: 
+      radial-gradient(at 0% 0%, rgba(66, 133, 244, 0.05) 0px, transparent 50%),
+      radial-gradient(at 100% 0%, rgba(255, 153, 51, 0.05) 0px, transparent 50%),
+      radial-gradient(at 100% 100%, rgba(18, 136, 7, 0.05) 0px, transparent 50%),
+      radial-gradient(at 0% 100%, rgba(0, 0, 128, 0.05) 0px, transparent 50%),
+      #FDFDFD;
+    background-attachment: fixed;
   }
 
   .custom-scrollbar::-webkit-scrollbar {
@@ -41,4 +53,60 @@
   .animate-sovereign-pulse {
     animation: sovereign-pulse 2s infinite;
   }
+
+  .glass {
+    @apply bg-white/30 backdrop-blur-xl border border-white/40 shadow-[0_8px_32px_0_rgba(0,0,128,0.05)];
+  }
+
+  .glass-dark {
+    @apply bg-civic-navy/10 backdrop-blur-xl border border-white/10 shadow-xl;
+  }
+
+  .glass-card {
+    @apply bg-white/40 backdrop-blur-xl border border-white/60 shadow-[0_20px_60px_rgba(0,0,0,0.05)] hover:shadow-[0_25px_70px_rgba(0,0,0,0.1)] hover:bg-white/50 transition-all duration-700;
+  }
+
+  .glass-vibrant {
+    @apply bg-white/50 backdrop-blur-xl border border-white/80 shadow-[0_20px_50px_rgba(0,0,128,0.1)] saturate-150;
+  }
+
+  .glass-apple {
+    @apply bg-white/10 backdrop-blur-xl border border-white/30 shadow-[0_10px_40px_rgba(0,0,0,0.06)] saturate-[1.4] brightness-105;
+  }
+
+  @keyframes shimmer {
+    0% { transform: translateX(-100%); }
+    100% { transform: translateX(100%); }
+  }
+
+  .animate-shimmer {
+    animation: shimmer 2.5s infinite linear;
+  }
+
+  @keyframes logo-glow {
+    0%, 100% { filter: drop-shadow(0 0 5px #4285F4) drop-shadow(0 0 15px rgba(66, 133, 244, 0.6)); }
+    25% { filter: drop-shadow(0 0 5px #EA4335) drop-shadow(0 0 15px rgba(234, 67, 53, 0.6)); }
+    50% { filter: drop-shadow(0 0 5px #FBBC05) drop-shadow(0 0 15px rgba(251, 188, 5, 0.6)); }
+    75% { filter: drop-shadow(0 0 5px #34A853) drop-shadow(0 0 15px rgba(52, 168, 83, 0.6)); }
+  }
+
+  .animate-logo-glow {
+    animation: logo-glow 4s infinite linear;
+  }
+
+  /* Persona Morphing Styles */
+  .persona-student .glass-card {
+    @apply border-blue-500/10 shadow-blue-500/5;
+  }
+  .persona-senior .glass-card {
+    @apply border-civic-navy/10 shadow-civic-navy/5;
+    filter: saturate(0.8);
+  }
+  .persona-new .glass-card {
+    @apply border-civic-saffron/10 shadow-civic-saffron/5;
+  }
+
+  .persona-student h2 { @apply text-blue-600; }
+  .persona-senior h2 { @apply text-civic-navy; }
+  .persona-new h2 { @apply text-civic-saffron; }
 }

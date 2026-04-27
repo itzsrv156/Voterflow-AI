@@ -47,9 +47,7 @@ export const Hero = () => {
       exit={{ opacity: 0, scale: 1.2, filter: 'blur(10px)', transition: { duration: 0.8, ease: "circIn" } }}
       className="relative min-h-[90vh] flex items-center justify-center pt-32 pb-20 px-4 overflow-hidden"
     >
-      {/* Dynamic Background Elements */}
-      <div className="absolute top-1/4 -left-20 w-96 h-96 bg-civic-saffron/20 rounded-full blur-[120px] animate-pulse" />
-      <div className="absolute bottom-1/4 -right-20 w-96 h-96 bg-civic-navy/20 rounded-full blur-[120px]" />
+      {/* Background Blobs handled globally in App.tsx */}
 
       <div className="max-w-7xl mx-auto w-full relative z-10 text-center">
         <motion.div
@@ -83,8 +81,7 @@ export const Hero = () => {
                 onClick={() => setPersona(data.type)}
                 className={cn(
                   "relative group cursor-pointer p-8 rounded-[3rem] transition-all duration-500",
-                  "bg-white/40 backdrop-blur-xl border border-white/40 shadow-2xl overflow-hidden",
-                  "hover:bg-white/60 hover:shadow-3xl hover:shadow-civic-navy/20"
+                  "glass-card overflow-hidden"
                 )}
               >
                 {/* Badge */}

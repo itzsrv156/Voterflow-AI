@@ -99,12 +99,15 @@ function App() {
                     onClick={() => setIsChatOpen(!isChatOpen)}
                     className="relative p-[3px] rounded-full overflow-hidden group shadow-[0_0_50px_rgba(66,133,244,0.3)] hover:shadow-[0_0_60px_rgba(66,133,244,0.4)] transition-all"
                 >
-                    {/* The Rainbow Stroke (using clip-path or absolute positioning) */}
-                    <div className="absolute inset-0 rounded-full p-[3px] bg-[conic-gradient(from_0deg,#4285F4,#EA4335,#FBBC05,#34A853,#4285F4)] animate-[spin_3s_linear_infinite] saturate-[2] brightness-[1.2]" 
-                         style={{ maskImage: 'linear-gradient(#fff 0 0) content-box, linear-gradient(#fff 0 0)', maskComposite: 'exclude', WebkitMaskComposite: 'destination-out' }} />
+                    {/* The Rainbow Stroke Layer (Backing) */}
+                    <motion.div 
+                        animate={{ rotate: 360 }}
+                        transition={{ duration: 3, repeat: Infinity, ease: "linear" }}
+                        className="absolute inset-[-100%] bg-[conic-gradient(from_0deg,#4285F4,#EA4335,#FBBC05,#34A853,#4285F4)] saturate-[1.5] brightness-[1.1]"
+                    />
                     
-                    {/* The Button Content (Truly Transparent) */}
-                    <div className="relative px-8 py-4 bg-white/5 backdrop-blur-sm rounded-full flex items-center gap-3 text-white">
+                    {/* The Button Content (Glass Shield - This blocks the internal color) */}
+                    <div className="relative px-8 py-4 bg-[#0a0a0a] backdrop-blur-2xl rounded-full flex items-center gap-3 text-white border border-white/10 m-[1px]">
                         {isChatOpen ? (
                             <X className="w-5 h-5" />
                         ) : (
@@ -125,6 +128,12 @@ function App() {
                         )}
                     </div>
 
+                    {/* The Rotating Drop Glow (Wide) */}
+                    <motion.div 
+                        animate={{ rotate: 360 }}
+                        transition={{ duration: 3, repeat: Infinity, ease: "linear" }}
+                        className="absolute inset-[-150%] bg-[conic-gradient(from_0deg,#4285F4,#EA4335,#FBBC05,#34A853,#4285F4)] blur-3xl opacity-20 transition-opacity -z-20"
+                    />
                 </motion.button>
             </div>
         )}

@@ -5,6 +5,7 @@ import { useTranslation } from '../../LanguageContext';
 import { TiltCard } from '../Atoms/TiltCard';
 import { PollingBoothLocator } from './PollingBoothLocator';
 import { FutureVoterTool } from '../Molecules/FutureVoterTool';
+import { Tooltip } from '../Atoms/Tooltip';
 
 const LanguageToggle = () => {
     const { language, setLanguage } = useVoterStore();
@@ -97,6 +98,7 @@ interface SidebarItemProps {
 }
 
 const SidebarItem = ({ id, icon: Icon, labelKey, activeTab, setActiveTab, t }: SidebarItemProps) => (
+  <Tooltip content={`View ${t(labelKey).split(' (')[0]}`}>
     <button
       onClick={() => setActiveTab(id)}
       className={cn(
@@ -114,6 +116,7 @@ const SidebarItem = ({ id, icon: Icon, labelKey, activeTab, setActiveTab, t }: S
       <Icon className={cn("w-5 h-5 relative z-10 transition-transform duration-500 group-hover:scale-110", activeTab === id ? "text-civic-saffron" : "")} />
       <span className="text-sm font-bold relative z-10">{t(labelKey).split(' (')[0]}</span>
     </button>
+  </Tooltip>
 );
 
 export const Dashboard = () => {
@@ -241,13 +244,15 @@ export const Dashboard = () => {
         </div>
 
         <div className="mt-auto pt-8 border-t border-white/20">
-          <motion.button 
-            whileHover={{ scale: 1.02 }} whileTap={{ scale: 0.98 }}
-            onClick={resetStore}
-            className="w-full py-4 bg-gray-100 text-civic-navy font-bold rounded-2xl text-xs flex items-center justify-center gap-2 hover:bg-red-50 hover:text-red-500 transition-all"
-          >
-            <ChevronLeft className="w-4 h-4" /> {t('reset')}
-          </motion.button>
+          <Tooltip content="Reset session and clear all data">
+            <motion.button 
+              whileHover={{ scale: 1.02 }} whileTap={{ scale: 0.98 }}
+              onClick={resetStore}
+              className="w-full py-4 bg-gray-100 text-civic-navy font-bold rounded-2xl text-xs flex items-center justify-center gap-2 hover:bg-red-50 hover:text-red-500 transition-all"
+            >
+              <ChevronLeft className="w-4 h-4" /> {t('reset')}
+            </motion.button>
+          </Tooltip>
         </div>
       </motion.aside>
 
@@ -940,10 +945,12 @@ export const Dashboard = () => {
                     className="bg-white w-full max-w-xl rounded-[3.5rem] p-12 shadow-2xl relative overflow-hidden"
                 >
                     <div className="absolute top-0 left-0 w-full h-2 bg-gradient-to-r from-google-blue via-purple-500 to-pink-500 animate-pulse" />
-                    <button onClick={() => {
-                        setShowAiValidator(false);
-                        setScanStatus('idle');
-                    }} className="absolute top-8 right-8 p-3 bg-gray-50 rounded-full hover:bg-red-50 transition-all"><X className="w-5 h-5" /></button>
+                    <Tooltip content="Back to Dashboard">
+                        <button onClick={() => {
+                            setShowAiValidator(false);
+                            setScanStatus('idle');
+                        }} className="absolute top-8 right-8 p-3 bg-gray-50 rounded-full hover:bg-red-50 transition-all"><X className="w-5 h-5" /></button>
+                    </Tooltip>
                     
                     <div className="text-center mb-10">
                         <div className="w-20 h-20 bg-civic-navy rounded-[2rem] flex items-center justify-center mx-auto mb-6 shadow-xl relative group">

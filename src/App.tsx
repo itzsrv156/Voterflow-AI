@@ -9,6 +9,7 @@ import { motion, AnimatePresence } from 'framer-motion';
 import { ErrorBoundary } from './components/Atoms/ErrorBoundary';
 import { X } from 'lucide-react';
 import { cn } from './lib/utils';
+import { Tooltip } from './components/Atoms/Tooltip';
 
 function App() {
   const { view, activeFlow, setActiveFlow, readinessScore, isChatOpen, setIsChatOpen } = useVoterStore();
@@ -98,55 +99,57 @@ function App() {
         {/* Global Floating Ask Gemini Button - Google AI Mode Style */}
         {view === 'dashboard' && (
             <div className="fixed bottom-12 right-12 z-[5000]">
-                <motion.button
-                    whileHover={{ scale: 1.05 }}
-                    whileTap={{ scale: 0.95 }}
-                    onClick={() => setIsChatOpen(!isChatOpen)}
-                    className="relative p-[1.5px] rounded-full overflow-hidden group shadow-[0_0_30px_rgba(66,133,244,0.2)] hover:shadow-[0_0_40px_rgba(66,133,244,0.3)] transition-all"
-                >
-                    {/* The Rainbow Stroke Layer (Backing) */}
-                    <motion.div 
-                        animate={{ rotate: 360 }}
-                        transition={{ duration: 3, repeat: Infinity, ease: "linear" }}
-                        className="absolute inset-[-100%] bg-[conic-gradient(from_0deg,#4285F4,#EA4335,#FBBC05,#34A853,#4285F4)]"
-                    />
-                    
-                    {/* The Vibrant Stroke Glow (Sharp Orbit Glow) */}
-                    <motion.div 
-                        animate={{ rotate: 360 }}
-                        transition={{ duration: 3, repeat: Infinity, ease: "linear" }}
-                        className="absolute inset-[-100%] bg-[conic-gradient(from_0deg,#4285F4,#EA4335,#FBBC05,#34A853,#4285F4)] blur-[8px] opacity-80"
-                    />
-                    
-                    {/* The Button Content (Glass Shield - This blocks the internal color) */}
-                    <div className="relative px-8 py-4 bg-[#0a0a0a] backdrop-blur-2xl rounded-full flex items-center gap-3 text-white border border-white/10 m-[1px]">
-                        {isChatOpen ? (
-                            <X className="w-5 h-5" />
-                        ) : (
-                            <>
-                                <img src="https://www.gstatic.com/lamda/images/gemini_sparkle_v002_d4735304ff6292a690345.svg" className="w-5 h-5 animate-pulse" alt="Gemini" />
-                                <span className="font-display font-medium text-sm tracking-tight">Ask Gemini</span>
-                                <div className="flex gap-0.5">
-                                    {[1, 2, 3].map(i => (
-                                        <motion.div 
-                                            key={i}
-                                            animate={{ opacity: [0.4, 1, 0.4] }}
-                                            transition={{ repeat: Infinity, duration: 1.5, delay: i * 0.2 }}
-                                            className="w-1 h-1 bg-white rounded-full"
-                                        />
-                                    ))}
-                                </div>
-                            </>
-                        )}
-                    </div>
+                <Tooltip content="Launch Sovereign AI Support">
+                    <motion.button
+                        whileHover={{ scale: 1.05 }}
+                        whileTap={{ scale: 0.95 }}
+                        onClick={() => setIsChatOpen(!isChatOpen)}
+                        className="relative p-[1.5px] rounded-full overflow-hidden group shadow-[0_0_30px_rgba(66,133,244,0.2)] hover:shadow-[0_0_40px_rgba(66,133,244,0.3)] transition-all"
+                    >
+                        {/* The Rainbow Stroke Layer (Backing) */}
+                        <motion.div 
+                            animate={{ rotate: 360 }}
+                            transition={{ duration: 3, repeat: Infinity, ease: "linear" }}
+                            className="absolute inset-[-100%] bg-[conic-gradient(from_0deg,#4285F4,#EA4335,#FBBC05,#34A853,#4285F4)]"
+                        />
+                        
+                        {/* The Vibrant Stroke Glow (Sharp Orbit Glow) */}
+                        <motion.div 
+                            animate={{ rotate: 360 }}
+                            transition={{ duration: 3, repeat: Infinity, ease: "linear" }}
+                            className="absolute inset-[-100%] bg-[conic-gradient(from_0deg,#4285F4,#EA4335,#FBBC05,#34A853,#4285F4)] blur-[8px] opacity-80"
+                        />
+                        
+                        {/* The Button Content (Glass Shield - This blocks the internal color) */}
+                        <div className="relative px-8 py-4 bg-[#0a0a0a] backdrop-blur-2xl rounded-full flex items-center gap-3 text-white border border-white/10 m-[1px]">
+                            {isChatOpen ? (
+                                <X className="w-5 h-5" />
+                            ) : (
+                                <>
+                                    <img src="https://www.gstatic.com/lamda/images/gemini_sparkle_v002_d4735304ff6292a690345.svg" className="w-5 h-5 animate-pulse" alt="Gemini" />
+                                    <span className="font-display font-medium text-sm tracking-tight">Ask Gemini</span>
+                                    <div className="flex gap-0.5">
+                                        {[1, 2, 3].map(i => (
+                                            <motion.div 
+                                                key={i}
+                                                animate={{ opacity: [0.4, 1, 0.4] }}
+                                                transition={{ repeat: Infinity, duration: 1.5, delay: i * 0.2 }}
+                                                className="w-1 h-1 bg-white rounded-full"
+                                            />
+                                        ))}
+                                    </div>
+                                </>
+                            )}
+                        </div>
 
-                    {/* The Rotating Drop Glow (Wide) */}
-                    <motion.div 
-                        animate={{ rotate: 360 }}
-                        transition={{ duration: 3, repeat: Infinity, ease: "linear" }}
-                        className="absolute inset-[-150%] bg-[conic-gradient(from_0deg,#4285F4,#EA4335,#FBBC05,#34A853,#4285F4)] blur-3xl opacity-20 transition-opacity -z-20"
-                    />
-                </motion.button>
+                        {/* The Rotating Drop Glow (Wide) */}
+                        <motion.div 
+                            animate={{ rotate: 360 }}
+                            transition={{ duration: 3, repeat: Infinity, ease: "linear" }}
+                            className="absolute inset-[-150%] bg-[conic-gradient(from_0deg,#4285F4,#EA4335,#FBBC05,#34A853,#4285F4)] blur-3xl opacity-20 transition-opacity -z-20"
+                        />
+                    </motion.button>
+                </Tooltip>
             </div>
         )}
 

@@ -97,13 +97,20 @@ function App() {
                     whileHover={{ scale: 1.05 }}
                     whileTap={{ scale: 0.95 }}
                     onClick={() => setIsChatOpen(!isChatOpen)}
-                    className="relative p-[3px] rounded-full overflow-hidden group shadow-[0_0_50px_rgba(66,133,244,0.3)] hover:shadow-[0_0_60px_rgba(66,133,244,0.4)] transition-all"
+                    className="relative p-[1.5px] rounded-full overflow-hidden group shadow-[0_0_30px_rgba(66,133,244,0.2)] hover:shadow-[0_0_40px_rgba(66,133,244,0.3)] transition-all"
                 >
                     {/* The Rainbow Stroke Layer (Backing) */}
                     <motion.div 
                         animate={{ rotate: 360 }}
                         transition={{ duration: 3, repeat: Infinity, ease: "linear" }}
-                        className="absolute inset-[-100%] bg-[conic-gradient(from_0deg,#4285F4,#EA4335,#FBBC05,#34A853,#4285F4)] saturate-[1.5] brightness-[1.1]"
+                        className="absolute inset-[-100%] bg-[conic-gradient(from_0deg,#4285F4,#EA4335,#FBBC05,#34A853,#4285F4)]"
+                    />
+                    
+                    {/* The Vibrant Stroke Glow (Sharp Orbit Glow) */}
+                    <motion.div 
+                        animate={{ rotate: 360 }}
+                        transition={{ duration: 3, repeat: Infinity, ease: "linear" }}
+                        className="absolute inset-[-100%] bg-[conic-gradient(from_0deg,#4285F4,#EA4335,#FBBC05,#34A853,#4285F4)] blur-[8px] opacity-80"
                     />
                     
                     {/* The Button Content (Glass Shield - This blocks the internal color) */}

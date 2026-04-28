@@ -88,7 +88,7 @@ function App() {
                 animate={{ opacity: 1, scale: 1, filter: 'blur(0px)' }}
                 exit={{ opacity: 0, scale: 0.8 }}
                 transition={{ duration: 1.2, ease: [0.16, 1, 0.3, 1] }}
-                className="pt-24 px-4 pb-20 max-w-[1600px] mx-auto h-full relative z-10"
+                className="pt-20 lg:pt-24 px-4 pb-20 max-w-[1600px] mx-auto h-full relative z-10"
               >
                 <Dashboard />
               </motion.div>
@@ -98,7 +98,7 @@ function App() {
 
         {/* Global Floating Ask Gemini Button - Google AI Mode Style */}
         {view === 'dashboard' && (
-            <div className="fixed bottom-12 right-12 z-[5000]">
+            <div className="fixed bottom-24 right-4 lg:bottom-12 lg:right-12 z-[5000]">
                 <Tooltip content="Launch Sovereign AI Support">
                     <motion.button
                         whileHover={{ scale: 1.05 }}
@@ -168,8 +168,16 @@ function App() {
         {/* Dynamic Background Noise/Texture */}
         <div className="fixed inset-0 pointer-events-none opacity-[0.05] z-[9999] bg-[url('https://grainy-gradients.vercel.app/noise.svg')] mix-blend-overlay" />
 
+        {/* Footer / Meta Data */}
+        <div className="fixed bottom-4 left-4 text-[10px] font-bold text-gray-400 z-50 mix-blend-difference hidden md:block">
+          Sovereign VoterFlow Protocol // System Active // Encyption Level: AES-256
+        </div>
+        <div className="fixed bottom-4 right-4 text-[10px] font-bold text-gray-400 z-50 mix-blend-difference hidden md:block">
+          Election Commission of India // Framework 2026
+        </div>
+
         {/* Sovereign Disclaimer Footer */}
-        <footer className="fixed bottom-6 left-6 z-[3500] pointer-events-auto group">
+        <footer className="fixed bottom-6 left-6 z-[3500] pointer-events-auto group hidden md:block">
             <div className="flex items-center gap-3 bg-white/40 backdrop-blur-md px-4 py-2 rounded-full border border-white/40 shadow-sm transition-all hover:bg-white/60">
                 <div className="w-5 h-5 bg-civic-navy rounded-full flex items-center justify-center">
                     <span className="text-[10px] font-black text-white italic">i</span>

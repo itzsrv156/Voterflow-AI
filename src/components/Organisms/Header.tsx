@@ -12,9 +12,9 @@ export const Header = () => {
     <motion.header
       initial={{ y: -100 }}
       animate={{ y: 0 }}
-      className="fixed top-0 left-0 right-0 z-[1000] px-10 py-6"
+      className="fixed top-0 left-0 right-0 z-[1000] px-4 py-4 lg:px-10 lg:py-6"
     >
-      <div className="max-w-[1600px] mx-auto flex items-center justify-between glass rounded-[2.5rem] px-10 py-5 shadow-2xl">
+      <div className="max-w-[1600px] mx-auto flex items-center justify-between glass rounded-[2.5rem] px-4 py-3 lg:px-10 lg:py-5 shadow-2xl">
         {/* Logo - Click to Reload/Home */}
         <button 
           onClick={() => resetStore()}

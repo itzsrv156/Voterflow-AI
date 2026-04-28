@@ -149,7 +149,7 @@ export const Dashboard = () => {
       <motion.aside
         initial={{ x: -50, opacity: 0 }}
         animate={{ x: 0, opacity: 1 }}
-        className="w-64 glass rounded-[2.5rem] p-6 shadow-2xl shadow-civic-navy/5 sticky top-28 flex flex-col h-[calc(100vh-140px)]"
+        className="hidden lg:flex w-64 glass rounded-[2.5rem] p-6 shadow-2xl shadow-civic-navy/5 sticky top-28 flex-col h-[calc(100vh-140px)]"
       >
         <div className="flex items-center gap-3 mb-8 px-2">
           <div className="w-8 h-8 bg-civic-navy rounded-lg flex items-center justify-center">
@@ -257,7 +257,7 @@ export const Dashboard = () => {
       </motion.aside>
 
       {/* Main Content Area */}
-      <div className="flex-1 space-y-6 pb-20 relative">
+      <div className="flex-1 space-y-6 pb-32 lg:pb-20 relative min-w-0">
           <div className="absolute inset-0 bg-white/5 backdrop-blur-[2px] -z-10 rounded-[4rem] pointer-events-none" />
           
           {/* Removed Large VoterFlow Assistant Access Banner */}
@@ -932,6 +932,35 @@ export const Dashboard = () => {
              </motion.div>
           )}
         </AnimatePresence>
+      </div>
+
+      {/* Mobile Bottom Navigation */}
+      <div className="lg:hidden fixed bottom-0 left-0 right-0 glass-dark border-t border-white/10 z-[3000] px-4 py-3 rounded-t-3xl shadow-[0_-10px_40px_rgba(0,0,0,0.1)]">
+        <nav className="flex items-center justify-between gap-1 overflow-x-auto no-scrollbar pb-1">
+          {[
+            { id: 'overview', icon: LayoutDashboard, labelKey: 'overview' },
+            { id: 'registration', icon: UserPlus, labelKey: 'registration' },
+            { id: 'research', icon: BookOpen, labelKey: 'research' },
+            { id: 'polling', icon: MapPin, labelKey: 'polling' },
+            { id: 'form8', icon: Gavel, labelKey: 'form8' },
+            { id: 'sir2026', icon: Calendar, labelKey: 'sir2026' },
+            { id: 'helpline', icon: Headphones, labelKey: 'helpline' }
+          ].map(item => (
+            <button
+              key={item.id}
+              onClick={() => setActiveTab(item.id as any)}
+              className={cn(
+                "flex flex-col items-center justify-center p-2 rounded-2xl min-w-[64px] transition-all relative",
+                activeTab === item.id ? "text-white bg-civic-navy" : "text-gray-400 hover:text-civic-navy"
+              )}
+            >
+              <item.icon className={cn("w-5 h-5 mb-1", activeTab === item.id ? "text-civic-saffron" : "")} />
+              <span className="text-[8px] font-bold uppercase tracking-widest leading-none text-center">
+                {t(item.labelKey).split(' (')[0].substring(0, 8)}
+              </span>
+            </button>
+          ))}
+        </nav>
       </div>
 
       {/* Gemini Multimodal Scanner Overlay */}

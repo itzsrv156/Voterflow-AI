@@ -7,7 +7,7 @@ import { ChatAssistant } from './components/Organisms/ChatAssistant';
 import { useVoterStore } from './store/useVoterStore';
 import { motion, AnimatePresence } from 'framer-motion';
 import { ErrorBoundary } from './components/Atoms/ErrorBoundary';
-import { Search, X } from 'lucide-react';
+import { X } from 'lucide-react';
 import { cn } from './lib/utils';
 
 function App() {

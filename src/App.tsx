@@ -135,8 +135,12 @@ function App() {
                         )}
                     </div>
 
-                    {/* Outer Glow */}
-                    <div className="absolute inset-0 rounded-full bg-google-blue/20 blur-xl opacity-0 group-hover:opacity-100 transition-opacity -z-10" />
+                    {/* The Rotating Drop Glow (Wide) */}
+                    <motion.div 
+                        animate={{ rotate: 360 }}
+                        transition={{ duration: 3, repeat: Infinity, ease: "linear" }}
+                        className="absolute inset-[-150%] bg-[conic-gradient(from_0deg,#4285F4,#EA4335,#FBBC05,#34A853,#4285F4)] blur-3xl opacity-20 transition-opacity -z-20"
+                    />
                 </motion.button>
             </div>
         )}

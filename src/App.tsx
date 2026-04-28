@@ -99,29 +99,15 @@ function App() {
                     onClick={() => setIsChatOpen(!isChatOpen)}
                     className="relative p-[3px] rounded-full overflow-hidden group shadow-[0_0_50px_rgba(66,133,244,0.3)] hover:shadow-[0_0_60px_rgba(66,133,244,0.4)] transition-all"
                 >
-                    {/* The Ultra-Bright Google Rainbow Ring */}
+                    {/* The Ultra-Bright Google Rainbow Ring (Stroke Only) */}
                     <motion.div 
                         animate={{ rotate: 360 }}
                         transition={{ duration: 3, repeat: Infinity, ease: "linear" }}
                         className="absolute inset-[-100%] bg-[conic-gradient(from_0deg,#4285F4,#EA4335,#FBBC05,#34A853,#4285F4)] opacity-100 saturate-[2] brightness-[1.2]"
                     />
                     
-                    {/* High-Intensity Inner Glow (The 'Sparkle') */}
-                    <motion.div 
-                        animate={{ rotate: -360 }}
-                        transition={{ duration: 5, repeat: Infinity, ease: "linear" }}
-                        className="absolute inset-[-50%] bg-[conic-gradient(from_0deg,transparent,rgba(255,255,255,0.4),transparent)] blur-md opacity-60"
-                    />
-                    
-                    {/* The Rainbow Aura Layer */}
-                    <motion.div 
-                        animate={{ rotate: 360 }}
-                        transition={{ duration: 3, repeat: Infinity, ease: "linear" }}
-                        className="absolute inset-[-100%] bg-[conic-gradient(from_0deg,#4285F4,#EA4335,#FBBC05,#34A853,#4285F4)] blur-xl opacity-60"
-                    />
-
-                    {/* The Button Content (Ultra Glass Backdrop) */}
-                    <div className="relative px-8 py-4 bg-white/10 backdrop-blur-3xl rounded-full flex items-center gap-3 text-white border border-white/20 shadow-[inset_0_0_20px_rgba(255,255,255,0.1)]">
+                    {/* The Button Content (Clear Transparent Glass) */}
+                    <div className="relative px-8 py-4 bg-white/5 backdrop-blur-2xl rounded-full flex items-center gap-3 text-white border border-white/20 shadow-[inset_0_0_20px_rgba(255,255,255,0.05)]">
                         {isChatOpen ? (
                             <X className="w-5 h-5" />
                         ) : (

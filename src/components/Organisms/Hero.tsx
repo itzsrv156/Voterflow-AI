@@ -55,13 +55,13 @@ export const Hero = () => {
           animate={{ opacity: 1, y: 0 }}
           transition={{ duration: 0.6 }}
         >
-          <h1 className="text-5xl md:text-7xl font-display font-bold text-civic-navy mb-8 tracking-tight">
+          <h1 className="text-4xl md:text-6xl font-display font-bold text-civic-navy mb-6 tracking-tight">
             {t('select_persona').split('Voter')[0]} 
             <span className="bg-gradient-to-r from-civic-saffron to-civic-navy bg-clip-text text-transparent">
                {t('select_persona').includes('Voter') ? 'Voter Persona' : 'Persona'}
             </span>
           </h1>
-          <p className="text-xl text-gray-600 mb-12 max-w-2xl mx-auto font-medium">
+          <p className="text-lg text-gray-600 mb-10 max-w-2xl mx-auto font-medium">
             {t('persona_desc')}
           </p>
         </motion.div>

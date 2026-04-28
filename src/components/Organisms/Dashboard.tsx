@@ -146,7 +146,7 @@ export const Dashboard = () => {
       <motion.aside
         initial={{ x: -50, opacity: 0 }}
         animate={{ x: 0, opacity: 1 }}
-        className="w-72 glass rounded-[3rem] p-8 shadow-2xl shadow-civic-navy/5 sticky top-32 flex flex-col h-[calc(100vh-160px)]"
+        className="w-64 glass rounded-[2.5rem] p-6 shadow-2xl shadow-civic-navy/5 sticky top-28 flex flex-col h-[calc(100vh-140px)]"
       >
         <div className="flex items-center gap-3 mb-12 px-2">
           <div className="w-10 h-10 bg-civic-navy rounded-xl flex items-center justify-center">
@@ -216,7 +216,7 @@ export const Dashboard = () => {
       </motion.aside>
 
       {/* Main Content Area */}
-      <div className="flex-1 space-y-8 pb-32 relative">
+      <div className="flex-1 space-y-6 pb-20 relative">
           <div className="absolute inset-0 bg-white/5 backdrop-blur-[2px] -z-10 rounded-[4rem] pointer-events-none" />
           
           {/* Removed Large VoterFlow Assistant Access Banner */}
@@ -887,7 +887,7 @@ export const Dashboard = () => {
                 exit={{ opacity: 0, scale: 0.95 }}
                 className="w-full h-full"
              >
-                <PollingSimulator />
+                <PollingBoothLocator />
              </motion.div>
           )}
         </AnimatePresence>

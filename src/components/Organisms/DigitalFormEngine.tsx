@@ -42,7 +42,7 @@ const ScramblingText = ({ target, isScanning }: { target: string, isScanning: bo
     const interval = setInterval(() => {
       setText(
         target.split("")
-          .map((char, index) => {
+          .map((_, index) => {
             if (index < iterations) return target[index];
             return chars[Math.floor(Math.random() * chars.length)];
           })

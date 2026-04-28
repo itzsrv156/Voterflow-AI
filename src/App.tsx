@@ -106,8 +106,8 @@ function App() {
                         className="absolute inset-[-100%] bg-[conic-gradient(#4285F4,#EA4335,#FBBC05,#34A853,#4285F4)] opacity-80 group-hover:opacity-100 transition-opacity"
                     />
 
-                    {/* The Button Content (Glass Backdrop) */}
-                    <div className="relative px-8 py-4 bg-black/40 backdrop-blur-xl rounded-full flex items-center gap-3 text-white border border-white/10">
+                    {/* The Button Content (Ultra Glass Backdrop) */}
+                    <div className="relative px-8 py-4 bg-white/10 backdrop-blur-3xl rounded-full flex items-center gap-3 text-white border border-white/20 shadow-[inset_0_0_20px_rgba(255,255,255,0.1)]">
                         {isChatOpen ? (
                             <X className="w-5 h-5" />
                         ) : (

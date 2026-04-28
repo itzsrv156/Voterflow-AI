@@ -8,7 +8,7 @@ const genAI = new GoogleGenerativeAI(API_KEY);
 export const getGeminiResponse = async (userPrompt: string, systemContext: string) => {
   try {
     const model = genAI.getGenerativeModel({
-      model: "gemini-1.5-flash",
+      model: "gemini-2.0-flash",
       systemInstruction: systemContext
     });
 

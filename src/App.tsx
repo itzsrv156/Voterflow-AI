@@ -99,11 +99,18 @@ function App() {
                     onClick={() => setIsChatOpen(!isChatOpen)}
                     className="relative p-[2px] rounded-full overflow-hidden group shadow-2xl"
                 >
-                    {/* The Rotating Rainbow Border (Conic Gradient) */}
+                    {/* The Seamless Rotating Rainbow Ring */}
                     <motion.div 
                         animate={{ rotate: 360 }}
-                        transition={{ duration: 4, repeat: Infinity, ease: "linear" }}
-                        className="absolute inset-[-100%] bg-[conic-gradient(#4285F4,#EA4335,#FBBC05,#34A853,#4285F4)] opacity-80 group-hover:opacity-100 transition-opacity"
+                        transition={{ duration: 3, repeat: Infinity, ease: "linear" }}
+                        className="absolute inset-[-100%] bg-[conic-gradient(from_0deg,#4285F4,#EA4335,#FBBC05,#34A853,#4285F4)] opacity-100 transition-opacity"
+                    />
+                    
+                    {/* The Rainbow Glow Layer */}
+                    <motion.div 
+                        animate={{ rotate: 360 }}
+                        transition={{ duration: 3, repeat: Infinity, ease: "linear" }}
+                        className="absolute inset-[-100%] bg-[conic-gradient(from_0deg,#4285F4,#EA4335,#FBBC05,#34A853,#4285F4)] blur-xl opacity-40 transition-opacity"
                     />
 
                     {/* The Button Content (Ultra Glass Backdrop) */}

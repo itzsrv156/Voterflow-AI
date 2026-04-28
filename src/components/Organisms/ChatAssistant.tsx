@@ -37,7 +37,7 @@ export const ChatAssistant: React.FC = () => {
     useEffect(() => {
         if (!hasGreeted && persona && isChatOpen) {
             const greetings: Record<string, string> = {
-                FirstTime: "Namaste! Welcome, First-Time Voter. I'm your Sovereign Intel Coach. Your journey to democratic participation starts here. I recommend launching the 'Registration Suite' to check your eligibility.",
+                FirstTime: "Namaste! Welcome, First-Time Voter. I'm your VoterFlow AI Guide. Your journey to democratic participation starts here. I recommend launching the 'Registration Suite' to check your eligibility.",
                 Student: "Hello! As a student, you have specific rights under SIR 2026. I can guide you through the Annexure-II residency declaration and Form 6 filing. Shall we begin?",
                 Senior: "Namaste. For our senior citizens, we offer priority assistance. I can help you understand the Form 12D process for home-voting in PC 25."
             };
@@ -93,7 +93,7 @@ export const ChatAssistant: React.FC = () => {
                                     <Sparkles className="w-6 h-6 text-civic-navy animate-logo-glow" />
                                 </div>
                                 <div>
-                                    <h3 className="text-xl font-display font-bold text-civic-navy">Sovereign Intel</h3>
+                                    <h3 className="text-xl font-display font-bold text-civic-navy">VoterFlow AI Assistant</h3>
                                     <div className="flex items-center gap-2">
                                         <div className="w-1.5 h-1.5 bg-civic-green rounded-full animate-pulse shadow-[0_0_8px_rgba(18,136,7,0.6)]" />
                                         <span className="text-[9px] font-black text-gray-400 uppercase tracking-widest leading-none">Federated Search Active</span>

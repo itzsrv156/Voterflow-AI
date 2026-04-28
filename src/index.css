@@ -24,12 +24,12 @@
 
 @layer base {
   html {
-    font-size: 14px; /* Slightly smaller base for better density at 100% */
+    font-size: 13px; /* Reduced further to ensure visibility at 100% zoom */
   }
 
   @media (min-width: 1536px) {
     html {
-      font-size: 16px;
+      font-size: 15px;
     }
   }
 

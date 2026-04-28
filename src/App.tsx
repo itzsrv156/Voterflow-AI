@@ -112,7 +112,7 @@ function App() {
                             <X className="w-5 h-5" />
                         ) : (
                             <>
-                                <Search className="w-5 h-5 text-white/80 group-hover:text-white transition-colors" />
+                                <img src="https://www.gstatic.com/lamda/images/gemini_sparkle_v002_d4735304ff6292a690345.svg" className="w-5 h-5 animate-pulse" alt="Gemini" />
                                 <span className="font-display font-medium text-sm tracking-tight">Ask Gemini</span>
                                 <div className="flex gap-0.5">
                                     {[1, 2, 3].map(i => (

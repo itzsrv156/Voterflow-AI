@@ -100,7 +100,7 @@ const SidebarItem = ({ id, icon: Icon, labelKey, activeTab, setActiveTab, t }: S
     <button
       onClick={() => setActiveTab(id)}
       className={cn(
-        "w-full flex items-center gap-4 px-6 py-4 rounded-2xl transition-all duration-500 relative group",
+        "w-full flex items-center gap-3 px-5 py-3 rounded-xl transition-all duration-500 relative group whitespace-nowrap",
         activeTab === id ? "text-white" : "text-gray-500 hover:text-civic-navy"
       )}
     >
@@ -148,11 +148,11 @@ export const Dashboard = () => {
         animate={{ x: 0, opacity: 1 }}
         className="w-64 glass rounded-[2.5rem] p-6 shadow-2xl shadow-civic-navy/5 sticky top-28 flex flex-col h-[calc(100vh-140px)]"
       >
-        <div className="flex items-center gap-3 mb-12 px-2">
-          <div className="w-10 h-10 bg-civic-navy rounded-xl flex items-center justify-center">
-            <Radio className="text-civic-saffron w-5 h-5" />
+        <div className="flex items-center gap-3 mb-8 px-2">
+          <div className="w-8 h-8 bg-civic-navy rounded-lg flex items-center justify-center">
+            <Radio className="text-civic-saffron w-4 h-4" />
           </div>
-          <span className="font-display font-bold text-civic-navy text-sm uppercase tracking-widest">Navigator</span>
+          <span className="font-display font-bold text-civic-navy text-xs uppercase tracking-widest">Navigator</span>
         </div>
         
         <nav className="space-y-3 flex-1 overflow-y-auto pr-2 custom-scrollbar">
@@ -166,11 +166,11 @@ export const Dashboard = () => {
         </nav>
 
         {/* Sovereign Achievements (Badges) - NEW FEATURE */}
-        <div className="mt-8 p-6 glass-dark rounded-3xl relative overflow-hidden group">
-            <h4 className="text-[9px] font-black text-civic-navy uppercase tracking-widest mb-4 flex items-center gap-2">
-                <Award className="w-3 h-3 text-civic-saffron" /> Sovereign Badges
+        <div className="mt-6 p-4 glass-dark rounded-2xl relative overflow-hidden group">
+            <h4 className="text-[8px] font-black text-civic-navy uppercase tracking-widest mb-3 flex items-center gap-2">
+                <Award className="w-2.5 h-2.5 text-civic-saffron" /> Sovereign Badges
             </h4>
-            <div className="flex flex-wrap gap-2">
+            <div className="flex flex-wrap gap-1.5">
                 {[
                     { id: 'identity', icon: UserCheck, active: !!persona, title: 'Identity Verified' },
                     { id: 'filing', icon: FileText, active: progress.registration === 100, title: 'Form 6 Filed' },
@@ -181,27 +181,26 @@ export const Dashboard = () => {
                         key={badge.id} 
                         title={badge.title}
                         className={cn(
-                            "w-10 h-10 rounded-xl flex items-center justify-center transition-all",
-                            badge.active ? "bg-civic-navy text-civic-saffron shadow-lg" : "bg-gray-100 text-gray-300"
+                            "w-8 h-8 rounded-lg flex items-center justify-center transition-all",
+                            badge.active ? "bg-civic-navy text-civic-saffron shadow-md" : "bg-gray-100 text-gray-300"
                         )}
                     >
-                        <badge.icon className="w-5 h-5" />
+                        <badge.icon className="w-4 h-4" />
                     </div>
                 ))}
             </div>
         </div>
 
         {/* Readiness Score Molecule */}
-        <div className="mt-8 p-6 glass-dark rounded-3xl relative overflow-hidden group">
-            <div className="flex justify-between items-center mb-4 relative z-10">
-                <Target className="w-5 h-5 text-civic-navy" />
-                <span className="text-[10px] font-black text-civic-navy uppercase tracking-widest">{Math.round(readinessScore)}% Ready</span>
+        <div className="mt-4 p-4 glass-dark rounded-2xl relative overflow-hidden group">
+            <div className="flex justify-between items-center mb-3 relative z-10">
+                <Target className="w-4 h-4 text-civic-navy" />
+                <span className="text-[9px] font-black text-civic-navy uppercase tracking-widest">{Math.round(readinessScore)}%</span>
             </div>
-            <div className="h-1.5 w-full bg-gray-100 rounded-full overflow-hidden relative z-10">
+            <div className="h-1 w-full bg-gray-100 rounded-full overflow-hidden relative z-10">
                 <motion.div animate={{ width: `${readinessScore}%` }} className="h-full bg-civic-navy" />
             </div>
-            <p className="text-[8px] text-gray-400 font-bold uppercase mt-3 tracking-tighter relative z-10">Sovereign Compliance Index</p>
-            <Award className="absolute -bottom-4 -right-4 w-16 h-16 text-civic-navy/5 group-hover:scale-110 transition-transform" />
+            <Award className="absolute -bottom-2 -right-2 w-10 h-10 text-civic-navy/5 group-hover:scale-110 transition-transform" />
         </div>
 
         <div className="mt-auto pt-8 border-t border-white/20">

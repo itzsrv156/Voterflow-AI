@@ -67,22 +67,27 @@ function App() {
             {view === 'selection' ? (
               <motion.div
                 key="selection"
-                initial={{ opacity: 0, scale: 1 }}
-                animate={{ opacity: 1, scale: 1 }}
-                exit={{ opacity: 0, scale: 2, filter: 'blur(20px)' }}
+                initial={{ opacity: 0, scale: 1, filter: 'blur(0px)' }}
+                animate={{ opacity: 1, scale: 1, filter: 'blur(0px)' }}
+                exit={{ 
+                  opacity: 0, 
+                  scale: 5, 
+                  filter: 'blur(40px)',
+                  transition: { duration: 1.2, ease: [0.7, 0, 0.3, 1] } 
+                }}
                 transition={{ duration: 0.8, ease: [0.4, 0, 0.2, 1] }}
-                className="h-full"
+                className="h-full relative z-10"
               >
                 <Hero />
               </motion.div>
             ) : (
               <motion.div
                 key="dashboard"
-                initial={{ opacity: 0, scale: 1.5, filter: 'blur(10px)' }}
+                initial={{ opacity: 0, scale: 0.8, filter: 'blur(20px)' }}
                 animate={{ opacity: 1, scale: 1, filter: 'blur(0px)' }}
                 exit={{ opacity: 0, scale: 0.8 }}
-                transition={{ duration: 0.8, ease: [0.16, 1, 0.3, 1] }}
-                className="pt-32 px-4 pb-20 max-w-[1600px] mx-auto h-full"
+                transition={{ duration: 1.2, ease: [0.16, 1, 0.3, 1] }}
+                className="pt-24 px-4 pb-20 max-w-[1600px] mx-auto h-full relative z-10"
               >
                 <Dashboard />
               </motion.div>

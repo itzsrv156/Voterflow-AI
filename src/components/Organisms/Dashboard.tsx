@@ -191,14 +191,51 @@ export const Dashboard = () => {
             </div>
         </div>
 
-        {/* Readiness Score Molecule */}
+        {/* Sovereign Compliance Orb */}
         <div className="mt-4 p-4 glass-dark rounded-2xl relative overflow-hidden group">
-            <div className="flex justify-between items-center mb-3 relative z-10">
-                <Target className="w-4 h-4 text-civic-navy" />
-                <span className="text-[9px] font-black text-civic-navy uppercase tracking-widest">{Math.round(readinessScore)}%</span>
-            </div>
-            <div className="h-1 w-full bg-gray-100 rounded-full overflow-hidden relative z-10">
-                <motion.div animate={{ width: `${readinessScore}%` }} className="h-full bg-civic-navy" />
+            <div className="flex flex-col items-center justify-center py-2 relative z-10">
+                <div className="relative w-16 h-16 mb-2">
+                    <motion.div 
+                        animate={{ 
+                            scale: [1, 1.1, 1],
+                            opacity: [0.3, 0.6, 0.3] 
+                        }}
+                        transition={{ 
+                            duration: 4 - (readinessScore / 33), 
+                            repeat: Infinity, 
+                            ease: "easeInOut" 
+                        }}
+                        className={cn(
+                            "absolute inset-0 rounded-full blur-xl transition-colors duration-1000",
+                            readinessScore > 80 ? "bg-civic-green/40" : 
+                            readinessScore > 40 ? "bg-civic-saffron/40" : "bg-civic-navy/40"
+                        )}
+                    />
+                    <motion.div 
+                        animate={{ 
+                            rotate: 360,
+                            scale: [1, 1.05, 1]
+                        }}
+                        transition={{ 
+                            rotate: { duration: 10, repeat: Infinity, ease: "linear" },
+                            scale: { duration: 2, repeat: Infinity, ease: "easeInOut" }
+                        }}
+                        className={cn(
+                            "w-full h-full rounded-full border-2 border-white/20 flex items-center justify-center relative overflow-hidden shadow-inner",
+                            readinessScore > 80 ? "bg-gradient-to-tr from-civic-green/20 to-civic-green/40" : 
+                            readinessScore > 40 ? "bg-gradient-to-tr from-civic-saffron/20 to-civic-saffron/40" : "bg-gradient-to-tr from-civic-navy/20 to-civic-navy/40"
+                        )}
+                    >
+                        <span className="text-[11px] font-black text-civic-navy tracking-tighter">{Math.round(readinessScore)}%</span>
+                        {/* Dynamic Core */}
+                        <div className={cn(
+                            "absolute inset-0 bg-white/10 mix-blend-overlay animate-pulse",
+                            readinessScore > 80 ? "shadow-[inset_0_0_15px_#128807]" : 
+                            readinessScore > 40 ? "shadow-[inset_0_0_15px_#FF9933]" : "shadow-[inset_0_0_15px_#000080]"
+                        )} />
+                    </motion.div>
+                </div>
+                <span className="text-[8px] font-black text-civic-navy/40 uppercase tracking-[0.2em]">Compliance Orb</span>
             </div>
             <Award className="absolute -bottom-2 -right-2 w-10 h-10 text-civic-navy/5 group-hover:scale-110 transition-transform" />
         </div>
@@ -947,12 +984,18 @@ export const Dashboard = () => {
                         </div>
                     ) : scanStatus === 'scanning' ? (
                         <div className="py-12 flex flex-col items-center gap-8">
-                            <div className="w-48 h-64 bg-gray-100 rounded-2xl relative overflow-hidden shadow-inner border border-gray-200">
-                                <div className="absolute inset-0 bg-gradient-to-b from-transparent via-google-blue/10 to-google-blue/20" />
+                            <div className="w-48 h-64 bg-gray-100 rounded-2xl relative overflow-hidden shadow-inner border border-gray-200 holographic-scan">
+                                <div className="absolute inset-0 bg-gradient-to-b from-transparent via-google-blue/5 to-google-blue/10" />
                                 <motion.div 
                                     animate={{ y: [0, 256, 0] }}
-                                    transition={{ duration: 2, repeat: Infinity, ease: "linear" }}
-                                    className="absolute top-0 left-0 w-full h-1 bg-google-blue shadow-[0_0_15px_rgba(66,133,244,0.8)] z-10"
+                                    transition={{ duration: 1.5, repeat: Infinity, ease: "linear" }}
+                                    className="absolute top-0 left-0 w-full h-1 bg-google-blue shadow-[0_0_20px_#4285F4] z-20"
+                                />
+                                {/* Laser Sweep Shadow */}
+                                <motion.div 
+                                    animate={{ y: [0, 256, 0] }}
+                                    transition={{ duration: 1.5, repeat: Infinity, ease: "linear" }}
+                                    className="absolute top-0 left-0 w-full h-20 bg-gradient-to-b from-google-blue/20 to-transparent z-10"
                                 />
                                 <div className="absolute inset-0 flex items-center justify-center">
                                     <FileText className="w-12 h-12 text-gray-300 animate-pulse" />

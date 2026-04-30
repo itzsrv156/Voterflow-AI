@@ -15,49 +15,50 @@ VoterFlow AI addresses the **Information Asymmetry** in democratic processes. It
 ### 1. Gemini 2.5 Flash (Generative Language API)
 - **Context-Aware Prompting**: Uses persona-based system instructions for tailored guidance.
 - **Streaming Architecture**: Implements `sendMessageStream` for real-time, low-latency UI updates.
-- **Search Grounding**: Utilizes `googleSearch` tools to anchor AI responses in verified ECI data and current 2026 legislative revisions.
+- **Search Grounding**: Utilizes `googleSearch` tools to anchor AI responses in verified ECI data.
 
 ### 2. Google Maps Platform
-- **Satellite Data**: High-resolution orientation for the **Polling Booth Locator**.
-- **Geospatial UI**: Interactive mapping with custom markers for sector mapping and BLO synchronization.
+- **Satellite Orientation**: High-resolution mapping for the **Polling Booth Locator**.
+- **Geospatial UI**: Interactive custom markers for BLO synchronization.
 
 ### 3. Google Ecosystem Synergy
-- **Google Calendar API**: One-click **Sync Timelines** to automate deadline tracking for voters.
-- **Google Wallet**: Simulated **Sovereign ID** portability, demonstrating the future of digital civic identities.
+- **Google Calendar API**: One-click **Sync Timelines** for automated deadline tracking.
+- **Google Wallet**: Simulated **Sovereign ID** portability for digital civic identities.
 
-## 🧠 Technical Architecture
+## ⚡ Performance Engineering (60FPS Standard)
 
-- **State Engine**: Managed via **Zustand** with persistent middleware for session-stable, O(1) state lookups.
-- **UI Architecture**: Follows **Atomic Design Principles** (Atoms, Molecules, Organisms) for maximum component reusability and clean separation of concerns.
-- **Deterministic Logic**: Integrated **Vitest** suite ensures the state transitions and readiness calculations are mathematically sound.
+VoterFlow AI is engineered for ultra-smooth interactions, following strict GPU-offloading protocols:
+- **GPU Acceleration**: Applied `will-change: transform, opacity` to all animated surfaces to utilize hardware composition.
+- **Shadow Optimization**: Replaced expensive Gaussian box-shadows with **pseudo-element opacity transitions**. This prevents costly layout repaints during hover/interaction states.
+- **Layout Containment**: Implemented `contain: layout style` on complex dashboard organisms to isolate browser layout calculations.
+- **Hardware-Only Animations**: Animations are strictly limited to `transform` and `opacity` properties, bypassing the browser's CPU-intensive layout and paint cycles.
 
 ## 🛡️ Evaluation Focus Areas
 
-### 1. Code Quality & Maintainability
-- **TypeScript Strict Mode**: Zero `any` types in core logic; fully documented with **TSDoc/JSDoc**.
-- **Modular Services**: Decoupled AI and State layers for high testability and maintainability.
+### 1. Code Quality & Security
+- **TypeScript Strict Mode**: Zero `any` types; full **TSDoc/JSDoc** documentation for auditability.
+- **Defense-in-Depth**: Integrated **DOMPurify** sanitization for all AI-generated content to neutralize XSS risks.
+- **Resilience**: Global **ErrorBoundary** implementation for graceful failure recovery.
 
 ### 2. Security & Responsible AI
-- **Safety Filters**: Implements `safetySettings` (Harassment, Hate Speech, Dangerous Content) to ensure ethical AI interactions.
-- **Sanitized State**: No sensitive keys hardcoded; strictly environment-variable driven.
+- **Safety Filters**: Configured `safetySettings` (Harassment, Hate Speech) in the Gemini core.
+- **Sanitized State**: Strictly environment-variable driven; no hardcoded credentials.
 
-### 3. Performance Engineering (60FPS)
-- **GPU Acceleration**: Utilizes `will-change: transform, opacity` and hardware-accelerated animations via **Framer Motion**.
-- **Layout Containment**: Uses `contain: layout style` to isolate layout thrashing in complex dashboard grids.
-- **Shadow Optimization**: Replaced expensive Gaussian blurs with pseudo-element opacity transitions to eliminate repaints.
+### 3. Inclusive & Accessible Design (WCAG 2.1)
+- **Keyboard Navigation**: **Skip to Main Content** links and logical tab-indexing.
+- **Screen Reader Support**: `aria-live` regions for streaming chat and semantic HTML5 landmarks.
+- **Localization**: Full triple-language support (English, Hindi, Kannada) for all dashboard metrics.
 
-### 4. Inclusive & Accessible Design (WCAG 2.1)
-- **Keyboard Navigation**: Implemented **Skip to Main Content** links and logical tab-indexing.
-- **Screen Reader Support**: Integrated `aria-live` regions for streaming chat and semantic HTML5 structures.
-- **Touch-Optimized**: 48px+ touch targets and thumb-optimized **FAB Hub** for mobile usability.
+### 4. Testing & Validation
+- **Integration Suite**: End-to-end state validation via **Vitest**, covering the entire "Sovereign Voter Journey."
 
 ## 📦 How the Solution Works
 
-1. **Intelligent Onboarding**: User selects a persona (e.g., Student/Senior).
-2. **Dynamic Dashboard Initialization**: The app hydrates a context-aware UI tailored to the persona's specific legal requirements (e.g., Annexure-II for students).
-3. **Grounded AI Consultation**: The Gemini Assistant provides real-time, cited answers using Google Search.
-4. **Actionable Training**: Users complete the **EVM Simulator** and sync deadlines to their **Google Calendar**.
-5. **Civic Readiness**: The `readinessScore` reaches 100%, signifying a fully prepared, empowered voter.
+1. **Intelligent Onboarding**: User selects a persona (Student/Senior/New).
+2. **Dynamic Dashboard Hydration**: UI tailors goals and legal requirements to the persona.
+3. **Grounded AI Consultation**: Gemini provides cited answers using real-time Google Search.
+4. **Actionable Training**: Users complete the **EVM Simulator** and sync deadlines.
+5. **Civic Readiness**: The `readinessScore` hits 100%, signifying a fully prepared voter.
 
 ---
-**Built for Google PromptWars 2026 // Sovereign Edition v2.5**
+**Built for Google PromptWars 2026 // Sovereign Edition v3.0 // Final Hardened Build**

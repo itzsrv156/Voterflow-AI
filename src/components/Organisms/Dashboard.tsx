@@ -5,7 +5,6 @@ import { useTranslation } from '../../LanguageContext';
 import { TiltCard } from '../Atoms/TiltCard';
 import { PollingBoothLocator } from './PollingBoothLocator';
 import { FutureVoterTool } from '../Molecules/FutureVoterTool';
-import { Tooltip } from '../Atoms/Tooltip';
 import { EvmSimulator } from './EvmSimulator';
 
 const LanguageToggle = () => {
@@ -78,12 +77,12 @@ const ConstituencyHeatmap = ({ onOpenChat }: { onOpenChat: () => void }) => (
     </TiltCard>
 );
 import { 
-  Zap, X, 
+  Zap, 
   CheckCircle, Gavel, 
   Calendar, LayoutDashboard, UserPlus, Search, Library, 
-  ChevronLeft, ChevronRight, Headphones, Radio, ArrowRight, User,
-  PhoneCall, MapPin, Info, ShieldCheck,
-  AlertTriangle, UserCheck, Target, Award,
+  Headphones, ArrowRight, Radio, Award, ChevronLeft, User, Target,
+  PhoneCall, MapPin, ShieldCheck,
+  UserCheck,
   Flame, Cpu, BookOpen, Download, FileText,
   FileEdit, Globe, Fingerprint
 } from 'lucide-react';
@@ -130,7 +129,6 @@ export const Dashboard = () => {
   
   const [showAiValidator, setShowAiValidator] = useState(false);
   const [scanStatus, setScanStatus] = useState<'idle' | 'scanning' | 'result'>('idle');
-  const [isMenuOpen, setIsMenuOpen] = useState(false);
   const [activeMilestone, setActiveMilestone] = useState<number | null>(1); // Default to Current
 
   const syncToCalendar = () => {
@@ -436,23 +434,23 @@ export const Dashboard = () => {
                               <div className="w-12 h-12 bg-civic-navy rounded-2xl flex items-center justify-center shadow-xl shadow-civic-navy/10">
                                   <Library className="w-6 h-6 text-civic-saffron" />
                               </div>
-                              <h3 className="text-2xl font-display font-bold text-civic-navy">VoterFlow Journey Timeline</h3>
+                              <h3 className="text-2xl font-display font-bold text-civic-navy">{t('journey_timeline')}</h3>
                           </div>
                           <button 
                             onClick={syncToCalendar}
                             className="px-6 py-3 bg-[#000000] text-white text-[10px] font-black uppercase tracking-widest rounded-xl shadow-xl flex items-center gap-2 hover:scale-105 active:scale-95 transition-all border border-white/10"
                           >
-                            <Calendar className="w-4 h-4 text-google-blue" /> Sync to Google Calendar
+                            <Calendar className="w-4 h-4 text-google-blue" /> {t('sync_calendar')}
                           </button>
                       </div>
                       
                       <div className="relative flex flex-col md:flex-row justify-between gap-8 px-4 mb-12">
                           <div className="absolute top-1/2 left-0 w-full h-0.5 bg-gray-100 -z-0 hidden md:block" />
                           {[
-                            { date: 'Oct 2025', event: 'SIR Cycle Start', status: 'Passed', icon: Zap, details: "Special Intensive Revision began. Your sector (PC 25) mapping is finalized. This phase ensures every house is mapped to a digital cluster." },
-                            { date: 'Feb 2026', event: 'Draft Roll Sync', status: 'Current', icon: Search, details: "The Draft Roll is now live. Verify your entry to avoid exclusion during the de-duplication phase. Any errors in name/address must be corrected now." },
-                            { date: 'Mar 2026', event: 'Final Publication', status: 'Upcoming', icon: ShieldCheck, details: "Final VoterFlow Roll will be published. This is the last version before General Elections. No new registrations are accepted after this date." },
-                            { date: 'May 2026', event: 'General Elections', status: 'Goal', icon: Flame, details: "E-Day. Your polling station BBMP School is ready for VoterFlow turnout. Bring your Sovereign ID for instant verification." }
+                            { date: 'Oct 2025', event: t('sir_cycle'), status: 'Passed', icon: Zap, details: t('sir_desc') },
+                            { date: 'Feb 2026', event: t('draft_roll'), status: 'Current', icon: Search, details: t('draft_desc') },
+                            { date: 'Mar 2026', event: t('final_pub'), status: 'Upcoming', icon: ShieldCheck, details: t('final_desc') },
+                            { date: 'May 2026', event: t('elections'), status: 'Goal', icon: Flame, details: t('elections_desc') }
                           ].map((milestone, i) => (
                             <button 
                                 key={i} 
@@ -494,24 +492,14 @@ export const Dashboard = () => {
                                     })()}
                                  </div>
                                  <div className="flex items-center gap-4 mb-4">
-                                    <div className="px-3 py-1 bg-civic-navy text-white text-[8px] font-black uppercase tracking-widest rounded-full">Milestone Details</div>
-                                    <div className="text-xs font-bold text-gray-400">Section 4.2 Protocol</div>
+                                    <div className="px-3 py-1 bg-civic-navy text-white text-[8px] font-black uppercase tracking-widest rounded-full">{t('milestone_details')}</div>
+                                    <div className="text-xs font-bold text-gray-400">{t('protocol_42')}</div>
                                  </div>
                                  <h4 className="text-xl font-bold text-civic-navy mb-2">
-                                    {[
-                                        'SIR Cycle Start', 
-                                        'Draft Roll Sync', 
-                                        'Final Publication', 
-                                        'General Elections'
-                                    ][activeMilestone]}
+                                    {[t('sir_cycle'), t('draft_roll'), t('final_pub'), t('elections')][activeMilestone]}
                                  </h4>
                                  <p className="text-sm text-gray-500 leading-relaxed max-w-2xl font-medium">
-                                    {[
-                                        "Special Intensive Revision began. Your sector (PC 25) mapping is finalized. This phase ensures every house is mapped to a digital cluster.",
-                                        "The Draft Roll is now live. Verify your entry to avoid exclusion during the de-duplication phase. Any errors in name/address must be corrected now.",
-                                        "Final VoterFlow Roll will be published. This is the last version before General Elections. No new registrations are accepted after this date.",
-                                        "E-Day. Your polling station BBMP School is ready for VoterFlow turnout. Bring your Sovereign ID for instant verification."
-                                    ][activeMilestone]}
+                                    {[t('sir_desc'), t('draft_desc'), t('final_desc'), t('elections_desc')][activeMilestone]}
                                  </p>
                               </motion.div>
                           )}
@@ -520,14 +508,14 @@ export const Dashboard = () => {
                   </TiltCard>
               </motion.div>
 
-              {/* Polling Booth Locator (Real Map) */}
+              {/* Polling Booth Locator */}
               <motion.div variants={{ hidden: { y: 20, opacity: 0 }, show: { y: 0, opacity: 1 } }} className="xl:col-span-2">
                 <TiltCard>
                   <PollingBoothLocator />
                 </TiltCard>
               </motion.div>
 
-              {/* Top 50 Feature: Heatmap & Future Voter Tool */}
+              {/* Heatmap & Future Voter Tool */}
               <motion.div variants={{ hidden: { y: 20, opacity: 0 }, show: { y: 0, opacity: 1 } }} className="grid grid-cols-1 xl:grid-cols-2 gap-8 xl:col-span-2">
                   <TiltCard><ConstituencyHeatmap onOpenChat={() => setIsChatOpen(true)} /></TiltCard>
                   <TiltCard><FutureVoterTool /></TiltCard>
@@ -543,7 +531,6 @@ export const Dashboard = () => {
                     <div className="absolute top-0 left-0 w-full h-full bg-[url('https://grainy-gradients.vercel.app/noise.svg')] opacity-10 mix-blend-overlay" />
                     <div className="absolute -bottom-20 -right-20 w-80 h-80 bg-civic-saffron/20 rounded-full blur-[100px] group-hover:bg-civic-saffron/30 transition-all duration-1000" />
                     
-                    {/* Animated Scanning Line */}
                     <motion.div 
                         animate={{ y: ["-100%", "200%"] }}
                         transition={{ duration: 3, repeat: Infinity, ease: "linear" }}
@@ -560,32 +547,26 @@ export const Dashboard = () => {
                             </div>
                             <div>
                                 <div className="flex items-center gap-3 mb-2">
-                                    <span className="px-3 py-1 bg-civic-saffron text-civic-navy text-[8px] font-black uppercase tracking-[0.2em] rounded-full">VoterFlow Identity</span>
-                                    <span className="text-[10px] font-bold text-white/40 uppercase tracking-widest">EPIC: BEL-2026-0420</span>
+                                    <span className="px-3 py-1 bg-civic-saffron text-civic-navy text-[8px] font-black uppercase tracking-[0.2em] rounded-full">{t('vf_identity')}</span>
+                                    <span className="text-[10px] font-bold text-white/40 uppercase tracking-widest">{t('epic_id')}</span>
                                 </div>
-                                <h3 className="text-3xl font-display font-bold uppercase tracking-tight">{voterName || 'Sarvesh Arunkumar'}</h3>
+                                <h3 className="text-3xl font-display font-bold uppercase tracking-tight">{voterName || t('sarvesh_a')}</h3>
                                 <div className="flex items-center gap-4 mt-2">
-                                    <div className="text-[10px] font-medium text-white/60">PC: Bengaluru Central</div>
+                                    <div className="text-[10px] font-medium text-white/60">{t('pc_bengaluru')}</div>
                                     <div className="w-1 h-1 bg-white/20 rounded-full" />
-                                    <div className="text-[10px] font-medium text-white/60">Qualifying: 01-01-2026</div>
+                                    <div className="text-[10px] font-medium text-white/60">{t('qualifying_date')}</div>
                                 </div>
                             </div>
                         </div>
                         <div className="flex flex-col sm:flex-row gap-4">
                             <button className="px-8 py-4 bg-white/10 hover:bg-white/20 border border-white/10 rounded-2xl text-[10px] font-black uppercase tracking-widest transition-all flex items-center gap-2">
-                                <Download className="w-4 h-4" /> Download EPIC
+                                <Download className="w-4 h-4" /> {t('download_epic')}
                             </button>
                             <button 
-                                onClick={() => {
-                                    const toast = document.createElement('div');
-                                    toast.className = "fixed top-12 left-1/2 -translate-x-1/2 bg-civic-navy text-white px-8 py-4 rounded-2xl shadow-2xl z-[6000] font-bold flex items-center gap-4 animate-bounce";
-                                    toast.innerHTML = `<div class="w-4 h-4 bg-google-blue rounded-full"></div> Syncing with Google Wallet...`;
-                                    document.body.appendChild(toast);
-                                    setTimeout(() => document.body.removeChild(toast), 2000);
-                                }}
+                                onClick={() => {}}
                                 className="px-8 py-4 bg-[#000000] text-white font-black rounded-2xl text-[10px] uppercase tracking-widest shadow-xl flex items-center gap-3 hover:scale-105 active:scale-95 transition-all border border-white/20"
                             >
-                                <img src="https://www.gstatic.com/wallet/badge/en_US.svg" className="h-4" alt="Add to Google Wallet" />
+                                <img src="https://www.gstatic.com/wallet/badge/en_US.svg" className="h-4" alt="Add to Google Wallet" loading="lazy" decoding="async" />
                             </button>
                         </div>
                     </div>
@@ -610,13 +591,13 @@ export const Dashboard = () => {
                       <CheckCircle className={cn("w-8 h-8 transition-all duration-500", progress.registration === 100 ? "text-civic-green scale-110" : "text-gray-100")} />
                     </div>
                     <div className="relative z-10">
-                        <h3 className="text-3xl font-bold text-civic-navy mb-4">{t('registration')} Suite</h3>
+                        <h3 className="text-3xl font-bold text-civic-navy mb-4">{t('registration_suite')}</h3>
                         <p className="text-sm text-gray-500 mb-10 leading-relaxed max-w-sm">
-                          Secure Form 6 engine with automated document verification and BLO mapping.
+                          {t('registration_desc')}
                         </p>
                     </div>
                     <div className="mt-auto relative z-10">
-                       <div className="flex justify-between text-[9px] font-bold text-gray-400 mb-3 uppercase tracking-[0.2em]">Application Progress</div>
+                       <div className="flex justify-between text-[9px] font-bold text-gray-400 mb-3 uppercase tracking-[0.2em]">{t('progress')}</div>
                       <div className="h-2.5 w-full bg-gray-100/50 rounded-full overflow-hidden mb-8 p-0.5 border border-white/20">
                         <motion.div 
                             animate={{ width: `${progress.registration}%` }} 
@@ -624,7 +605,7 @@ export const Dashboard = () => {
                         />
                       </div>
                       <button className="w-full py-6 bg-civic-navy text-white font-bold rounded-[2rem] shadow-2xl shadow-civic-navy/30 flex items-center justify-center gap-3 active:scale-95 transition-all group/btn">
-                        Open Digital Wizard <ArrowRight className="w-5 h-5 group-hover:translate-x-2 transition-transform" />
+                        {t('open_wizard')} <ArrowRight className="w-5 h-5 group-hover:translate-x-2 transition-transform" />
                       </button>
                     </div>
                   </div>
@@ -646,114 +627,21 @@ export const Dashboard = () => {
                       <div className="w-16 h-16 bg-civic-navy rounded-2xl flex items-center justify-center group-hover:scale-110 group-hover:-rotate-6 transition-all duration-500 shadow-xl">
                         <Cpu className="text-civic-saffron w-7 h-7" />
                       </div>
-                      <span className="px-4 py-2 bg-civic-navy/5 rounded-full text-[9px] font-black text-civic-navy uppercase tracking-widest">VoterFlow AI v2.4</span>
+                      <span className="px-4 py-2 bg-civic-navy/5 rounded-full text-[9px] font-black text-civic-navy uppercase tracking-widest">VoterFlow AI</span>
                     </div>
                     <div className="relative z-10">
-                        <h3 className="text-3xl font-bold text-civic-navy mb-4">Document Validator</h3>
+                        <h3 className="text-3xl font-bold text-civic-navy mb-4">{t('doc_validator')}</h3>
                         <p className="text-sm text-gray-500 mb-10 leading-relaxed max-w-sm">
-                          Pre-verify your identity and residency documents against ECI legislative standards.
+                          {t('validator_desc')}
                         </p>
                     </div>
                     <div className="mt-auto relative z-10">
                         <div className="flex items-center gap-3 text-civic-navy font-bold text-[11px] uppercase tracking-[0.2em]">
-                            Analyze Documents <ArrowRight className="w-5 h-5 group-hover:translate-x-2 transition-transform" />
+                            {t('analyze_docs')} <ArrowRight className="w-5 h-5 group-hover:translate-x-2 transition-transform" />
                         </div>
                     </div>
                   </div>
                 </TiltCard>
-              </motion.div>
-
-              {/* Ink & Voice Social Pulse */}
-              <motion.div variants={{ hidden: { y: 20, opacity: 0 }, show: { y: 0, opacity: 1 } }} className="xl:col-span-2">
-                <TiltCard>
-                  <div className="bg-civic-saffron/5 border border-civic-saffron/20 rounded-[3.5rem] p-12 overflow-hidden relative group">
-                  <div className="flex justify-between items-center relative z-10">
-                      <div>
-                          <div className="flex items-center gap-3 mb-4">
-                              <Flame className="w-6 h-6 text-civic-saffron" />
-                              <h3 className="text-2xl font-display font-bold text-civic-navy">Bengaluru Sector Pulse</h3>
-                          </div>
-                          <p className="text-sm text-gray-500 max-w-lg leading-relaxed">
-                              Active community engagement metrics for PC 25. Over **12,400** citizens have verified their SIR 2026 status this week.
-                          </p>
-                      </div>
-                      <div className="flex -space-x-4">
-                          {[1,2,3,4].map(i => (
-                              <div key={i} className="w-12 h-12 rounded-full border-4 border-white overflow-hidden bg-gray-200">
-                                  <img src={`https://i.pravatar.cc/150?u=${i+10}`} alt="User" className="w-full h-full object-cover" />
-                              </div>
-                          ))}
-                          <div className="w-12 h-12 rounded-full border-4 border-white bg-civic-navy flex items-center justify-center text-[10px] font-bold text-white">+12k</div>
-                      </div>
-                  </div>
-                  
-                  <div className="grid grid-cols-1 md:grid-cols-3 gap-8 mt-10 relative z-10">
-                      {[
-                        { label: 'Verified Electors', value: '89.2%', color: 'bg-civic-green' },
-                        { label: 'Claims Resolved', value: '4.2k', color: 'bg-civic-navy' },
-                        { label: 'Revision Velocity', value: 'Optimal', color: 'bg-civic-saffron' }
-                      ].map((stat, i) => (
-                        <div key={i} className="bg-white/60 backdrop-blur-md p-6 rounded-3xl border border-white shadow-sm">
-                            <div className="text-[10px] font-black text-gray-400 uppercase tracking-widest mb-2">{stat.label}</div>
-                            <div className="text-3xl font-display font-bold text-civic-navy flex items-center gap-3">
-                                {stat.value}
-                                <div className={cn("w-2 h-2 rounded-full animate-pulse", stat.color)} />
-                            </div>
-                        </div>
-                      ))}
-                  </div>
-                </div>
-              </TiltCard>
-            </motion.div>
-
-              {/* Candidate Intelligence - NEW TOP 50 FEATURE */}
-              <motion.div variants={{ hidden: { y: 20, opacity: 0 }, show: { y: 0, opacity: 1 } }} className="xl:col-span-2 group">
-                  <TiltCard>
-                      <div className="glass-card rounded-[3.5rem] p-12 relative overflow-hidden">
-                  <div className="flex justify-between items-end mb-10">
-                      <div>
-                          <div className="flex items-center gap-3 mb-4">
-                              <Award className="w-6 h-6 text-civic-saffron" />
-                              <h3 className="text-2xl font-display font-bold text-civic-navy tracking-tight">Candidate Intel Preview</h3>
-                          </div>
-                          <p className="text-sm text-gray-500 max-w-lg leading-relaxed">
-                              Contesting candidates for **Bengaluru Central (PC 25)**. Analyze criminal records, educational backgrounds, and asset declarations.
-                          </p>
-                      </div>
-                      <div className="px-6 py-3 bg-civic-navy text-white text-[10px] font-bold uppercase tracking-widest rounded-2xl shadow-xl shadow-civic-navy/20 cursor-pointer hover:scale-105 transition-all">
-                          Full Affidavit Portal
-                      </div>
-                  </div>
-
-                  <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-6">
-                      {[
-                        { name: 'Dr. Rahul S.', party: 'National Alliance', initials: 'RS', color: 'bg-orange-500' },
-                        { name: 'Anita Verma', party: 'People First', initials: 'AV', color: 'bg-blue-500' },
-                        { name: 'K. Venkatesh', party: 'State Collective', initials: 'KV', color: 'bg-green-500' },
-                        { name: 'Sarah Khan', party: 'Independent', initials: 'SK', color: 'bg-gray-500' }
-                      ].map((c, i) => (
-                        <div key={i} className="p-6 bg-white border border-gray-100 rounded-3xl hover:shadow-xl transition-all group/cand text-center">
-                            <div className={cn("w-20 h-20 mx-auto mb-4 rounded-2xl flex items-center justify-center text-white font-display font-bold text-xl shadow-inner relative", c.color)}>
-                                {c.initials}
-                                <div className="absolute inset-0 bg-black/5 rounded-2xl opacity-0 group-hover/cand:opacity-100 transition-opacity" />
-                            </div>
-                            <div className="text-center">
-                                <div className="text-sm font-bold text-civic-navy mb-1">{c.name}</div>
-                                <div className="text-[10px] font-black text-gray-400 uppercase tracking-widest">{c.party}</div>
-                                <div className="mt-4 flex gap-2 justify-center">
-                                    <div className="w-6 h-6 bg-gray-50 rounded-lg flex items-center justify-center cursor-pointer hover:bg-civic-navy hover:text-white transition-all">
-                                        <Info className="w-3 h-3" />
-                                    </div>
-                                    <div className="w-6 h-6 bg-gray-50 rounded-lg flex items-center justify-center cursor-pointer hover:bg-civic-navy hover:text-white transition-all">
-                                        <Gavel className="w-3 h-3" />
-                                    </div>
-                                </div>
-                            </div>
-                        </div>
-                      ))}
-                  </div>
-                      </div>
-                  </TiltCard>
               </motion.div>
             </motion.div>
           ) : activeTab === 'registration' ? (
@@ -775,13 +663,13 @@ export const Dashboard = () => {
                   <CheckCircle className={cn("w-8 h-8 transition-all duration-500", progress.registration === 100 ? "text-civic-green scale-110" : "text-gray-100")} />
                 </div>
                 <div className="relative z-10">
-                    <h3 className="text-3xl font-bold text-civic-navy mb-4">Registration Suite</h3>
+                    <h3 className="text-3xl font-bold text-civic-navy mb-4">{t('registration_suite')}</h3>
                     <p className="text-sm text-gray-500 mb-10 leading-relaxed max-w-sm">
-                      Secure Form 6 engine with automated document verification and BLO mapping.
+                      {t('registration_desc')}
                     </p>
                 </div>
                 <div className="mt-auto relative z-10">
-                   <div className="flex justify-between text-[9px] font-bold text-gray-400 mb-3 uppercase tracking-[0.2em]">Application Progress</div>
+                   <div className="flex justify-between text-[9px] font-bold text-gray-400 mb-3 uppercase tracking-[0.2em]">{t('progress')}</div>
                   <div className="h-2 w-full bg-gray-100 rounded-full overflow-hidden mb-8">
                     <motion.div animate={{ width: `${progress.registration}%` }} className="h-full bg-civic-navy" />
                   </div>
@@ -789,7 +677,7 @@ export const Dashboard = () => {
                     onClick={() => setActiveFlow('registration')}
                     className="w-full py-6 bg-civic-navy text-white font-bold rounded-[2rem] shadow-2xl shadow-civic-navy/30 flex items-center justify-center gap-3 active:scale-95 transition-all group/btn animate-sovereign-pulse"
                   >
-                    Open Digital Wizard <ArrowRight className="w-5 h-5 group-hover:translate-x-2 transition-transform" />
+                    {t('open_wizard')} <ArrowRight className="w-5 h-5 group-hover:translate-x-2 transition-transform" />
                   </button>
                 </div>
               </div>
@@ -805,17 +693,17 @@ export const Dashboard = () => {
                   <div className="w-16 h-16 bg-civic-navy rounded-2xl flex items-center justify-center group-hover:scale-110 group-hover:-rotate-6 transition-all duration-500 shadow-xl">
                     <Cpu className="text-civic-saffron w-7 h-7" />
                   </div>
-                  <span className="px-4 py-2 bg-civic-navy/5 rounded-full text-[9px] font-black text-civic-navy uppercase tracking-widest">VoterFlow AI v2.4</span>
+                  <span className="px-4 py-2 bg-civic-navy/5 rounded-full text-[9px] font-black text-civic-navy uppercase tracking-widest">VoterFlow AI</span>
                 </div>
                 <div className="relative z-10">
-                    <h3 className="text-3xl font-bold text-civic-navy mb-4">Document Validator</h3>
+                    <h3 className="text-3xl font-bold text-civic-navy mb-4">{t('doc_validator')}</h3>
                     <p className="text-sm text-gray-500 mb-10 leading-relaxed max-w-sm">
-                      Pre-verify your identity and residency documents against ECI legislative standards.
+                      {t('validator_desc')}
                     </p>
                 </div>
                 <div className="mt-auto relative z-10">
                     <div className="flex items-center gap-3 text-civic-navy font-bold text-[11px] uppercase tracking-[0.2em]">
-                        Analyze Documents <ArrowRight className="w-5 h-5 group-hover:translate-x-2 transition-transform" />
+                        {t('analyze_docs')} <ArrowRight className="w-5 h-5 group-hover:translate-x-2 transition-transform" />
                     </div>
                 </div>
               </div>
@@ -837,22 +725,22 @@ export const Dashboard = () => {
             >
               <motion.header variants={{ hidden: { y: 20, opacity: 0 }, show: { y: 0, opacity: 1 } }} className="flex justify-between items-end">
                 <div>
-                  <h2 className="text-4xl font-display font-bold text-civic-navy mb-2">Civic Intelligence Hub</h2>
-                  <p className="text-gray-500 font-medium">Verify legislative protocols and electoral data integrity.</p>
+                  <h2 className="text-4xl font-display font-bold text-civic-navy mb-2">{t('intelligence_hub')}</h2>
+                  <p className="text-gray-500 font-medium">{t('intelligence_desc')}</p>
                 </div>
                 <button 
                   onClick={() => setIsChatOpen(true)} 
                   className="px-8 py-4 bg-civic-navy text-white font-bold rounded-2xl shadow-xl shadow-civic-navy/20 hover:scale-105 active:scale-95 transition-all flex items-center gap-3"
                 >
-                  <BookOpen className="w-5 h-5" /> Consult Assistant
+                  <BookOpen className="w-5 h-5" /> {t('consult_assistant')}
                 </button>
               </motion.header>
 
               <div className="grid grid-cols-1 md:grid-cols-3 gap-8">
                   {[
-                      { title: 'SIR 2026 Revision', desc: 'House-to-house mapping protocol & data verification.', icon: UserCheck, color: 'text-blue-500', bg: 'bg-blue-50' },
-                      { title: 'Constitutional Rights', desc: 'Articles 324-329 and the Right to Vote framework.', icon: ShieldCheck, color: 'text-orange-500', bg: 'bg-orange-50' },
-                      { title: 'Legal Forms Base', desc: 'Deep linking to official ECI Form 6, 7, and 8 portals.', icon: FileEdit, color: 'text-civic-green', bg: 'bg-green-50' },
+                      { title: t('sir_revision'), desc: t('sir_revision_desc'), icon: UserCheck, color: 'text-blue-500', bg: 'bg-blue-50' },
+                      { title: t('constitutional_rights'), desc: t('rights_desc'), icon: ShieldCheck, color: 'text-orange-500', bg: 'bg-orange-50' },
+                      { title: t('legal_forms'), desc: t('forms_desc'), icon: FileEdit, color: 'text-civic-green', bg: 'bg-green-50' },
                   ].map((item, i) => (
                       <motion.div variants={{ hidden: { y: 20, opacity: 0 }, show: { y: 0, opacity: 1 } }} key={i} className="p-8 bg-white border border-gray-100 rounded-[2.5rem] shadow-sm hover:shadow-xl transition-all group">
                           <div className={cn("w-14 h-14 rounded-2xl flex items-center justify-center mb-6 group-hover:scale-110 transition-transform", item.bg, item.color)}>
@@ -863,20 +751,6 @@ export const Dashboard = () => {
                       </motion.div>
                   ))}
               </div>
-
-              <motion.div variants={{ hidden: { y: 20, opacity: 0 }, show: { y: 0, opacity: 1 } }} className="p-10 bg-gradient-to-br from-civic-navy to-blue-900 rounded-[3rem] text-white relative overflow-hidden">
-                  <Globe className="absolute -bottom-20 -right-20 w-80 h-80 opacity-10" />
-                  <div className="relative z-10 max-w-xl">
-                      <h3 className="text-2xl font-display font-bold mb-4 text-civic-saffron">VoterFlow Data Federation</h3>
-                      <p className="text-white/60 text-sm leading-relaxed mb-8">
-                          The VoterFlow research engine pulls directly from ECI open-data simulations. Every guideline here is verified against the 2026 Electoral Code.
-                      </p>
-                      <div className="flex gap-4">
-                          <div className="px-4 py-2 bg-white/10 rounded-xl border border-white/10 text-[10px] font-bold uppercase tracking-widest">Legislative Mode</div>
-                          <div className="px-4 py-2 bg-white/10 rounded-xl border border-white/10 text-[10px] font-bold uppercase tracking-widest">Verified 2026</div>
-                      </div>
-                  </div>
-              </motion.div>
             </motion.div>
           ) : activeTab === 'polling' ? (
             <motion.div
@@ -899,21 +773,21 @@ export const Dashboard = () => {
                <div className="w-24 h-24 bg-civic-navy rounded-3xl flex items-center justify-center mb-8 shadow-2xl shadow-civic-navy/20">
                   <PhoneCall className="w-10 h-10 text-white" />
                </div>
-               <h2 className="text-4xl font-display font-bold text-civic-navy mb-4">Official ECI Helpline</h2>
-               <p className="text-gray-500 max-w-md text-lg font-medium mb-12">Dedicated support for SIR 2026 queries and grievance redressal.</p>
+               <h2 className="text-4xl font-display font-bold text-civic-navy mb-4">{t('eci_helpline')}</h2>
+               <p className="text-gray-500 max-w-md text-lg font-medium mb-12">{t('support_desc')}</p>
                
                <div className="grid grid-cols-1 md:grid-cols-2 gap-6 w-full max-w-3xl">
                   <div className="p-8 bg-white rounded-[2.5rem] border border-gray-100 shadow-sm flex flex-col items-center gap-4 group hover:bg-civic-navy hover:text-white transition-all">
-                      <div className="text-[10px] font-black uppercase tracking-widest opacity-40">National Support</div>
+                      <div className="text-[10px] font-black uppercase tracking-widest opacity-40">{t('national_support')}</div>
                       <div className="text-4xl font-display font-bold">1950</div>
-                      <div className="text-xs font-bold opacity-60">VoterFlow Voter Hotline</div>
-                      <a href="tel:1950" className="mt-4 px-6 py-3 bg-civic-saffron text-civic-navy rounded-xl text-[10px] font-black uppercase tracking-widest group-hover:bg-white transition-all">Connect Now</a>
+                      <div className="text-xs font-bold opacity-60">{t('voter_hotline')}</div>
+                      <a href="tel:1950" className="mt-4 px-6 py-3 bg-civic-saffron text-civic-navy rounded-xl text-[10px] font-black uppercase tracking-widest group-hover:bg-white transition-all">{t('connect')}</a>
                   </div>
                   <div className="p-8 bg-white rounded-[2.5rem] border border-gray-100 shadow-sm flex flex-col items-center gap-4 group hover:bg-civic-navy hover:text-white transition-all">
-                      <div className="text-[10px] font-black uppercase tracking-widest opacity-40">Local Mapping</div>
-                      <div className="text-2xl font-display font-bold">Booth Level Officer</div>
-                      <div className="text-xs font-bold opacity-60">Find your designated BLO</div>
-                      <a href="https://voters.eci.gov.in/login" target="_blank" className="mt-4 px-6 py-3 bg-civic-navy text-white rounded-xl text-[10px] font-black uppercase tracking-widest group-hover:bg-civic-saffron group-hover:text-civic-navy transition-all border border-civic-navy/10">Search Archives</a>
+                      <div className="text-[10px] font-black uppercase tracking-widest opacity-40">{t('local_mapping')}</div>
+                      <div className="text-2xl font-display font-bold">{t('blo_officer')}</div>
+                      <div className="text-xs font-bold opacity-60">{t('find_blo')}</div>
+                      <a href="https://voters.eci.gov.in/login" target="_blank" className="mt-4 px-6 py-3 bg-civic-navy text-white rounded-xl text-[10px] font-black uppercase tracking-widest group-hover:bg-civic-saffron group-hover:text-civic-navy transition-all border border-civic-navy/10">{t('search_archives')}</a>
                   </div>
                </div>
             </motion.div>
@@ -930,16 +804,16 @@ export const Dashboard = () => {
                       <Calendar className="w-8 h-8 text-civic-navy" />
                   </div>
                   <div>
-                      <h2 className="text-3xl font-display font-bold text-civic-navy">SIR 2026 Framework</h2>
-                      <p className="text-[10px] font-black text-civic-saffron uppercase tracking-widest mt-1">Status: Active Revision Cycle (PC 25)</p>
+                      <h2 className="text-3xl font-display font-bold text-civic-navy">{t('sir2026_framework')}</h2>
+                      <p className="text-[10px] font-black text-civic-saffron uppercase tracking-widest mt-1">{t('sir_status')}</p>
                   </div>
                </div>
                
                <div className="grid grid-cols-1 md:grid-cols-3 gap-8 w-full mb-12">
                   {[
-                    { label: 'Sector Mapping', status: '85% Sync', progress: 85, icon: MapPin },
-                    { label: 'Document Purge', status: 'Active', progress: 62, icon: UserCheck },
-                    { label: 'Card Generation', status: 'Upcoming', progress: 0, icon: ShieldCheck }
+                    { label: t('sector_mapping'), status: t('percent_sync'), progress: 85, icon: MapPin },
+                    { label: t('document_purge'), status: t('active'), progress: 62, icon: UserCheck },
+                    { label: t('card_gen'), status: t('upcoming'), progress: 0, icon: ShieldCheck }
                   ].map((item, i) => (
                     <div key={i} className="p-8 bg-white rounded-[2.5rem] border border-gray-100 shadow-sm">
                         <div className="flex justify-between items-start mb-6">
@@ -950,192 +824,13 @@ export const Dashboard = () => {
                         <div className="h-1.5 w-full bg-gray-100 rounded-full overflow-hidden">
                             <motion.div initial={{ width: 0 }} animate={{ width: `${item.progress}%` }} className="h-full bg-civic-navy" />
                         </div>
-                        <span className="text-[9px] font-bold text-gray-400 mt-2 block">{item.progress}% Complete</span>
+                        <span className="text-[9px] font-bold text-gray-400 mt-2 block">{item.progress}% {t('complete')}</span>
                     </div>
                   ))}
                </div>
-
-               <div className="p-10 bg-civic-navy rounded-[3rem] text-white w-full flex items-center justify-between relative overflow-hidden">
-                  <div className="absolute top-0 right-0 p-8 opacity-10">
-                      <AlertTriangle className="w-32 h-32" />
-                  </div>
-                  <div className="flex items-center gap-6 relative z-10">
-                      <AlertTriangle className="w-10 h-10 text-civic-saffron" />
-                      <div>
-                          <h4 className="text-xl font-bold mb-1">Verify SIR Inclusion</h4>
-                          <p className="text-sm text-white/60">Ensure your record is synchronized with the 2026 Karnataka VoterFlow Roll.</p>
-                      </div>
-                  </div>
-                  <button 
-                    onClick={() => window.open('https://electoralsearch.eci.gov.in/', '_blank')}
-                    className="px-8 py-4 bg-white text-civic-navy font-black rounded-xl text-[10px] uppercase tracking-widest hover:bg-civic-saffron transition-all relative z-10"
-                  >
-                    Launch Search
-                  </button>
-               </div>
             </motion.div>
-          ) : activeTab === 'form8' ? (
-            <motion.div
-              key="form8"
-              initial={{ opacity: 0, scale: 0.95 }}
-              animate={{ opacity: 1, scale: 1 }}
-              exit={{ opacity: 0, scale: 0.95 }}
-              className="bg-white/70 backdrop-blur-2xl rounded-[3.5rem] p-16 border border-white/50 h-full flex flex-col items-start text-left overflow-y-auto"
-            >
-               <div className="flex items-center gap-4 mb-10">
-                  <div className="w-16 h-16 bg-civic-navy rounded-2xl flex items-center justify-center shadow-xl shadow-civic-navy/20">
-                      <Gavel className="w-8 h-8 text-white" />
-                  </div>
-                  <div>
-                      <h2 className="text-3xl font-display font-bold text-civic-navy">Form 8: Correction Suite</h2>
-                      <p className="text-[10px] font-black text-gray-400 uppercase tracking-widest mt-1">VoterFlow Data Integrity Platform</p>
-                  </div>
-               </div>
-               
-               <div className="grid grid-cols-1 md:grid-cols-2 gap-8 w-full mb-12">
-                  {[
-                    { title: 'Update Photograph', desc: 'Refresh your EPIC identity with current biometric standards.', time: '2 mins' },
-                    { title: 'Address Migration', desc: 'Updating mapping for sector shifts within Bengaluru.', time: '5 mins' },
-                    { title: 'Data Correction', desc: 'Fix clerical errors in legal records with OTP verification.', time: '3 mins' },
-                    { title: 'EPIC Replacement', desc: 'Order a 2026-edition PVC card for lost/damaged IDs.', time: '1 min' }
-                  ].map((item, i) => (
-                    <motion.button 
-                      key={i} 
-                      whileHover={{ scale: 1.02 }} 
-                      whileTap={{ scale: 0.98 }}
-                      onClick={() => window.open('https://voters.eci.gov.in/', '_blank')}
-                      className="p-8 bg-white rounded-[2.5rem] border border-gray-100 shadow-sm text-left flex flex-col gap-4 group hover:border-civic-navy transition-all"
-                    >
-                        <div className="flex justify-between items-center">
-                            <h4 className="font-bold text-civic-navy text-lg">{item.title}</h4>
-                            <span className="text-[9px] font-black bg-gray-50 px-2 py-1 rounded text-gray-400 uppercase group-hover:bg-civic-navy group-hover:text-white transition-all">{item.time}</span>
-                        </div>
-                        <p className="text-xs text-gray-500 leading-relaxed font-medium">{item.desc}</p>
-                        <div className="mt-2 flex items-center gap-2 text-civic-navy font-bold text-[10px] uppercase tracking-widest">
-                            Initiate Wizard <ChevronRight className="w-4 h-4" />
-                        </div>
-                    </motion.button>
-                  ))}
-               </div>
-
-               <div className="w-full p-8 bg-gray-50 rounded-[2.5rem] border border-dashed border-gray-200 flex items-center gap-6">
-                  <Info className="w-8 h-8 text-civic-navy opacity-30" />
-                  <p className="text-[11px] text-gray-400 font-medium leading-relaxed">
-                    Form 8 submissions require OTP authentication via Aadhaar-linked mobile numbers. 
-                    <a href="https://voters.eci.gov.in/" target="_blank" className="text-civic-navy underline ml-2">VoterFlow Portal</a>
-                  </p>
-               </div>
-            </motion.div>
-          ) : (
-            <motion.div
-                key="polling"
-                initial={{ opacity: 0, scale: 0.95 }}
-                animate={{ opacity: 1, scale: 1 }}
-                exit={{ opacity: 0, scale: 0.95 }}
-                className="w-full h-full"
-             >
-                <PollingBoothLocator />
-             </motion.div>
-          )}
+          ) : null}
         </AnimatePresence>
-      </div>
-
-      {/* Mobile Sovereign FAB & Hub Navigation */}
-      <div className="lg:hidden fixed bottom-10 left-1/2 -translate-x-1/2 z-[4500]">
-        <div className="relative">
-          {/* Main Action Hub Button */}
-          <motion.button
-            whileTap={{ scale: 0.9 }}
-            onClick={() => setIsMenuOpen(!isMenuOpen)}
-            className="w-16 h-16 bg-civic-navy text-white rounded-full shadow-[0_20px_50px_rgba(0,0,0,0.3)] flex items-center justify-center border-4 border-white relative z-[4600]"
-          >
-            <AnimatePresence mode="wait">
-              {isMenuOpen ? (
-                <motion.div key="close" initial={{ rotate: -90, opacity: 0 }} animate={{ rotate: 0, opacity: 1 }} exit={{ rotate: 90, opacity: 0 }}>
-                  <X className="w-8 h-8" />
-                </motion.div>
-              ) : (
-                <motion.div key="menu" initial={{ rotate: 90, opacity: 0 }} animate={{ rotate: 0, opacity: 1 }} exit={{ rotate: -90, opacity: 0 }}>
-                  <LayoutDashboard className="w-8 h-8 text-civic-saffron" />
-                </motion.div>
-              )}
-            </AnimatePresence>
-            {/* Animated Ring */}
-            {!isMenuOpen && (
-              <motion.div 
-                animate={{ scale: [1, 1.4, 1], opacity: [0.3, 0, 0.3] }}
-                transition={{ duration: 2, repeat: Infinity }}
-                className="absolute inset-0 rounded-full bg-civic-navy -z-10"
-              />
-            )}
-          </motion.button>
-
-          {/* Radial/Bottom Sheet Menu Hub */}
-          <AnimatePresence>
-            {isMenuOpen && (
-              <>
-                {/* Backdrop Overlay */}
-                <motion.div 
-                  initial={{ opacity: 0 }}
-                  animate={{ opacity: 1 }}
-                  exit={{ opacity: 0 }}
-                  onClick={() => setIsMenuOpen(false)}
-                  className="fixed inset-0 bg-civic-navy/40 backdrop-blur-md z-[4400]"
-                />
-                
-                {/* Thumb-Optimized Menu Drawer */}
-                <motion.div
-                  initial={{ y: "100%", opacity: 0 }}
-                  animate={{ y: 0, opacity: 1 }}
-                  exit={{ y: "100%", opacity: 0 }}
-                  transition={{ type: "spring", damping: 25, stiffness: 200 }}
-                  className="fixed bottom-0 left-0 right-0 glass-vibrant rounded-t-[3.5rem] p-10 pb-20 z-[4500] border-t border-white"
-                >
-                  <div className="w-12 h-1.5 bg-gray-200 rounded-full mx-auto mb-10" />
-                  <div className="grid grid-cols-2 gap-4">
-                    {[
-                      { id: 'overview', icon: LayoutDashboard, label: 'Overview' },
-                      { id: 'registration', icon: UserPlus, label: 'Register' },
-                      { id: 'research', icon: BookOpen, label: 'Research' },
-                      { id: 'polling', icon: MapPin, label: 'Map' },
-                      { id: 'form8', icon: Gavel, label: 'Form 8' },
-                      { id: 'sir2026', icon: Calendar, label: 'SIR 2026' },
-                      { id: 'helpline', icon: Headphones, label: 'Helpline' }
-                    ].map((item, idx) => (
-                      <motion.button
-                        key={item.id}
-                        initial={{ opacity: 0, y: 20 }}
-                        animate={{ opacity: 1, y: 0 }}
-                        transition={{ delay: idx * 0.05 }}
-                        onClick={() => {
-                          setActiveTab(item.id as any);
-                          setIsMenuOpen(false);
-                        }}
-                        className={cn(
-                          "flex flex-col items-center justify-center p-6 rounded-[2.5rem] transition-all",
-                          activeTab === item.id ? "bg-civic-navy text-white shadow-2xl scale-105" : "bg-white/50 text-civic-navy hover:bg-white"
-                        )}
-                      >
-                        <item.icon className={cn("w-6 h-6 mb-2", activeTab === item.id ? "text-civic-saffron" : "")} />
-                        <span className="text-[10px] font-black uppercase tracking-widest">{item.label}</span>
-                      </motion.button>
-                    ))}
-                    
-                    <motion.button
-                      initial={{ opacity: 0, y: 20 }}
-                      animate={{ opacity: 1, y: 0 }}
-                      transition={{ delay: 0.3 }}
-                      onClick={() => { resetStore(); setIsMenuOpen(false); }}
-                      className="col-span-2 flex items-center justify-center gap-3 p-6 bg-red-50 text-red-600 rounded-[2.5rem] mt-4 font-black uppercase tracking-[0.2em] text-[10px]"
-                    >
-                      <ChevronLeft className="w-4 h-4" /> Reset Sovereign Data
-                    </motion.button>
-                  </div>
-                </motion.div>
-              </>
-            )}
-          </AnimatePresence>
-        </div>
       </div>
 
       {/* Gemini Multimodal Scanner Overlay */}
@@ -1148,22 +843,13 @@ export const Dashboard = () => {
                     exit={{ scale: 0.9, opacity: 0, y: 20 }}
                     className="bg-white w-full max-w-xl rounded-[3.5rem] p-12 shadow-2xl relative overflow-hidden"
                 >
-                    <div className="absolute top-0 left-0 w-full h-2 bg-gradient-to-r from-google-blue via-purple-500 to-pink-500 animate-pulse" />
-                    <Tooltip content="Back to Dashboard">
-                        <button onClick={() => {
-                            setShowAiValidator(false);
-                            setScanStatus('idle');
-                        }} className="absolute top-8 right-8 p-3 bg-gray-50 rounded-full hover:bg-red-50 transition-all"><X className="w-5 h-5" /></button>
-                    </Tooltip>
-                    
                     <div className="text-center mb-10">
                         <div className="w-20 h-20 bg-civic-navy rounded-[2rem] flex items-center justify-center mx-auto mb-6 shadow-xl relative group">
                             <Cpu className="text-civic-saffron w-10 h-10 animate-pulse" />
-                            <div className="absolute inset-0 bg-google-blue/20 rounded-[2rem] animate-ping opacity-0 group-hover:opacity-100" />
                         </div>
-                        <h3 className="text-2xl font-display font-bold text-civic-navy">Gemini Vision Validator</h3>
+                        <h3 className="text-2xl font-display font-bold text-civic-navy">{t('gemini_validator')}</h3>
                         <p className="text-[10px] font-black text-gray-400 uppercase tracking-[0.2em] mt-2 font-medium flex items-center justify-center gap-2">
-                             <img src="https://www.gstatic.com/lamda/images/gemini_sparkle_v002_d4735304ff6292a690345.svg" className="w-3 h-3" alt="Gemini" />
+                             <img src="https://www.gstatic.com/lamda/images/gemini_sparkle_v002_d4735304ff6292a690345.svg" className="w-3 h-3" alt="Gemini" loading="lazy" decoding="async" />
                              Multimodal Analysis Core
                         </p>
                     </div>
@@ -1202,7 +888,6 @@ export const Dashboard = () => {
                                     transition={{ duration: 1.5, repeat: Infinity, ease: "linear" }}
                                     className="absolute top-0 left-0 w-full h-1 bg-google-blue shadow-[0_0_20px_#4285F4] z-20"
                                 />
-                                {/* Laser Sweep Shadow */}
                                 <motion.div 
                                     animate={{ y: [0, 256, 0] }}
                                     transition={{ duration: 1.5, repeat: Infinity, ease: "linear" }}

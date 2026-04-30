@@ -11,6 +11,7 @@ import { cn } from '../../lib/utils';
 import { Waveform } from '../Atoms/Waveform';
 import { NeuralLogicGraph } from '../Atoms/NeuralLogicGraph';
 import ReactMarkdown from 'react-markdown';
+import DOMPurify from 'dompurify';
 
 const CHIPS = [
   { label: 'Form 6: New Registration', icon: '🗳️' },
@@ -184,7 +185,7 @@ export const ChatAssistant: React.FC = () => {
                                     >
                                         {m.role === 'ai' ? (
                                             <div className="markdown-content prose prose-sm max-w-none">
-                                                <ReactMarkdown>{m.text}</ReactMarkdown>
+                                                <ReactMarkdown>{DOMPurify.sanitize(m.text)}</ReactMarkdown>
                                             </div>
                                         ) : (
                                             m.text

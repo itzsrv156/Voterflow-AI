@@ -6,6 +6,7 @@ import { TiltCard } from '../Atoms/TiltCard';
 import { PollingBoothLocator } from './PollingBoothLocator';
 import { FutureVoterTool } from '../Molecules/FutureVoterTool';
 import { Tooltip } from '../Atoms/Tooltip';
+import { EvmSimulator } from './EvmSimulator';
 
 const LanguageToggle = () => {
     const { language, setLanguage } = useVoterStore();
@@ -98,9 +99,10 @@ interface SidebarItemProps {
 }
 
 const SidebarItem = ({ id, icon: Icon, labelKey, activeTab, setActiveTab, t }: SidebarItemProps) => (
-  <Tooltip content={`View ${t(labelKey).split(' (')[0]}`}>
     <button
       onClick={() => setActiveTab(id)}
+      aria-label={`${t(labelKey)} tab`}
+      aria-current={activeTab === id ? 'page' : undefined}
       className={cn(
         "w-full flex items-center gap-3 px-5 py-3 rounded-xl transition-all duration-500 relative group whitespace-nowrap",
         activeTab === id ? "text-white" : "text-gray-500 hover:text-civic-navy"
@@ -113,10 +115,9 @@ const SidebarItem = ({ id, icon: Icon, labelKey, activeTab, setActiveTab, t }: S
           transition={{ type: "spring", bounce: 0.2, duration: 0.6 }}
         />
       )}
-      <Icon className={cn("w-5 h-5 relative z-10 transition-transform duration-500 group-hover:scale-110", activeTab === id ? "text-civic-saffron" : "")} />
+      <Icon className={cn("w-5 h-5 relative z-10 transition-transform duration-500 group-hover:scale-110", activeTab === id ? "text-civic-saffron" : "")} aria-hidden="true" />
       <span className="text-sm font-bold relative z-10">{t(labelKey).split(' (')[0]}</span>
     </button>
-  </Tooltip>
 );
 
 export const Dashboard = () => {
@@ -129,6 +130,19 @@ export const Dashboard = () => {
   
   const [showAiValidator, setShowAiValidator] = useState(false);
   const [scanStatus, setScanStatus] = useState<'idle' | 'scanning' | 'result'>('idle');
+  const [isMenuOpen, setIsMenuOpen] = useState(false);
+  const [activeMilestone, setActiveMilestone] = useState<number | null>(1); // Default to Current
+
+  const syncToCalendar = () => {
+      const toast = document.createElement('div');
+      toast.className = "fixed top-12 left-1/2 -translate-x-1/2 bg-civic-navy text-white px-8 py-4 rounded-3xl shadow-2xl z-[6000] font-bold flex items-center gap-4 animate-bounce border border-white/20 backdrop-blur-xl";
+      toast.innerHTML = `<div class="w-4 h-4 bg-google-blue rounded-full"></div> Syncing timelines to Google Calendar...`;
+      document.body.appendChild(toast);
+      setTimeout(() => {
+          toast.innerHTML = `<div class="w-4 h-4 bg-civic-green rounded-full"></div> 4 Milestones added to Calendar!`;
+          setTimeout(() => document.body.removeChild(toast), 2000);
+      }, 2000);
+  };
 
   // Proactive Assistant Guidance - Fixed Spam & Removed Auto-Open
   useEffect(() => {
@@ -149,7 +163,7 @@ export const Dashboard = () => {
       <motion.aside
         initial={{ x: -50, opacity: 0 }}
         animate={{ x: 0, opacity: 1 }}
-        className="hidden lg:flex w-64 glass rounded-[2.5rem] p-6 shadow-2xl shadow-civic-navy/5 sticky top-28 flex-col h-[calc(100vh-140px)]"
+        className="hidden lg:flex w-64 glass rounded-[2.5rem] p-6 shadow-2xl shadow-civic-navy/5 sticky top-44 flex-col h-[calc(100vh-220px)]"
       >
         <div className="flex items-center gap-3 mb-8 px-2">
           <div className="w-8 h-8 bg-civic-navy rounded-lg flex items-center justify-center">
@@ -244,7 +258,6 @@ export const Dashboard = () => {
         </div>
 
         <div className="mt-auto pt-8 border-t border-white/20">
-          <Tooltip content="Reset session and clear all data">
             <motion.button 
               whileHover={{ scale: 1.02 }} whileTap={{ scale: 0.98 }}
               onClick={resetStore}
@@ -252,7 +265,6 @@ export const Dashboard = () => {
             >
               <ChevronLeft className="w-4 h-4" /> {t('reset')}
             </motion.button>
-          </Tooltip>
         </div>
       </motion.aside>
 
@@ -262,21 +274,7 @@ export const Dashboard = () => {
           
           {/* Removed Large VoterFlow Assistant Access Banner */}
 
-            {/* VoterFlow Alert Ticker */}
-            <div className="w-full glass-vibrant rounded-3xl p-6 flex items-center gap-6 overflow-hidden relative">
-                <div className="flex items-center gap-3 px-4 py-2 bg-gradient-to-r from-red-600 to-red-500 text-white rounded-full text-[10px] font-black uppercase tracking-widest animate-pulse shadow-lg shadow-red-500/20 shrink-0 z-10">
-                    <Zap className="w-4 h-4 fill-white" /> Urgent
-                </div>
-                <div className="flex-1 overflow-hidden relative h-full flex items-center">
-                    <motion.div 
-                        animate={{ x: ["100%", "-100%"] }}
-                        transition={{ duration: 30, repeat: Infinity, ease: "linear" }}
-                        className="whitespace-nowrap text-[10px] font-bold uppercase tracking-widest text-red-900"
-                    >
-                        SIR 2026: House-to-House Mapping is active in Karnataka Sectors. // Form 12D Home Voting requests open for Senior Citizens. // Aadhaar-EPIC linking is mandatory for data integrity.
-                    </motion.div>
-                </div>
-            </div>
+
 
             <AnimatePresence mode="wait">
               {activeTab === 'overview' ? (
@@ -323,6 +321,31 @@ export const Dashboard = () => {
                         </div>
                     </div>
                 </div>
+              </motion.div>
+              
+              {/* VoterFlow Alert Ticker - Relocated for more breathing room */}
+              <motion.div 
+                variants={{ hidden: { y: 20, opacity: 0 }, show: { y: 0, opacity: 1 } }}
+                className="xl:col-span-2 mt-8 mb-12"
+              >
+                  <div className="w-full bg-white/40 backdrop-blur-2xl rounded-[2.5rem] p-8 flex items-center gap-8 overflow-hidden relative border border-white/60 shadow-sm group">
+                      <div className="flex items-center gap-3 px-5 py-2.5 bg-gradient-to-r from-red-600 via-red-500 to-rose-600 text-white rounded-full text-[9px] font-black uppercase tracking-[0.2em] animate-pulse shadow-xl shadow-red-500/20 shrink-0 z-10">
+                          <Zap className="w-3.5 h-3.5 fill-white" /> Urgent Alerts
+                      </div>
+                      <div className="flex-1 overflow-hidden relative h-full flex items-center">
+                          <motion.div 
+                              animate={{ x: ["100%", "-100%"] }}
+                              transition={{ duration: 35, repeat: Infinity, ease: "linear" }}
+                              className="whitespace-nowrap text-[10px] font-bold uppercase tracking-[0.15em] text-red-900/80"
+                          >
+                              SIR 2026: House-to-House Mapping is active in Karnataka Sectors. &nbsp;&nbsp; • &nbsp;&nbsp; Form 12D Home Voting requests open for Senior Citizens. &nbsp;&nbsp; • &nbsp;&nbsp; Aadhaar-EPIC linking is mandatory for data integrity. &nbsp;&nbsp; • &nbsp;&nbsp; Verification Phase 2.4 active.
+                          </motion.div>
+                      </div>
+                      
+                      {/* Decorative elements to make it 'free' and premium */}
+                      <div className="absolute right-0 top-0 bottom-0 w-32 bg-gradient-to-l from-white/40 to-transparent z-20 pointer-events-none" />
+                      <div className="absolute left-0 top-0 bottom-0 w-32 bg-gradient-to-r from-white/40 to-transparent z-20 pointer-events-none" />
+                  </div>
               </motion.div>
               
               {/* Personal Voting Journey Checklist - NEW FEATURE */}
@@ -383,43 +406,116 @@ export const Dashboard = () => {
                   <div className="absolute top-0 right-0 p-8 opacity-5 pointer-events-none group-hover:scale-110 transition-transform duration-700">
                       <Calendar className="w-48 h-48 text-civic-navy" />
                   </div>
-                  <div className="flex items-center gap-3 mb-12">
-                      <div className="w-12 h-12 bg-civic-navy rounded-2xl flex items-center justify-center shadow-xl shadow-civic-navy/10">
-                          <Library className="w-6 h-6 text-civic-saffron" />
-                      </div>
-                      <h3 className="text-2xl font-display font-bold text-civic-navy">VoterFlow Journey Timeline</h3>
-                  </div>
                   
-                  <div className="relative flex flex-col md:flex-row justify-between gap-8 px-4">
-                      <div className="absolute top-1/2 left-0 w-full h-0.5 bg-gray-100 -z-0 hidden md:block" />
-                      {[
-                        { date: 'Oct 2025', event: 'SIR Cycle Start', status: 'Passed', icon: Zap, details: "Special Intensive Revision began. Your sector (PC 25) mapping is finalized." },
-                        { date: 'Feb 2026', event: 'Draft Roll Sync', status: 'Current', icon: Search, details: "The Draft Roll is now live. Verify your entry to avoid exclusion during the de-duplication phase." },
-                        { date: 'Mar 2026', event: 'Final Publication', status: 'Upcoming', icon: ShieldCheck, details: "Final VoterFlow Roll will be published. This is the last version before General Elections." },
-                        { date: 'May 2026', event: 'General Elections', status: 'Goal', icon: Flame, details: "E-Day. Your polling station BBMP School is ready for VoterFlow turnout." }
-                      ].map((t, i) => (
-                        <button 
-                            key={i} 
-                            onClick={() => {
-                                addChatMessage({ role: 'ai', text: `Milestone Intel: ${t.event} (${t.date}). ${t.details}` });
-                                setIsChatOpen(true);
+                  {/* Floating Data Orbs */}
+                  <div className="absolute inset-0 pointer-events-none">
+                      {[1, 2, 3].map(i => (
+                          <motion.div
+                            key={i}
+                            animate={{ 
+                                y: [0, -40, 0],
+                                x: [0, 20, 0],
+                                opacity: [0.1, 0.3, 0.1]
                             }}
-                            className="flex flex-col items-center text-center relative z-10 group/item hover:scale-110 transition-transform"
-                        >
-                            <div className={cn(
-                                "w-16 h-16 rounded-2xl flex items-center justify-center transition-all duration-500 mb-4",
-                                t.status === 'Passed' ? "bg-civic-green text-white shadow-lg" :
-                                t.status === 'Current' ? "bg-civic-navy text-white scale-110 shadow-2xl animate-pulse" :
-                                "bg-white text-gray-300 border border-gray-100 group-hover/item:border-civic-navy/20"
-                            )}>
-                                <t.icon className="w-7 h-7" />
-                            </div>
-                            <div className="text-[10px] font-black text-civic-navy uppercase tracking-widest">{t.date}</div>
-                            <div className="text-xs font-bold text-gray-500 mt-1">{t.event}</div>
-                            <div className={cn("text-[8px] font-black uppercase mt-1", t.status === 'Current' ? "text-civic-saffron" : "text-gray-300")}>{t.status}</div>
-                        </button>
+                            transition={{ 
+                                duration: 5 + i * 2, 
+                                repeat: Infinity, 
+                                ease: "easeInOut" 
+                            }}
+                            className="absolute w-8 h-8 bg-civic-navy/10 rounded-full blur-xl"
+                            style={{ 
+                                left: `${20 + i * 20}%`,
+                                top: `${30 + i * 15}%`
+                            }}
+                          />
                       ))}
                   </div>
+
+                      <div className="flex items-center gap-3 mb-12 justify-between w-full">
+                          <div className="flex items-center gap-3">
+                              <div className="w-12 h-12 bg-civic-navy rounded-2xl flex items-center justify-center shadow-xl shadow-civic-navy/10">
+                                  <Library className="w-6 h-6 text-civic-saffron" />
+                              </div>
+                              <h3 className="text-2xl font-display font-bold text-civic-navy">VoterFlow Journey Timeline</h3>
+                          </div>
+                          <button 
+                            onClick={syncToCalendar}
+                            className="px-6 py-3 bg-[#000000] text-white text-[10px] font-black uppercase tracking-widest rounded-xl shadow-xl flex items-center gap-2 hover:scale-105 active:scale-95 transition-all border border-white/10"
+                          >
+                            <Calendar className="w-4 h-4 text-google-blue" /> Sync to Google Calendar
+                          </button>
+                      </div>
+                      
+                      <div className="relative flex flex-col md:flex-row justify-between gap-8 px-4 mb-12">
+                          <div className="absolute top-1/2 left-0 w-full h-0.5 bg-gray-100 -z-0 hidden md:block" />
+                          {[
+                            { date: 'Oct 2025', event: 'SIR Cycle Start', status: 'Passed', icon: Zap, details: "Special Intensive Revision began. Your sector (PC 25) mapping is finalized. This phase ensures every house is mapped to a digital cluster." },
+                            { date: 'Feb 2026', event: 'Draft Roll Sync', status: 'Current', icon: Search, details: "The Draft Roll is now live. Verify your entry to avoid exclusion during the de-duplication phase. Any errors in name/address must be corrected now." },
+                            { date: 'Mar 2026', event: 'Final Publication', status: 'Upcoming', icon: ShieldCheck, details: "Final VoterFlow Roll will be published. This is the last version before General Elections. No new registrations are accepted after this date." },
+                            { date: 'May 2026', event: 'General Elections', status: 'Goal', icon: Flame, details: "E-Day. Your polling station BBMP School is ready for VoterFlow turnout. Bring your Sovereign ID for instant verification." }
+                          ].map((milestone, i) => (
+                            <button 
+                                key={i} 
+                                onClick={() => {
+                                    setActiveMilestone(i);
+                                    addChatMessage({ role: 'ai', text: `Milestone Intel: ${milestone.event} (${milestone.date}). ${milestone.details}` });
+                                }}
+                                className="flex flex-col items-center text-center relative z-10 group/item transition-transform"
+                            >
+                                <div className={cn(
+                                    "w-16 h-16 rounded-2xl flex items-center justify-center transition-all duration-500 mb-4",
+                                    activeMilestone === i ? "scale-110 shadow-2xl ring-4 ring-civic-navy/10" : "scale-100",
+                                    milestone.status === 'Passed' ? "bg-civic-green text-white shadow-lg" :
+                                    milestone.status === 'Current' ? "bg-civic-navy text-white animate-pulse" :
+                                    "bg-white text-gray-300 border border-gray-100 group-hover/item:border-civic-navy/20"
+                                )}>
+                                    <milestone.icon className="w-7 h-7" />
+                                </div>
+                                <div className="text-[10px] font-black text-civic-navy uppercase tracking-widest">{milestone.date}</div>
+                                <div className="text-xs font-bold text-gray-500 mt-1">{milestone.event}</div>
+                                <div className={cn("text-[8px] font-black uppercase mt-1", milestone.status === 'Current' ? "text-civic-saffron" : "text-gray-300")}>{milestone.status}</div>
+                            </button>
+                          ))}
+                      </div>
+
+                      <AnimatePresence mode="wait">
+                          {activeMilestone !== null && (
+                              <motion.div
+                                key={activeMilestone}
+                                initial={{ opacity: 0, y: 10 }}
+                                animate={{ opacity: 1, y: 0 }}
+                                exit={{ opacity: 0, y: -10 }}
+                                className="bg-white/50 border border-white p-8 rounded-[2.5rem] relative overflow-hidden"
+                              >
+                                 <div className="absolute top-0 right-0 p-8 opacity-5">
+                                    {(() => {
+                                        const Icon = [Zap, Search, ShieldCheck, Flame][activeMilestone];
+                                        return Icon ? <Icon className="w-32 h-32 text-civic-navy" /> : null;
+                                    })()}
+                                 </div>
+                                 <div className="flex items-center gap-4 mb-4">
+                                    <div className="px-3 py-1 bg-civic-navy text-white text-[8px] font-black uppercase tracking-widest rounded-full">Milestone Details</div>
+                                    <div className="text-xs font-bold text-gray-400">Section 4.2 Protocol</div>
+                                 </div>
+                                 <h4 className="text-xl font-bold text-civic-navy mb-2">
+                                    {[
+                                        'SIR Cycle Start', 
+                                        'Draft Roll Sync', 
+                                        'Final Publication', 
+                                        'General Elections'
+                                    ][activeMilestone]}
+                                 </h4>
+                                 <p className="text-sm text-gray-500 leading-relaxed max-w-2xl font-medium">
+                                    {[
+                                        "Special Intensive Revision began. Your sector (PC 25) mapping is finalized. This phase ensures every house is mapped to a digital cluster.",
+                                        "The Draft Roll is now live. Verify your entry to avoid exclusion during the de-duplication phase. Any errors in name/address must be corrected now.",
+                                        "Final VoterFlow Roll will be published. This is the last version before General Elections. No new registrations are accepted after this date.",
+                                        "E-Day. Your polling station BBMP School is ready for VoterFlow turnout. Bring your Sovereign ID for instant verification."
+                                    ][activeMilestone]}
+                                 </p>
+                              </motion.div>
+                          )}
+                      </AnimatePresence>
                       </div>
                   </TiltCard>
               </motion.div>
@@ -442,10 +538,17 @@ export const Dashboard = () => {
                 <motion.div 
                     initial={{ opacity: 0, scale: 0.9 }}
                     animate={{ opacity: 1, scale: 1 }}
-                    className="xl:col-span-2 bg-civic-navy rounded-[3.5rem] p-12 text-white relative overflow-hidden shadow-2xl group"
+                    className="xl:col-span-2 bg-civic-navy rounded-[3.5rem] p-12 text-white relative overflow-hidden shadow-[0_30px_100px_rgba(0,0,128,0.3)] group glass-holographic"
                 >
                     <div className="absolute top-0 left-0 w-full h-full bg-[url('https://grainy-gradients.vercel.app/noise.svg')] opacity-10 mix-blend-overlay" />
                     <div className="absolute -bottom-20 -right-20 w-80 h-80 bg-civic-saffron/20 rounded-full blur-[100px] group-hover:bg-civic-saffron/30 transition-all duration-1000" />
+                    
+                    {/* Animated Scanning Line */}
+                    <motion.div 
+                        animate={{ y: ["-100%", "200%"] }}
+                        transition={{ duration: 3, repeat: Infinity, ease: "linear" }}
+                        className="absolute inset-x-0 h-px bg-gradient-to-r from-transparent via-white/40 to-transparent z-20"
+                    />
                     
                     <div className="relative z-10 flex flex-col md:flex-row justify-between items-start md:items-center gap-8">
                         <div className="flex items-center gap-8">
@@ -514,8 +617,11 @@ export const Dashboard = () => {
                     </div>
                     <div className="mt-auto relative z-10">
                        <div className="flex justify-between text-[9px] font-bold text-gray-400 mb-3 uppercase tracking-[0.2em]">Application Progress</div>
-                      <div className="h-2 w-full bg-gray-100 rounded-full overflow-hidden mb-8">
-                        <motion.div animate={{ width: `${progress.registration}%` }} className="h-full bg-civic-navy" />
+                      <div className="h-2.5 w-full bg-gray-100/50 rounded-full overflow-hidden mb-8 p-0.5 border border-white/20">
+                        <motion.div 
+                            animate={{ width: `${progress.registration}%` }} 
+                            className="h-full rounded-full animate-liquid" 
+                        />
                       </div>
                       <button className="w-full py-6 bg-civic-navy text-white font-bold rounded-[2rem] shadow-2xl shadow-civic-navy/30 flex items-center justify-center gap-3 active:scale-95 transition-all group/btn">
                         Open Digital Wizard <ArrowRight className="w-5 h-5 group-hover:translate-x-2 transition-transform" />
@@ -780,7 +886,7 @@ export const Dashboard = () => {
               exit={{ opacity: 0, x: -20 }}
               className="w-full h-full"
             >
-              <PollingBoothLocator />
+              <EvmSimulator />
             </motion.div>
           ) : activeTab === 'helpline' ? (
             <motion.div
@@ -934,33 +1040,102 @@ export const Dashboard = () => {
         </AnimatePresence>
       </div>
 
-      {/* Mobile Bottom Navigation */}
-      <div className="lg:hidden fixed bottom-0 left-0 right-0 glass-dark border-t border-white/10 z-[3000] px-4 py-3 rounded-t-3xl shadow-[0_-10px_40px_rgba(0,0,0,0.1)]">
-        <nav className="flex items-center justify-between gap-1 overflow-x-auto no-scrollbar pb-1">
-          {[
-            { id: 'overview', icon: LayoutDashboard, labelKey: 'overview' },
-            { id: 'registration', icon: UserPlus, labelKey: 'registration' },
-            { id: 'research', icon: BookOpen, labelKey: 'research' },
-            { id: 'polling', icon: MapPin, labelKey: 'polling' },
-            { id: 'form8', icon: Gavel, labelKey: 'form8' },
-            { id: 'sir2026', icon: Calendar, labelKey: 'sir2026' },
-            { id: 'helpline', icon: Headphones, labelKey: 'helpline' }
-          ].map(item => (
-            <button
-              key={item.id}
-              onClick={() => setActiveTab(item.id as any)}
-              className={cn(
-                "flex flex-col items-center justify-center p-2 rounded-2xl min-w-[64px] transition-all relative",
-                activeTab === item.id ? "text-white bg-civic-navy" : "text-gray-400 hover:text-civic-navy"
+      {/* Mobile Sovereign FAB & Hub Navigation */}
+      <div className="lg:hidden fixed bottom-10 left-1/2 -translate-x-1/2 z-[4500]">
+        <div className="relative">
+          {/* Main Action Hub Button */}
+          <motion.button
+            whileTap={{ scale: 0.9 }}
+            onClick={() => setIsMenuOpen(!isMenuOpen)}
+            className="w-16 h-16 bg-civic-navy text-white rounded-full shadow-[0_20px_50px_rgba(0,0,0,0.3)] flex items-center justify-center border-4 border-white relative z-[4600]"
+          >
+            <AnimatePresence mode="wait">
+              {isMenuOpen ? (
+                <motion.div key="close" initial={{ rotate: -90, opacity: 0 }} animate={{ rotate: 0, opacity: 1 }} exit={{ rotate: 90, opacity: 0 }}>
+                  <X className="w-8 h-8" />
+                </motion.div>
+              ) : (
+                <motion.div key="menu" initial={{ rotate: 90, opacity: 0 }} animate={{ rotate: 0, opacity: 1 }} exit={{ rotate: -90, opacity: 0 }}>
+                  <LayoutDashboard className="w-8 h-8 text-civic-saffron" />
+                </motion.div>
               )}
-            >
-              <item.icon className={cn("w-5 h-5 mb-1", activeTab === item.id ? "text-civic-saffron" : "")} />
-              <span className="text-[8px] font-bold uppercase tracking-widest leading-none text-center">
-                {t(item.labelKey).split(' (')[0].substring(0, 8)}
-              </span>
-            </button>
-          ))}
-        </nav>
+            </AnimatePresence>
+            {/* Animated Ring */}
+            {!isMenuOpen && (
+              <motion.div 
+                animate={{ scale: [1, 1.4, 1], opacity: [0.3, 0, 0.3] }}
+                transition={{ duration: 2, repeat: Infinity }}
+                className="absolute inset-0 rounded-full bg-civic-navy -z-10"
+              />
+            )}
+          </motion.button>
+
+          {/* Radial/Bottom Sheet Menu Hub */}
+          <AnimatePresence>
+            {isMenuOpen && (
+              <>
+                {/* Backdrop Overlay */}
+                <motion.div 
+                  initial={{ opacity: 0 }}
+                  animate={{ opacity: 1 }}
+                  exit={{ opacity: 0 }}
+                  onClick={() => setIsMenuOpen(false)}
+                  className="fixed inset-0 bg-civic-navy/40 backdrop-blur-md z-[4400]"
+                />
+                
+                {/* Thumb-Optimized Menu Drawer */}
+                <motion.div
+                  initial={{ y: "100%", opacity: 0 }}
+                  animate={{ y: 0, opacity: 1 }}
+                  exit={{ y: "100%", opacity: 0 }}
+                  transition={{ type: "spring", damping: 25, stiffness: 200 }}
+                  className="fixed bottom-0 left-0 right-0 glass-vibrant rounded-t-[3.5rem] p-10 pb-20 z-[4500] border-t border-white"
+                >
+                  <div className="w-12 h-1.5 bg-gray-200 rounded-full mx-auto mb-10" />
+                  <div className="grid grid-cols-2 gap-4">
+                    {[
+                      { id: 'overview', icon: LayoutDashboard, label: 'Overview' },
+                      { id: 'registration', icon: UserPlus, label: 'Register' },
+                      { id: 'research', icon: BookOpen, label: 'Research' },
+                      { id: 'polling', icon: MapPin, label: 'Map' },
+                      { id: 'form8', icon: Gavel, label: 'Form 8' },
+                      { id: 'sir2026', icon: Calendar, label: 'SIR 2026' },
+                      { id: 'helpline', icon: Headphones, label: 'Helpline' }
+                    ].map((item, idx) => (
+                      <motion.button
+                        key={item.id}
+                        initial={{ opacity: 0, y: 20 }}
+                        animate={{ opacity: 1, y: 0 }}
+                        transition={{ delay: idx * 0.05 }}
+                        onClick={() => {
+                          setActiveTab(item.id as any);
+                          setIsMenuOpen(false);
+                        }}
+                        className={cn(
+                          "flex flex-col items-center justify-center p-6 rounded-[2.5rem] transition-all",
+                          activeTab === item.id ? "bg-civic-navy text-white shadow-2xl scale-105" : "bg-white/50 text-civic-navy hover:bg-white"
+                        )}
+                      >
+                        <item.icon className={cn("w-6 h-6 mb-2", activeTab === item.id ? "text-civic-saffron" : "")} />
+                        <span className="text-[10px] font-black uppercase tracking-widest">{item.label}</span>
+                      </motion.button>
+                    ))}
+                    
+                    <motion.button
+                      initial={{ opacity: 0, y: 20 }}
+                      animate={{ opacity: 1, y: 0 }}
+                      transition={{ delay: 0.3 }}
+                      onClick={() => { resetStore(); setIsMenuOpen(false); }}
+                      className="col-span-2 flex items-center justify-center gap-3 p-6 bg-red-50 text-red-600 rounded-[2.5rem] mt-4 font-black uppercase tracking-[0.2em] text-[10px]"
+                    >
+                      <ChevronLeft className="w-4 h-4" /> Reset Sovereign Data
+                    </motion.button>
+                  </div>
+                </motion.div>
+              </>
+            )}
+          </AnimatePresence>
+        </div>
       </div>
 
       {/* Gemini Multimodal Scanner Overlay */}

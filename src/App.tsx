@@ -35,7 +35,7 @@ function App() {
             }}
             transition={{ duration: 25 - (readinessScore / 10), repeat: Infinity, ease: "linear" }}
             className={cn("absolute -top-[10%] -left-[10%] w-[40%] h-[40%] rounded-full blur-[80px] transition-colors duration-1000", getPulseColor('blue') + '/10')} 
-            style={{ willChange: 'transform' }}
+            style={{ willChange: 'transform, opacity' }}
           />
           <motion.div 
             animate={{ 
@@ -46,7 +46,7 @@ function App() {
             }}
             transition={{ duration: 30 - (readinessScore / 8), repeat: Infinity, ease: "linear" }}
             className={cn("absolute top-[20%] -right-[10%] w-[35%] h-[35%] rounded-full blur-[70px] transition-colors duration-1000", getPulseColor('saffron') + '/10')} 
-            style={{ willChange: 'transform' }}
+            style={{ willChange: 'transform, opacity' }}
           />
           <motion.div 
             animate={{ 
@@ -57,13 +57,46 @@ function App() {
             }}
             transition={{ duration: 22 - (readinessScore / 12), repeat: Infinity, ease: "linear" }}
             className={cn("absolute -bottom-[10%] left-[20%] w-[45%] h-[45%] rounded-full blur-[90px] transition-colors duration-1000", getPulseColor('green') + '/10')} 
-            style={{ willChange: 'transform' }}
+            style={{ willChange: 'transform, opacity' }}
           />
+
+          {/* Background Particles - Cyber Dust */}
+          <div className="absolute inset-0 z-0 opacity-20">
+              {[...Array(30)].map((_, i) => (
+                  <motion.div
+                    key={i}
+                    animate={{ 
+                        y: [Math.random() * 100 + "%", Math.random() * 100 + "%"],
+                        x: [Math.random() * 100 + "%", Math.random() * 100 + "%"],
+                        opacity: [0, 0.5, 0],
+                        scale: [0, Math.random() * 2, 0]
+                    }}
+                    transition={{ 
+                        duration: 10 + Math.random() * 20, 
+                        repeat: Infinity, 
+                        ease: "linear",
+                        delay: Math.random() * 10
+                    }}
+                    className="absolute w-1 h-1 bg-civic-navy rounded-full"
+                    style={{ 
+                        left: Math.random() * 100 + "%",
+                        top: Math.random() * 100 + "%"
+                    }}
+                  />
+              ))}
+          </div>
         </div>
+
+      <a 
+        href="#main-content" 
+        className="fixed top-0 left-0 p-4 bg-civic-navy text-white -translate-y-full focus:translate-y-0 z-[10000] transition-transform font-bold rounded-br-2xl shadow-2xl"
+      >
+        Skip to Content
+      </a>
 
         <Header />
         
-        <main className="relative min-h-screen z-10">
+        <main id="main-content" className="relative min-h-screen z-10">
           <AnimatePresence mode="wait">
             {view === 'selection' ? (
               <motion.div
@@ -84,11 +117,11 @@ function App() {
             ) : (
               <motion.div
                 key="dashboard"
-                initial={{ opacity: 0, scale: 0.8, filter: 'blur(20px)' }}
+                initial={{ opacity: 0, scale: 0.9, filter: 'blur(30px)' }}
                 animate={{ opacity: 1, scale: 1, filter: 'blur(0px)' }}
-                exit={{ opacity: 0, scale: 0.8 }}
-                transition={{ duration: 1.2, ease: [0.16, 1, 0.3, 1] }}
-                className="pt-20 lg:pt-24 px-4 pb-20 max-w-[1600px] mx-auto h-full relative z-10"
+                exit={{ opacity: 0, scale: 0.9, filter: 'blur(30px)' }}
+                transition={{ duration: 1.5, ease: [0.22, 1, 0.36, 1] }}
+                className="pt-36 lg:pt-48 px-6 lg:px-4 pb-32 lg:pb-20 max-w-[1600px] mx-auto h-full relative z-10 [contain:layout_style]"
               >
                 <Dashboard />
               </motion.div>
@@ -98,7 +131,7 @@ function App() {
 
         {/* Global Floating Ask Gemini Button - Google AI Mode Style */}
         {view === 'dashboard' && (
-            <div className="fixed bottom-24 right-4 lg:bottom-12 lg:right-12 z-[5000]">
+            <div className="fixed bottom-32 right-6 lg:bottom-12 lg:right-12 z-[5000]">
                 <Tooltip content="Launch Sovereign AI Support">
                     <motion.button
                         whileHover={{ scale: 1.05 }}
@@ -126,8 +159,14 @@ function App() {
                                 <X className="w-5 h-5" />
                             ) : (
                                 <>
-                                    <img src="https://www.gstatic.com/lamda/images/gemini_sparkle_v002_d4735304ff6292a690345.svg" className="w-5 h-5 animate-pulse" alt="Gemini" />
-                                    <span className="font-display font-medium text-sm tracking-tight">Ask Gemini</span>
+                                    <div className="relative w-5 h-5 flex items-center justify-center">
+                                        <img 
+                                            src="/gemini_logo_final.png" 
+                                            className="w-5 h-5 animate-pulse object-contain mix-blend-screen" 
+                                            alt="Gemini" 
+                                        />
+                                    </div>
+                                    <span className="font-display font-medium text-sm tracking-tight text-white">Ask Gemini</span>
                                     <div className="flex gap-0.5">
                                         {[1, 2, 3].map(i => (
                                             <motion.div 

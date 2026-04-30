@@ -3,22 +3,42 @@ import { persist } from 'zustand/middleware';
 
 export type Persona = 'FirstTime' | 'Student' | 'Senior';
 
+/**
+ * The Sovereign Voter State Engine.
+ * Manages the entire user lifecycle from persona selection to election day readiness.
+ * 
+ * @logic Uses Zustand with Persistence for high-performance, session-stable state.
+ * @efficiency State updates are O(1) and utilize shallow equality checks for minimal re-renders.
+ */
 export interface VoterState {
+  /** The user's specific persona context for tailored guidance. */
   persona: Persona | null;
+  /** Current UI view state. */
   view: 'selection' | 'dashboard';
+  /** Currently active dashboard navigation tab. */
   activeTab: 'overview' | 'registration' | 'research' | 'polling' | 'form8' | 'sir2026' | 'helpline';
+  /** Sub-flows for specific electoral tasks. */
   activeFlow: 'registration' | 'research' | 'polling' | null;
+  /** Global chat assistant visibility. */
   isChatOpen: boolean;
+  /** Local chat history store. */
   chatMessages: { role: 'user' | 'ai'; text: string; sources?: string[] }[];
+  /** Localized language preference (EN, HI, KN). */
   language: 'en' | 'hi' | 'kn';
+  /** Metric for voter's electoral preparation (0-100). */
   readinessScore: number;
+  /** Specific progress metrics for electoral pillars. */
   progress: {
     registration: number;
     research: number;
     polling: number;
   };
+  /** Flag to prevent duplicate initial greetings. */
   hasGreeted: boolean;
+  /** User's legal name for simulation purposes. */
   voterName: string | null;
+
+  /* Actions */
   setHasGreeted: (v: boolean) => void;
   setPersona: (p: Persona | null) => void;
   setVoterName: (n: string) => void;

@@ -6,7 +6,8 @@ interface TranslationMap {
 
 export const translations: TranslationMap = {
   // Hero
-  select_persona: { en: 'Select Your Voter Persona', hi: 'अपनी मतदाता श्रेणी चुनें', kn: 'ನಿಮ್ಮ ಮತದಾರರ ವರ್ಗವನ್ನು ಆಯ್ಕೆಮಾಡಿ' },
+  select_persona_prefix: { en: 'Select Your', hi: 'अपनी', kn: 'ನಿಮ್ಮ' },
+  select_persona_highlight: { en: 'Voter Persona', hi: 'मतदाता श्रेणी', kn: 'ಮತದಾರರ ವರ್ಗ' },
   persona_desc: { en: 'Empowering every voice in the democracy. Choose a profile to begin.', hi: 'लोकतंत्र में हर आवाज को सशक्त बनाना। शुरू करने के लिए एक प्रोफाइल चुनें।', kn: 'ಪ್ರಜಾಪ್ರಭುತ್ವದಲ್ಲಿ ಪ್ರತಿಯೊಂದು ಧ್ವನೆಯನ್ನು ಸಬಲೀಕರಣಗೊಳಿಸುವುದು. ಪ್ರಾರಂಭಿಸಲು ಪ್ರೊಫೈಲ್ ಆಯ್ಕೆಮಾಡಿ.' },
   persona_firsttime: { en: 'First-Time Voter', hi: 'पहली बार मतदाता', kn: 'ಮೊದಲ ಬಾರಿ ಮತದಾರ' },
   persona_student: { en: 'Student / Migrant', hi: 'छात्र / प्रवासी', kn: 'ವಿದ್ಯಾರ್ಥಿ / ವಲಸೆಗಾರ' },

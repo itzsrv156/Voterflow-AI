@@ -56,9 +56,9 @@ export const Hero = () => {
           transition={{ duration: 0.6 }}
         >
           <h1 className="text-4xl md:text-6xl font-display font-bold text-civic-navy mb-6 tracking-tight">
-            {t('select_persona').split('Voter')[0]} 
+            {t('select_persona_prefix')}{' '}
             <span className="bg-gradient-to-r from-civic-saffron to-civic-navy bg-clip-text text-transparent">
-               {t('select_persona').includes('Voter') ? 'Voter Persona' : 'Persona'}
+               {t('select_persona_highlight')}
             </span>
           </h1>
           <p className="text-lg text-gray-600 mb-10 max-w-2xl mx-auto font-medium">
@@ -81,7 +81,7 @@ export const Hero = () => {
                 onClick={() => setPersona(data.type)}
                 className={cn(
                   "relative group cursor-pointer p-8 rounded-[3rem] transition-all duration-500",
-                  "glass-card overflow-hidden"
+                  "glass-card overflow-hidden will-change-transform"
                 )}
               >
                 {/* Badge */}

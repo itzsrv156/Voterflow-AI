@@ -1,5 +1,5 @@
 import { motion } from 'framer-motion';
-import { MapPin, Navigation, Phone, ExternalLink, Globe, Search } from 'lucide-react';
+import { MapPin, Navigation, Phone, ExternalLink, Globe, Search, Loader2 } from 'lucide-react';
 import { useState, useEffect } from 'react';
 import { cn } from '../../lib/utils';
 import { MapContainer, TileLayer, Marker, Popup, useMap } from 'react-leaflet';
@@ -60,28 +60,28 @@ export const PollingBoothLocator = () => {
   };
 
   return (
-    <div className="bg-white/40 backdrop-blur-xl rounded-[3.5rem] p-12 border border-white/50 shadow-sm space-y-8">
-      <div className="flex justify-between items-start">
+    <div className="bg-white/40 backdrop-blur-xl rounded-[3.5rem] p-6 lg:p-12 border border-white/50 shadow-sm space-y-8 h-full lg:h-auto overflow-hidden relative">
+      <div className="flex justify-between items-start relative z-[500] lg:z-auto">
         <div className="flex items-center gap-4">
-          <div className="w-14 h-14 bg-civic-navy rounded-2xl flex items-center justify-center shadow-xl">
-            <Globe className="text-civic-saffron w-7 h-7" />
+          <div className="w-12 h-12 lg:w-14 lg:h-14 bg-civic-navy rounded-2xl flex items-center justify-center shadow-xl">
+            <Globe className="text-civic-saffron w-6 h-6 lg:w-7 lg:h-7" />
           </div>
           <div>
-            <h3 className="text-2xl font-display font-bold text-civic-navy">Sovereign Map Intelligence</h3>
-            <p className="text-[10px] font-bold text-gray-400 uppercase tracking-widest mt-1">Live OpenStreetMap Federation // Bengaluru Central Sector</p>
+            <h3 className="text-xl lg:text-2xl font-display font-bold text-civic-navy">Sovereign Map Intelligence</h3>
+            <p className="text-[8px] lg:text-[10px] font-bold text-gray-400 uppercase tracking-widest mt-1">Google Maps Satellite Engine // Bengaluru Central Sector</p>
           </div>
         </div>
         <button 
           onClick={handleSearch}
-          className="px-6 py-3 bg-civic-navy text-white text-[10px] font-black uppercase tracking-widest rounded-xl shadow-lg flex items-center gap-2 hover:scale-105 active:scale-95 transition-all"
+          className="hidden lg:flex px-6 py-3 bg-civic-navy text-white text-[10px] font-black uppercase tracking-widest rounded-xl shadow-lg items-center gap-2 hover:scale-105 active:scale-95 transition-all"
         >
           {isSearching ? 'Syncing...' : <><Search className="w-4 h-4" /> Locate Near Me</>}
         </button>
       </div>
 
-      <div className="grid grid-cols-1 lg:grid-cols-2 gap-8">
-        {/* Real Leaflet Map */}
-        <div className="h-[450px] bg-gray-100 rounded-[2.5rem] relative overflow-hidden border border-gray-200 shadow-inner z-10">
+      <div className="grid grid-cols-1 lg:grid-cols-2 gap-8 h-full lg:h-auto">
+        {/* Real Leaflet Map - Full Screen on Mobile */}
+        <div className="h-[500px] lg:h-[450px] bg-gray-100 rounded-[2.5rem] lg:rounded-[2.5rem] fixed inset-0 lg:relative z-0 lg:z-10 overflow-hidden border border-gray-200 shadow-inner">
             <MapContainer 
               center={mapCenter} 
               zoom={13} 
@@ -89,8 +89,8 @@ export const PollingBoothLocator = () => {
               scrollWheelZoom={false}
             >
               <TileLayer
-                attribution='&copy; <a href="https://www.openstreetmap.org/copyright">OpenStreetMap</a> contributors'
-                url="https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png"
+                attribution='&copy; <a href="https://www.google.com/maps">Google Maps</a>'
+                url="https://mt1.google.com/vt/lyrs=y&x={x}&y={y}&z={z}"
               />
               <RecenterMap coords={mapCenter} />
               {booths.map(b => (
@@ -118,18 +118,26 @@ export const PollingBoothLocator = () => {
               ))}
             </MapContainer>
 
-            <div className="absolute bottom-6 left-6 right-6 p-4 bg-white/90 backdrop-blur-md rounded-2xl border border-white shadow-xl z-[400]">
+            <div className="absolute bottom-24 lg:bottom-6 left-6 right-6 p-4 bg-white/90 backdrop-blur-md rounded-2xl border border-white shadow-xl z-[400]">
                 <div className="flex items-center gap-3">
                     <Navigation className="w-4 h-4 text-civic-navy animate-pulse" />
-                    <span className="text-[10px] font-black text-civic-navy uppercase tracking-widest">
+                    <span className="text-[9px] lg:text-[10px] font-black text-civic-navy uppercase tracking-widest">
                         {selectedBooth ? `Navigating to ${selectedBooth.name}` : 'Sovereign Map Intelligence Active'}
                     </span>
                 </div>
             </div>
+            
+            {/* Mobile Locate FAB */}
+            <button 
+              onClick={handleSearch}
+              className="lg:hidden absolute top-24 right-6 w-14 h-14 bg-civic-navy text-white rounded-2xl shadow-2xl flex items-center justify-center z-[500] active:scale-95 transition-all border border-white/20"
+            >
+              {isSearching ? <Loader2 className="w-6 h-6 animate-spin text-civic-saffron" /> : <Search className="w-6 h-6 text-civic-saffron" />}
+            </button>
         </div>
 
-        {/* Booth Details */}
-        <div className="space-y-4">
+        {/* Booth Details - Hidden on Mobile */}
+        <div className="hidden lg:block space-y-4">
             <h4 className="text-[10px] font-black text-gray-400 uppercase tracking-widest mb-6 px-2">Karnataka Polling Stations</h4>
             <div className="space-y-3 h-[300px] overflow-y-auto pr-2 custom-scrollbar">
                 {booths.map(b => (
@@ -186,6 +194,75 @@ export const PollingBoothLocator = () => {
                 </motion.div>
             )}
         </div>
+
+        {/* Mobile Bottom Sheet Drawer */}
+        <motion.div 
+          initial={{ y: "80%" }}
+          animate={{ y: selectedBooth ? "0%" : "80%" }}
+          className="lg:hidden fixed bottom-0 left-0 right-0 z-[1000] bg-white/90 backdrop-blur-2xl rounded-t-[3rem] shadow-[0_-20px_60px_rgba(0,0,0,0.2)] border-t border-white p-6 pb-12 transition-all duration-500"
+        >
+          <div className="w-12 h-1.5 bg-gray-200 rounded-full mx-auto mb-6" />
+          <div className="space-y-6">
+            <div className="flex justify-between items-center mb-4">
+               <h4 className="text-[10px] font-black text-civic-navy uppercase tracking-widest">Sovereign Booth Selection</h4>
+               {selectedBooth && (
+                 <button onClick={() => setSelectedBooth(null)} className="text-[10px] font-bold text-gray-400 uppercase">Clear</button>
+               )}
+            </div>
+            
+            <div className="flex gap-4 overflow-x-auto no-scrollbar pb-2">
+               {booths.map(b => (
+                 <button
+                   key={b.id}
+                   onClick={() => {
+                     setSelectedBooth(b);
+                     setMapCenter([b.lat, b.lng]);
+                   }}
+                   className={cn(
+                     "min-w-[280px] p-6 rounded-[2.5rem] border transition-all text-left flex justify-between items-center",
+                     selectedBooth?.id === b.id ? "bg-civic-navy text-white shadow-2xl border-civic-navy" : "bg-white border-gray-100 text-gray-500"
+                   )}
+                 >
+                   <div className="flex items-center gap-4">
+                     <div className={cn("w-10 h-10 rounded-xl flex items-center justify-center", selectedBooth?.id === b.id ? "bg-white/10" : "bg-gray-50")}>
+                       <MapPin className="w-5 h-5" />
+                     </div>
+                     <div>
+                       <div className="text-sm font-bold truncate max-w-[150px]">{b.name}</div>
+                       <div className="text-[9px] opacity-60 mt-0.5">{b.distance} away</div>
+                     </div>
+                   </div>
+                   <div className={cn("w-2 h-2 rounded-full", b.status === 'Optimal' ? "bg-civic-green" : "bg-civic-saffron")} />
+                 </button>
+               ))}
+            </div>
+
+            {selectedBooth && (
+               <motion.div initial={{ opacity: 0, scale: 0.95 }} animate={{ opacity: 1, scale: 1 }} className="space-y-4">
+                 <div className="p-6 bg-civic-navy/5 rounded-[2rem] border border-civic-navy/10">
+                    <div className="flex justify-between items-start mb-4">
+                       <div>
+                          <div className="text-lg font-bold text-civic-navy">{selectedBooth.name}</div>
+                          <div className="text-xs text-gray-500 mt-1">{selectedBooth.address}</div>
+                       </div>
+                       <div className="text-right">
+                          <div className="text-xs font-bold text-civic-navy">{selectedBooth.waitTime}</div>
+                          <div className="text-[8px] font-black text-gray-400 uppercase">Wait Time</div>
+                       </div>
+                    </div>
+                    <div className="flex gap-3 mt-6">
+                       <button className="flex-1 py-4 bg-civic-navy text-white text-[10px] font-black uppercase tracking-widest rounded-xl flex items-center justify-center gap-2 shadow-lg active:scale-95 transition-all">
+                          Get Directions <ExternalLink className="w-4 h-4" />
+                       </button>
+                       <button className="w-14 h-14 bg-white border border-gray-100 rounded-xl flex items-center justify-center text-civic-navy hover:bg-gray-50 transition-all">
+                          <Phone className="w-6 h-6" />
+                       </button>
+                    </div>
+                 </div>
+               </motion.div>
+            )}
+          </div>
+        </motion.div>
       </div>
     </div>
   );

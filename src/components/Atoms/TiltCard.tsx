@@ -60,7 +60,7 @@ export const TiltCard: React.FC<TiltCardProps> = ({ children, className }) => {
       className={`relative perspective-1000 ${className || ''}`}
     >
       <div 
-        style={{ transform: "translateZ(50px)" }} 
+        style={{ transform: "translateZ(80px)" }} 
         className="w-full h-full rounded-[inherit] relative overflow-hidden group"
       >
         <motion.div 

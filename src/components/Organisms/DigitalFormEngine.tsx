@@ -544,22 +544,23 @@ export const DigitalFormEngine = ({ onClose }: { onClose: () => void }) => {
   }
 
   return (
-    <div className="fixed inset-0 z-[3200] flex items-center justify-center p-6 bg-civic-navy/10 backdrop-blur-2xl">
+    <div className="fixed inset-0 z-[3200] flex items-end lg:items-center justify-center p-0 lg:p-6 bg-civic-navy/10 backdrop-blur-2xl">
       <FlashEffect isActive={showFlash} />
       <motion.div
-        initial={{ scale: 0.9, opacity: 0, y: 40 }}
-        animate={{ scale: 1, opacity: 1, y: 0 }}
-        exit={{ scale: 0.9, opacity: 0, y: 40 }}
-        className="glass w-full max-w-2xl rounded-[4rem] overflow-hidden relative border border-white/40 shadow-2xl shadow-black/10"
+        initial={{ y: "100%", opacity: 0 }}
+        animate={{ y: 0, opacity: 1 }}
+        exit={{ y: "100%", opacity: 0 }}
+        transition={{ type: "spring", damping: 30, stiffness: 300 }}
+        className="glass w-full max-w-2xl h-[92vh] lg:h-auto rounded-t-[3.5rem] lg:rounded-[4rem] overflow-hidden relative border border-white/40 shadow-2xl shadow-black/10 flex flex-col"
       >
         <button 
             onClick={onClose} 
-            className="absolute top-12 right-12 p-4 bg-gray-50 rounded-full hover:bg-red-50 hover:text-red-500 transition-all z-20 group"
+            className="absolute top-8 right-8 lg:top-12 lg:right-12 p-4 bg-gray-50 rounded-full hover:bg-red-50 hover:text-red-500 transition-all z-20 group"
         >
-          <X className="w-7 h-7 group-hover:rotate-90 transition-transform" />
+          <X className="w-6 h-6 lg:w-7 lg:h-7 group-hover:rotate-90 transition-transform" />
         </button>
 
-        <div className="p-16">
+        <div className="p-8 lg:p-16 flex-1 overflow-y-auto no-scrollbar">
           <header className="mb-14">
             <div className="flex items-center gap-4 mb-6">
                 <div className="w-12 h-12 bg-civic-navy rounded-2xl flex items-center justify-center shadow-xl shadow-civic-navy/20">

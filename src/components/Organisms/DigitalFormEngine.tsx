@@ -123,7 +123,14 @@ const StudentBranch = ({ data, setData }: { data: FormData, setData: (d: FormDat
           {(['Day Scholar', 'Hostel Resident'] as const).map(type => (
             <button
               key={type}
-              onClick={() => setData({ ...data, residencyType: type })}
+              onClick={() => {
+                const updates: Partial<FormData> = { residencyType: type };
+                if (type === 'Day Scholar') {
+                  updates.hostelName = '';
+                  updates.wardenName = '';
+                }
+                setData({ ...data, ...updates });
+              }}
               className={cn(
                 "flex-1 py-3 rounded-xl font-bold text-xs transition-all",
                 data.residencyType === type ? "bg-white text-civic-navy shadow-sm" : "text-gray-400 hover:text-gray-600"

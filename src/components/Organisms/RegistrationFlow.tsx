@@ -133,7 +133,7 @@ const Form6Assistant = ({ onNext }: StepProps) => {
             {isScanning ? (
               <>
                 <Loader2 className="w-10 h-10 text-civic-navy animate-spin" />
-                <p className="text-sm font-bold text-civic-navy italic">Gemini 1.5 Pro Analyzing Document...</p>
+                <p className="text-sm font-bold text-civic-navy italic">Gemini Sovereign Core Analyzing...</p>
                 <div className="mt-2 flex gap-1">
                     {[1,2,3].map(i => <div key={i} className="w-1 h-1 bg-civic-saffron rounded-full animate-bounce" style={{ animationDelay: `${i*0.2}s` }} />)}
                 </div>

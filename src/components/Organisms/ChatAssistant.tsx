@@ -52,7 +52,7 @@ export const ChatAssistant: React.FC = () => {
         }
     }, [persona, hasGreeted, setHasGreeted, isChatOpen, addChatMessage]);
 
-    const handleSend = (input?: string, isDeep = false) => {
+    const handleSend = React.useCallback((input?: string, isDeep = false) => {
         const text = input || userInput;
         if (!text.trim() || isStreaming) return;
 
@@ -87,7 +87,7 @@ export const ChatAssistant: React.FC = () => {
             setIsDeepSearching(false);
             addReadiness(2);
         });
-    };
+    }, [userInput, isStreaming, messages, persona, addChatMessage, updateLastChatMessage, addReadiness]);
 
     return (
         <AnimatePresence>
@@ -122,7 +122,7 @@ export const ChatAssistant: React.FC = () => {
                                     </h3>
                                     <div className="flex items-center gap-2">
                                         <div className="w-1.5 h-1.5 bg-civic-green rounded-full animate-pulse shadow-[0_0_8px_rgba(18,136,7,0.6)]" />
-                                        <span className="text-[9px] font-black text-gray-400 uppercase tracking-widest leading-none">Gemini 2.5 + Google Search Active</span>
+                                        <span className="text-[9px] font-black text-gray-400 uppercase tracking-widest leading-none">Gemini Sovereign Core + Logic Active</span>
                                     </div>
                                 </div>
                             </div>

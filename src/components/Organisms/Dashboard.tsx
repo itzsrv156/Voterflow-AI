@@ -1,12 +1,28 @@
 import { useState, useEffect } from 'react';
 import { motion, AnimatePresence } from 'framer-motion';
+import { 
+  Zap, 
+  CheckCircle, Gavel, 
+  Calendar, LayoutDashboard, UserPlus, Search, Library, 
+  Headphones, ArrowRight, Radio, Award, ChevronLeft, User, Target,
+  PhoneCall, MapPin, ShieldCheck,
+  UserCheck,
+  Flame, Cpu, BookOpen, Download, FileText,
+  FileEdit, Globe, Fingerprint
+} from 'lucide-react';
+
 import { useVoterStore, type VoterState } from '../../store/useVoterStore';
 import { useTranslation } from '../../LanguageContext';
 import { TiltCard } from '../Atoms/TiltCard';
 import { PollingBoothLocator } from './PollingBoothLocator';
 import { FutureVoterTool } from '../Molecules/FutureVoterTool';
 import { EvmSimulator } from './EvmSimulator';
+import { cn } from '../../lib/utils';
 
+/**
+ * Sovereign Language Selection Engine.
+ * Allows instant UI transformation across Constitutionally-recognized languages.
+ */
 const LanguageToggle = () => {
     const { language, setLanguage } = useVoterStore();
     return (
@@ -27,6 +43,10 @@ const LanguageToggle = () => {
     );
 };
 
+/**
+ * Real-time Constituency Sync Heatmap.
+ * Visualizes SIR 2026 sector mapping progress.
+ */
 const ConstituencyHeatmap = ({ onOpenChat }: { onOpenChat: () => void }) => (
     <TiltCard className="h-full group">
         <div className="glass-card rounded-[3.5rem] p-10 relative overflow-hidden h-full">
@@ -76,20 +96,9 @@ const ConstituencyHeatmap = ({ onOpenChat }: { onOpenChat: () => void }) => (
         </div>
     </TiltCard>
 );
-import { 
-  Zap, 
-  CheckCircle, Gavel, 
-  Calendar, LayoutDashboard, UserPlus, Search, Library, 
-  Headphones, ArrowRight, Radio, Award, ChevronLeft, User, Target,
-  PhoneCall, MapPin, ShieldCheck,
-  UserCheck,
-  Flame, Cpu, BookOpen, Download, FileText,
-  FileEdit, Globe, Fingerprint
-} from 'lucide-react';
-import { cn } from '../../lib/utils';
 
 interface SidebarItemProps {
-    id: 'overview' | 'registration' | 'research' | 'polling' | 'form8' | 'sir2026' | 'helpline';
+    id: VoterState['activeTab'];
     icon: React.ElementType;
     labelKey: string;
     activeTab: string;
@@ -117,6 +126,47 @@ const SidebarItem = ({ id, icon: Icon, labelKey, activeTab, setActiveTab, t }: S
       <Icon className={cn("w-5 h-5 relative z-10 transition-transform duration-500 group-hover:scale-110", activeTab === id ? "text-civic-saffron" : "")} aria-hidden="true" />
       <span className="text-sm font-bold relative z-10">{t(labelKey).split(' (')[0]}</span>
     </button>
+);
+
+/**
+ * Mobile Bottom Navigation Bar.
+ * Essential for thumb-friendly interaction on sovereign mobile devices.
+ */
+const MobileNav = ({ activeTab, setActiveTab, t }: { activeTab: string, setActiveTab: (id: VoterState['activeTab']) => void, t: any }) => (
+    <motion.div 
+        initial={{ y: 100 }}
+        animate={{ y: 0 }}
+        className="fixed bottom-6 left-6 right-6 lg:hidden z-[100]"
+    >
+        <div className="bg-civic-navy/90 backdrop-blur-2xl rounded-[2.5rem] border border-white/20 p-2 shadow-[0_20px_50px_rgba(0,0,128,0.4)] flex justify-between items-center px-4">
+            {[
+                { id: 'overview', icon: LayoutDashboard },
+                { id: 'registration', icon: UserPlus },
+                { id: 'polling', icon: Target },
+                { id: 'research', icon: Library },
+                { id: 'helpline', icon: Headphones },
+            ].map((item) => (
+                <button
+                    key={item.id}
+                    onClick={() => setActiveTab(item.id as VoterState['activeTab'])}
+                    className={cn(
+                        "p-4 rounded-2xl transition-all relative flex flex-col items-center gap-1",
+                        activeTab === item.id ? "text-civic-saffron" : "text-white/40"
+                    )}
+                >
+                    {activeTab === item.id && (
+                        <motion.div 
+                            layoutId="mobile-nav-pill"
+                            className="absolute inset-0 bg-white/10 rounded-2xl"
+                            transition={{ type: "spring", bounce: 0.2, duration: 0.6 }}
+                        />
+                    )}
+                    <item.icon className="w-6 h-6 relative z-10" />
+                    <span className="text-[7px] font-black uppercase tracking-tighter relative z-10">{t(item.id).split(' ')[0]}</span>
+                </button>
+            ))}
+        </div>
+    </motion.div>
 );
 
 export const Dashboard = () => {
@@ -149,8 +199,6 @@ export const Dashboard = () => {
     }
   }, [persona, hasGreeted, setHasGreeted]);
 
-
-
   return (
     <div className={cn(
         "flex min-h-screen bg-[#FDFDFD]/50 transition-all duration-1000",
@@ -180,7 +228,7 @@ export const Dashboard = () => {
           <SidebarItem id="helpline" icon={Headphones} labelKey="helpline" activeTab={activeTab} setActiveTab={setActiveTab} t={t} />
         </nav>
 
-        {/* Sovereign Achievements (Badges) - NEW FEATURE */}
+        {/* Sovereign Achievements (Badges) */}
         <div className="mt-6 p-4 glass-dark rounded-2xl relative overflow-hidden group">
             <h4 className="text-[8px] font-black text-civic-navy uppercase tracking-widest mb-3 flex items-center gap-2">
                 <Award className="w-2.5 h-2.5 text-civic-saffron" /> Sovereign Badges
@@ -242,7 +290,6 @@ export const Dashboard = () => {
                         )}
                     >
                         <span className="text-[11px] font-black text-civic-navy tracking-tighter">{Math.round(readinessScore)}%</span>
-                        {/* Dynamic Core */}
                         <div className={cn(
                             "absolute inset-0 bg-white/10 mix-blend-overlay animate-pulse",
                             readinessScore > 80 ? "shadow-[inset_0_0_15px_#128807]" : 
@@ -265,6 +312,8 @@ export const Dashboard = () => {
             </motion.button>
         </div>
       </motion.aside>
+
+      <MobileNav activeTab={activeTab} setActiveTab={setActiveTab} t={t} />
 
       {/* Main Content Area */}
       <div className="flex-1 space-y-6 pb-32 lg:pb-20 relative min-w-0">
@@ -291,31 +340,31 @@ export const Dashboard = () => {
                   className="grid grid-cols-1 xl:grid-cols-2 gap-8 pb-10"
                 >
               {/* Header Info */}
-              <motion.div variants={{ hidden: { y: 20, opacity: 0 }, show: { y: 0, opacity: 1 } }} className="xl:col-span-2 flex justify-between items-center mb-4">
-                <div className="flex items-center gap-6">
-                    <div className="w-16 h-16 bg-civic-navy rounded-3xl flex items-center justify-center text-white shadow-2xl animate-sovereign-pulse">
-                        <User className="w-8 h-8" />
+              <motion.div variants={{ hidden: { y: 20, opacity: 0 }, show: { y: 0, opacity: 1 } }} className="xl:col-span-2 flex flex-col md:flex-row justify-between items-start md:items-center gap-6 mb-4 px-6 md:px-0">
+                <div className="flex items-center gap-4 md:gap-6">
+                    <div className="w-12 h-12 md:w-16 md:h-16 bg-civic-navy rounded-2xl md:rounded-3xl flex items-center justify-center text-white shadow-2xl animate-sovereign-pulse">
+                        <User className="w-6 h-6 md:w-8 md:h-8" />
                     </div>
                     <div>
-                        <div className="flex items-center gap-3 mb-2">
-                            <h2 className="text-[10px] font-bold text-civic-saffron uppercase tracking-[0.3em]">{t('active_profile')}</h2>
+                        <div className="flex items-center gap-2 mb-1">
+                            <h2 className="text-[8px] md:text-[10px] font-bold text-civic-saffron uppercase tracking-[0.2em] md:tracking-[0.3em]">{t('active_profile')}</h2>
                         </div>
-                        <h1 className="text-4xl font-display font-bold text-civic-navy leading-none">
-                            {voterName ? voterName : (persona ? t(`persona_${persona.toLowerCase()}`) : '')} {t('dashboard')}
+                        <h1 className="text-2xl md:text-4xl font-display font-bold text-civic-navy leading-none">
+                            {voterName ? voterName : (persona ? t(`persona_${persona.toLowerCase()}`) : '')}
                         </h1>
                     </div>
                 </div>
                 
-                <div className="flex gap-4 items-center">
+                <div className="flex flex-wrap gap-3 items-center w-full md:w-auto">
                     <LanguageToggle />
                     {/* Constituency Intelligence Molecule */}
-                    <div className="px-6 py-4 bg-white/60 rounded-3xl border border-white shadow-sm flex items-center gap-4">
-                        <div className="w-10 h-10 bg-civic-navy/5 rounded-xl flex items-center justify-center">
-                            <MapPin className="text-civic-navy w-5 h-5" />
+                    <div className="flex-1 md:flex-none px-4 md:px-6 py-3 md:py-4 bg-white/60 rounded-2xl md:rounded-3xl border border-white shadow-sm flex items-center gap-3 md:gap-4">
+                        <div className="w-8 h-8 md:w-10 md:h-10 bg-civic-navy/5 rounded-lg md:rounded-xl flex items-center justify-center">
+                            <MapPin className="text-civic-navy w-4 h-4 md:w-5 md:h-5" />
                         </div>
                         <div>
-                            <div className="text-[9px] font-black text-gray-400 uppercase tracking-widest">Your Constituency</div>
-                            <div className="text-xs font-bold text-civic-navy">Bengaluru Central (PC 25)</div>
+                            <div className="text-[8px] font-black text-gray-400 uppercase tracking-widest">Constituency</div>
+                            <div className="text-[10px] md:text-xs font-bold text-civic-navy">Bengaluru Central</div>
                         </div>
                     </div>
                 </div>
@@ -875,7 +924,7 @@ export const Dashboard = () => {
                                 </div>
                                 <div className="p-4 bg-gray-50 rounded-2xl border border-gray-100 flex items-center gap-3">
                                     <Globe className="w-4 h-4 text-google-blue" />
-                                    <span className="text-[10px] font-bold text-gray-500">Gemini 1.5 Pro Vision</span>
+                                    <span className="text-[10px] font-bold text-gray-500">Gemini Sovereign Multimodal</span>
                                 </div>
                             </div>
                         </div>
@@ -957,6 +1006,21 @@ export const Dashboard = () => {
             </div>
         )}
       </AnimatePresence>
+
+      {/* Sovereign Intelligence FAB - Mobile Only */}
+      <motion.button
+        whileHover={{ scale: 1.1 }}
+        whileTap={{ scale: 0.9 }}
+        onClick={() => setIsChatOpen(true)}
+        className="fixed bottom-32 right-6 lg:hidden w-16 h-16 bg-civic-navy text-white rounded-full shadow-[0_15px_40px_rgba(0,0,128,0.4)] flex items-center justify-center z-[110] border border-white/20 overflow-hidden"
+      >
+          <motion.div 
+            animate={{ rotate: 360 }}
+            transition={{ duration: 10, repeat: Infinity, ease: "linear" }}
+            className="absolute inset-0 bg-gradient-to-tr from-civic-saffron/20 to-transparent opacity-50"
+          />
+          <Radio className="w-7 h-7 text-civic-saffron relative z-10 animate-pulse" />
+      </motion.button>
 
     </div>
   );

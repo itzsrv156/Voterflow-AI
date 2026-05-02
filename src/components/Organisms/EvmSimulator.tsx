@@ -39,7 +39,7 @@ export const EvmSimulator = () => {
   };
 
   return (
-    <div className="bg-white/40 backdrop-blur-xl rounded-[3.5rem] p-8 lg:p-12 border border-white/50 shadow-sm relative overflow-hidden min-h-[600px] flex flex-col">
+    <div className="glass rounded-[3.5rem] p-8 lg:p-12 space-y-8 h-full lg:h-auto overflow-hidden relative min-h-[600px] flex flex-col transition-all duration-700">
       {/* Background Tech Patterns */}
       <div className="absolute inset-0 opacity-[0.03] pointer-events-none">
         <div className="absolute top-0 left-0 w-full h-full bg-[url('https://www.transparenttextures.com/patterns/carbon-fibre.png')]" />
@@ -51,8 +51,8 @@ export const EvmSimulator = () => {
             <ShieldCheck className="text-civic-saffron w-8 h-8" />
           </div>
           <div>
-            <h3 className="text-2xl font-display font-bold text-civic-navy">Sovereign EVM Simulator</h3>
-            <p className="text-[10px] font-bold text-gray-400 uppercase tracking-widest mt-1">ECI Protocol v4.2 // Secure Digital Mock</p>
+            <h3 className="text-2xl font-display font-bold text-civic-navy dark:text-white">Sovereign EVM Simulator</h3>
+            <p className="text-[10px] font-bold text-slate-400 dark:text-slate-500 uppercase tracking-widest mt-1">ECI Protocol v4.2 // Secure Digital Mock</p>
           </div>
         </div>
         <div className="flex gap-2">
@@ -66,7 +66,7 @@ export const EvmSimulator = () => {
                         (step === 'ink' && s === 2) || 
                         (step === 'vote' && s === 3) || 
                         (step === 'vvpat' && s === 4) ||
-                        (step === 'complete') ? "bg-civic-navy" : "bg-gray-100"
+                        (step === 'complete') ? "bg-civic-navy dark:bg-civic-saffron" : "bg-gray-100 dark:bg-white/10"
                     )}
                 />
             ))}
@@ -83,11 +83,11 @@ export const EvmSimulator = () => {
               exit={{ opacity: 0, scale: 0.9 }}
               className="text-center max-w-md"
             >
-              <div className="w-24 h-24 bg-civic-navy/5 rounded-[2.5rem] flex items-center justify-center mx-auto mb-8">
-                <Info className="w-10 h-10 text-civic-navy" />
+              <div className="w-24 h-24 bg-white/[0.05] rounded-[2.5rem] flex items-center justify-center mx-auto mb-8">
+                <Info className="w-10 h-10 text-civic-navy dark:text-slate-300" />
               </div>
-              <h4 className="text-3xl font-bold text-civic-navy mb-4">Step-by-Step Voting</h4>
-              <p className="text-sm text-gray-500 mb-10 leading-relaxed font-medium">
+              <h4 className="text-3xl font-bold text-civic-navy dark:text-white mb-4">Step-by-Step Voting</h4>
+              <p className="text-sm text-slate-500 dark:text-slate-400 mb-10 leading-relaxed font-medium">
                 New to the booth? Practice the official voting process in this safe, interactive environment before you head to the polls.
               </p>
               <button 
@@ -116,7 +116,7 @@ export const EvmSimulator = () => {
               </div>
               <h4 className="text-2xl font-bold text-civic-navy mb-2">Step 1: Identify Yourself</h4>
               <p className="text-[11px] font-bold text-gray-400 uppercase tracking-widest mb-8">Poll Officer Verification</p>
-              <div className="bg-white/50 border border-white p-6 rounded-3xl text-left mb-10">
+              <div className="bg-white/50 dark:bg-white/[0.03] border border-white dark:border-white/10 p-6 rounded-3xl text-left mb-10 transition-all duration-700">
                 <p className="text-xs text-gray-500 leading-relaxed">
                   Present your <span className="font-bold text-civic-navy">VoterFlow Sovereign ID</span> or EPIC Card. The officer will verify your name in the electoral roll and confirm your identity.
                 </p>
@@ -143,7 +143,7 @@ export const EvmSimulator = () => {
               </div>
               <h4 className="text-2xl font-bold text-civic-navy mb-2">Step 2: Marking the Finger</h4>
               <p className="text-[11px] font-bold text-gray-400 uppercase tracking-widest mb-8">Indelible Ink Protocol</p>
-              <div className="bg-white/50 border border-white p-6 rounded-3xl text-left mb-10">
+              <div className="bg-white/50 dark:bg-white/[0.03] border border-white dark:border-white/10 p-6 rounded-3xl text-left mb-10 transition-all duration-700">
                 <p className="text-xs text-gray-500 leading-relaxed">
                   A mark of indelible ink will be applied to your <span className="font-bold text-civic-navy">left index finger</span>. This signifies your participation and prevents double voting.
                 </p>
@@ -184,27 +184,27 @@ export const EvmSimulator = () => {
                     className={cn(
                         "p-6 rounded-3xl border flex items-center justify-between transition-all group relative overflow-hidden",
                         selectedCandidate?.id === c.id ? "bg-civic-navy text-white border-civic-navy scale-[1.02] shadow-2xl" : 
-                        isVoted ? "bg-gray-50 border-gray-100 opacity-50" : "bg-white border-gray-100 hover:border-civic-navy/30"
+                        isVoted ? "bg-gray-50 dark:bg-white/[0.02] border-gray-100 dark:border-white/10 opacity-50" : "bg-white dark:bg-white/[0.05] border-gray-100 dark:border-white/10 hover:border-civic-navy/30 dark:hover:bg-white/[0.1]"
                     )}
                   >
                     <div className="flex items-center gap-6">
-                        <div className="w-12 h-12 bg-gray-50 rounded-xl flex items-center justify-center text-2xl group-hover:scale-110 transition-transform">
+                        <div className="w-12 h-12 bg-gray-50 dark:bg-white/[0.05] rounded-xl flex items-center justify-center text-2xl group-hover:scale-110 transition-transform">
                             {c.symbol}
                         </div>
                         <div className="text-left">
-                            <div className="text-sm font-bold">{c.name}</div>
-                            <div className="text-[10px] font-bold text-gray-400 uppercase group-hover:text-white/60">{c.party}</div>
+                            <div className={cn("text-sm font-bold", selectedCandidate?.id === c.id ? "text-white" : "text-civic-navy dark:text-slate-200")}>{c.name}</div>
+                            <div className="text-[10px] font-bold text-slate-400 dark:text-slate-500 uppercase group-hover:text-white/60">{c.party}</div>
                         </div>
                     </div>
                     <div className="flex items-center gap-4">
                         <div className={cn(
                             "w-10 h-10 rounded-full border-2 flex items-center justify-center transition-all",
-                            selectedCandidate?.id === c.id ? "bg-red-500 border-red-400 shadow-[0_0_15px_rgba(239,68,68,0.5)]" : "border-gray-100"
+                            selectedCandidate?.id === c.id ? "bg-red-500 border-red-400 shadow-[0_0_15px_rgba(239,68,68,0.5)]" : "border-gray-100 dark:border-white/10"
                         )}>
-                            <div className={cn("w-3 h-3 rounded-full", selectedCandidate?.id === c.id ? "bg-white" : "bg-gray-100")} />
+                            <div className={cn("w-3 h-3 rounded-full", selectedCandidate?.id === c.id ? "bg-white" : "bg-gray-100 dark:bg-white/10")} />
                         </div>
-                        <div className="w-12 h-12 bg-gray-100 rounded-xl flex items-center justify-center">
-                            <MousePointer2 className="w-5 h-5 text-gray-400" />
+                        <div className="w-12 h-12 bg-gray-100 dark:bg-white/[0.05] rounded-xl flex items-center justify-center">
+                            <MousePointer2 className="w-5 h-5 text-slate-400 dark:text-slate-500" />
                         </div>
                     </div>
                     {selectedCandidate?.id === c.id && (
@@ -233,7 +233,7 @@ export const EvmSimulator = () => {
               animate={{ opacity: 1, scale: 1 }}
               className="text-center max-w-lg"
             >
-              <div className="bg-gray-100 rounded-[3.5rem] p-12 border-8 border-civic-navy/10 relative overflow-hidden mb-8">
+              <div className="bg-gray-100 dark:bg-[#020617] rounded-[3.5rem] p-12 border-8 border-civic-navy/10 dark:border-white/5 relative overflow-hidden mb-8">
                  <div className="absolute top-0 left-0 w-full h-1 bg-civic-navy/5" />
                  <motion.div 
                     initial={{ y: -100, opacity: 0 }}
@@ -286,7 +286,7 @@ export const EvmSimulator = () => {
                         setIsVoted(false);
                         setSelectedCandidate(null);
                     }}
-                    className="py-4 bg-gray-100 text-civic-navy font-bold rounded-2xl text-xs flex items-center justify-center gap-2"
+                    className="py-4 bg-gray-100 dark:bg-white/[0.05] text-civic-navy dark:text-slate-300 font-bold rounded-2xl text-xs flex items-center justify-center gap-2 hover:bg-white dark:hover:bg-white/10 transition-all"
                   >
                     <RotateCcw className="w-4 h-4" /> Practice Again
                   </button>

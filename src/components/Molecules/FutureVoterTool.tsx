@@ -33,20 +33,20 @@ export const FutureVoterTool = () => {
   };
 
   return (
-    <div className="bg-white/40 backdrop-blur-xl rounded-[2.5rem] p-8 border border-white/60 shadow-xl">
+    <div className="bg-white/40 dark:bg-white/[0.03] backdrop-blur-xl rounded-[2.5rem] p-8 border border-white/60 dark:border-white/10 shadow-xl transition-all duration-700 overflow-hidden relative">
       <div className="flex items-center gap-4 mb-8">
         <div className="w-12 h-12 bg-civic-navy rounded-2xl flex items-center justify-center shadow-lg">
             <Calendar className="w-6 h-6 text-civic-saffron" />
         </div>
         <div>
-            <h3 className="text-xl font-display font-bold text-civic-navy">Future Voter Calculator</h3>
-            <p className="text-[10px] font-bold text-gray-400 uppercase tracking-widest mt-1">ECI 2026 Eligibility Logic</p>
+            <h3 className="text-xl font-display font-bold text-civic-navy dark:text-white">Future Voter Calculator</h3>
+            <p className="text-[10px] font-bold text-slate-400 dark:text-slate-500 uppercase tracking-widest mt-1">ECI 2026 Eligibility Logic</p>
         </div>
       </div>
 
       <div className="space-y-6">
           <div className="flex flex-col gap-2">
-              <label className="text-[10px] font-black text-civic-navy uppercase tracking-widest ml-1">Enter Date of Birth</label>
+              <label className="text-[10px] font-black text-civic-navy dark:text-slate-400 uppercase tracking-widest ml-1">Enter Date of Birth</label>
               <input 
                 type="date"
                 value={dob}
@@ -54,7 +54,7 @@ export const FutureVoterTool = () => {
                     setDob(e.target.value);
                     calculateEligibility(e.target.value);
                 }}
-                className="w-full p-5 bg-white border border-gray-100 rounded-2xl font-bold text-civic-navy focus:ring-4 focus:ring-civic-navy/5 outline-none transition-all"
+                className="w-full p-5 bg-white dark:bg-white/[0.05] border border-gray-100 dark:border-white/10 rounded-2xl font-bold text-civic-navy dark:text-white focus:ring-4 focus:ring-civic-navy/5 outline-none transition-all"
               />
           </div>
 
@@ -66,7 +66,7 @@ export const FutureVoterTool = () => {
                     exit={{ opacity: 0, y: -10 }}
                     className="space-y-4"
                 >
-                    <div className="p-6 bg-civic-navy text-white rounded-[2rem] shadow-2xl relative overflow-hidden">
+                    <div className="p-6 bg-civic-navy text-white rounded-[2rem] shadow-2xl dark:shadow-[0_0_30px_rgba(66,133,244,0.25)] relative overflow-hidden">
                         <div className="absolute top-0 right-0 p-6 opacity-10">
                             <CheckCircle2 className="w-20 h-20" />
                         </div>
@@ -78,17 +78,17 @@ export const FutureVoterTool = () => {
                         </div>
                     </div>
                     
-                    <div className="p-4 bg-white/60 rounded-xl border border-gray-100 flex items-start gap-3">
-                        <Info className="w-4 h-4 text-civic-navy shrink-0 mt-0.5" />
-                        <p className="text-[10px] text-gray-500 leading-relaxed font-medium">
+                    <div className="p-4 bg-white/60 dark:bg-black/20 rounded-xl border border-gray-100 dark:border-white/10 flex items-start gap-3">
+                        <Info className="w-4 h-4 text-civic-navy dark:text-slate-300 shrink-0 mt-0.5" />
+                        <p className="text-[10px] text-gray-500 dark:text-slate-400 leading-relaxed font-medium">
                             You can **Pre-Register** now via Form 6. Your Voter ID will be generated automatically on your qualifying date.
                         </p>
                     </div>
                 </motion.div>
               ) : (
-                <div className="p-8 bg-gray-50/50 rounded-[2rem] border border-dashed border-gray-200 text-center space-y-3">
-                    <AlertCircle className="w-8 h-8 text-gray-200 mx-auto" />
-                    <p className="text-[10px] font-bold text-gray-300 uppercase tracking-widest">Awaiting Date Input</p>
+                <div className="p-8 bg-gray-50/50 dark:bg-white/[0.02] rounded-[2rem] border border-dashed border-gray-200 dark:border-white/10 text-center space-y-3">
+                    <AlertCircle className="w-8 h-8 text-gray-200 dark:text-slate-700 mx-auto" />
+                    <p className="text-[10px] font-bold text-gray-300 dark:text-slate-600 uppercase tracking-widest">Awaiting Date Input</p>
                 </div>
               )}
           </AnimatePresence>

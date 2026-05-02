@@ -49,7 +49,7 @@ export const PollingSimulator = () => {
   const Icon = step.icon;
 
   return (
-    <div className="bg-white rounded-3xl p-8 border border-gray-100 shadow-xl overflow-hidden relative">
+    <div className="bg-white dark:bg-white/[0.03] rounded-3xl p-8 border border-gray-100 dark:border-white/10 shadow-xl overflow-hidden relative transition-all duration-700">
       <AnimatePresence mode="wait">
         {!isComplete ? (
           <motion.div
@@ -62,7 +62,7 @@ export const PollingSimulator = () => {
             <div className={`w-20 h-20 ${step.bg} ${step.color} rounded-2xl flex items-center justify-center mb-6`}>
               <Icon className="w-10 h-10" />
             </div>
-            <h4 className="text-xl font-bold text-civic-navy mb-2">{step.title}</h4>
+            <h4 className="text-xl font-bold text-civic-navy dark:text-white mb-2">{step.title}</h4>
             <p className="text-gray-500 text-sm mb-8 leading-relaxed max-w-xs">{step.desc}</p>
             
             <div className="flex gap-2 mb-8">
@@ -70,7 +70,7 @@ export const PollingSimulator = () => {
                 <div 
                   key={i} 
                   className={`h-1.5 w-8 rounded-full transition-all duration-500 ${
-                    i <= currentStep ? 'bg-civic-navy' : 'bg-gray-100'
+                    i <= currentStep ? 'bg-civic-navy dark:bg-civic-saffron' : 'bg-gray-100 dark:bg-white/10'
                   }`}
                 />
               ))}
@@ -80,7 +80,7 @@ export const PollingSimulator = () => {
               whileHover={{ scale: 1.05 }}
               whileTap={{ scale: 0.95 }}
               onClick={handleNext}
-              className="w-full py-4 bg-civic-navy text-white font-bold rounded-2xl flex items-center justify-center gap-2"
+              className="w-full py-4 bg-civic-navy text-white font-bold rounded-2xl dark:shadow-[0_0_20px_rgba(66,133,244,0.3)] flex items-center justify-center gap-2"
             >
               {currentStep === steps.length - 1 ? 'Finish Simulation' : 'Next Step'} 
               <ChevronRight className="w-5 h-5" />
@@ -96,13 +96,13 @@ export const PollingSimulator = () => {
             <div className="w-20 h-20 bg-civic-green/10 text-civic-green rounded-full flex items-center justify-center mb-6">
               <CheckCircle className="w-10 h-10" />
             </div>
-            <h4 className="text-2xl font-bold text-civic-navy mb-2">Simulated Vote Cast!</h4>
+            <h4 className="text-2xl font-bold text-civic-navy dark:text-white mb-2">Simulated Vote Cast!</h4>
             <p className="text-gray-500 text-sm mb-8">You are now ready for the real Polling Day.</p>
             <motion.button
               whileHover={{ scale: 1.05 }}
               whileTap={{ scale: 0.95 }}
               onClick={() => { setIsComplete(false); setCurrentStep(0); updateProgress('polling', 0); }}
-              className="px-8 py-3 border-2 border-civic-navy text-civic-navy font-bold rounded-xl"
+              className="px-8 py-3 border-2 border-civic-navy dark:border-white/20 text-civic-navy dark:text-white font-bold rounded-xl"
             >
               Reset Simulator
             </motion.button>

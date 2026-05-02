@@ -567,7 +567,7 @@ export const DigitalFormEngine = ({ onClose }: { onClose: () => void }) => {
           <X className="w-6 h-6 lg:w-7 lg:h-7 group-hover:rotate-90 transition-transform" />
         </button>
 
-        <div className="p-8 lg:p-16 flex-1 overflow-y-auto no-scrollbar">
+        <div className="p-8 lg:p-16 flex-1 overflow-y-auto no-scrollbar pb-32">
           <header className="mb-14">
             <div className="flex items-center gap-4 mb-6">
                 <div className="w-12 h-12 bg-civic-navy rounded-2xl flex items-center justify-center shadow-xl shadow-civic-navy/20">

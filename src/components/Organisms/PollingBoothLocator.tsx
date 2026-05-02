@@ -60,15 +60,15 @@ export const PollingBoothLocator = () => {
   };
 
   return (
-    <div className="bg-white/40 backdrop-blur-xl rounded-[3.5rem] p-6 lg:p-12 border border-white/50 shadow-sm space-y-8 h-full lg:h-auto overflow-hidden relative">
+    <div className="glass rounded-[3.5rem] p-6 lg:p-12 space-y-8 h-full lg:h-auto overflow-hidden relative transition-all duration-700">
       <div className="flex justify-between items-start relative z-[500] lg:z-auto">
         <div className="flex items-center gap-4">
           <div className="w-12 h-12 lg:w-14 lg:h-14 bg-civic-navy rounded-2xl flex items-center justify-center shadow-xl">
             <Globe className="text-civic-saffron w-6 h-6 lg:w-7 lg:h-7" />
           </div>
           <div>
-            <h3 className="text-xl lg:text-2xl font-display font-bold text-civic-navy">Sovereign Map Intelligence</h3>
-            <p className="text-[8px] lg:text-[10px] font-bold text-gray-400 uppercase tracking-widest mt-1">Google Maps Satellite Engine // Bengaluru Central Sector</p>
+            <h3 className="text-xl lg:text-2xl font-display font-bold text-civic-navy dark:text-white">Sovereign Map Intelligence</h3>
+            <p className="text-[8px] lg:text-[10px] font-bold text-slate-400 dark:text-slate-500 uppercase tracking-widest mt-1">Google Maps Satellite Engine // Bengaluru Central Sector</p>
           </div>
         </div>
         <button 
@@ -81,7 +81,7 @@ export const PollingBoothLocator = () => {
 
       <div className="grid grid-cols-1 lg:grid-cols-2 gap-8 h-full lg:h-auto">
         {/* Real Leaflet Map - Full Screen on Mobile */}
-        <div className="h-[500px] lg:h-[450px] bg-gray-100 rounded-[2.5rem] lg:rounded-[2.5rem] fixed inset-0 lg:relative z-0 lg:z-10 overflow-hidden border border-gray-200 shadow-inner">
+        <div className="h-[500px] lg:h-[450px] bg-gray-100 dark:bg-[#020617] rounded-[2.5rem] lg:rounded-[2.5rem] fixed inset-0 lg:relative z-0 lg:z-10 overflow-hidden border border-gray-200 dark:border-white/10 shadow-inner">
             <MapContainer 
               center={mapCenter} 
               zoom={13} 
@@ -118,10 +118,10 @@ export const PollingBoothLocator = () => {
               ))}
             </MapContainer>
 
-            <div className="absolute bottom-24 lg:bottom-6 left-6 right-6 p-4 bg-white/90 backdrop-blur-md rounded-2xl border border-white shadow-xl z-[400]">
+            <div className="absolute bottom-24 lg:bottom-6 left-6 right-6 p-4 bg-white/90 dark:bg-slate-900/90 backdrop-blur-md rounded-2xl border border-white dark:border-white/10 shadow-xl z-[400]">
                 <div className="flex items-center gap-3">
                     <Navigation className="w-4 h-4 text-civic-navy animate-pulse" />
-                    <span className="text-[9px] lg:text-[10px] font-black text-civic-navy uppercase tracking-widest">
+                    <span className="text-[9px] lg:text-[10px] font-black text-civic-navy dark:text-white/90 uppercase tracking-widest">
                         {selectedBooth ? `Navigating to ${selectedBooth.name}` : 'Sovereign Map Intelligence Active'}
                     </span>
                 </div>
@@ -138,7 +138,7 @@ export const PollingBoothLocator = () => {
 
         {/* Booth Details - Hidden on Mobile */}
         <div className="hidden lg:block space-y-4">
-            <h4 className="text-[10px] font-black text-gray-400 uppercase tracking-widest mb-6 px-2">Karnataka Polling Stations</h4>
+            <h4 className="text-[10px] font-black text-slate-400 dark:text-slate-500 uppercase tracking-widest mb-6 px-2">Karnataka Polling Stations</h4>
             <div className="space-y-3 h-[300px] overflow-y-auto pr-2 custom-scrollbar">
                 {booths.map(b => (
                     <button 
@@ -148,8 +148,10 @@ export const PollingBoothLocator = () => {
                           setMapCenter([b.lat, b.lng]);
                         }}
                         className={cn(
-                            "w-full p-6 rounded-[2rem] border text-left transition-all flex justify-between items-center group",
-                            selectedBooth?.id === b.id ? "bg-civic-navy text-white border-civic-navy shadow-2xl" : "bg-white border-gray-100 text-gray-500 hover:border-civic-navy/30"
+                            "w-full p-6 rounded-[2rem] border text-left transition-all flex justify-between items-center group relative overflow-hidden",
+                            selectedBooth?.id === b.id 
+                                ? "bg-civic-navy text-white border-civic-navy shadow-2xl" 
+                                : "bg-white dark:bg-white/[0.03] border-gray-100 dark:border-white/10 text-slate-500 dark:text-slate-400 hover:border-civic-navy/30 dark:hover:bg-white/[0.08]"
                         )}
                     >
                         <div className="flex items-center gap-4">
@@ -160,7 +162,7 @@ export const PollingBoothLocator = () => {
                                 <MapPin className="w-5 h-5" />
                             </div>
                             <div>
-                                <div className="text-sm font-bold">{b.name}</div>
+                                <div className={cn("text-sm font-bold", selectedBooth?.id === b.id ? "text-white" : "text-civic-navy dark:text-slate-200")}>{b.name}</div>
                                 <div className="text-[9px] font-medium opacity-60 mt-0.5">{b.address}</div>
                             </div>
                         </div>
@@ -179,13 +181,13 @@ export const PollingBoothLocator = () => {
                 <motion.div 
                     initial={{ opacity: 0, y: 10 }}
                     animate={{ opacity: 1, y: 0 }}
-                    className="p-6 bg-civic-saffron/10 border border-civic-saffron/20 rounded-[2rem] flex items-center justify-between mt-4"
+                    className="p-6 bg-civic-saffron/10 dark:bg-civic-saffron/5 border border-civic-saffron/20 rounded-[2rem] flex items-center justify-between mt-4"
                 >
                     <div className="flex items-center gap-3">
-                        <Phone className="w-5 h-5 text-civic-navy" />
+                        <Phone className="w-5 h-5 text-civic-navy dark:text-civic-saffron" />
                         <div>
-                            <div className="text-[9px] font-black text-civic-navy uppercase tracking-widest">Booth Helpdesk</div>
-                            <div className="text-xs font-bold text-civic-navy">+91 80 2221 0001</div>
+                            <div className="text-[9px] font-black text-civic-navy dark:text-white uppercase tracking-widest">Booth Helpdesk</div>
+                            <div className="text-xs font-bold text-civic-navy dark:text-slate-300">+91 80 2221 0001</div>
                         </div>
                     </div>
                     <button className="px-5 py-2 bg-civic-navy text-white text-[9px] font-black uppercase tracking-widest rounded-lg flex items-center gap-2 hover:scale-105 transition-all">
@@ -199,12 +201,12 @@ export const PollingBoothLocator = () => {
         <motion.div 
           initial={{ y: "80%" }}
           animate={{ y: selectedBooth ? "0%" : "80%" }}
-          className="lg:hidden fixed bottom-0 left-0 right-0 z-[1000] bg-white/90 backdrop-blur-2xl rounded-t-[3rem] shadow-[0_-20px_60px_rgba(0,0,0,0.2)] border-t border-white p-6 pb-12 transition-all duration-500"
+          className="lg:hidden fixed bottom-0 left-0 right-0 z-[1000] bg-white/90 dark:bg-slate-900/95 backdrop-blur-2xl rounded-t-[3rem] shadow-[0_-20px_60px_rgba(0,0,0,0.4)] border-t border-white dark:border-white/10 p-6 pb-12 transition-all duration-500"
         >
           <div className="w-12 h-1.5 bg-gray-200 rounded-full mx-auto mb-6" />
           <div className="space-y-6">
             <div className="flex justify-between items-center mb-4">
-               <h4 className="text-[10px] font-black text-civic-navy uppercase tracking-widest">Sovereign Booth Selection</h4>
+               <h4 className="text-[10px] font-black text-civic-navy dark:text-white uppercase tracking-widest">Sovereign Booth Selection</h4>
                {selectedBooth && (
                  <button onClick={() => setSelectedBooth(null)} className="text-[10px] font-bold text-gray-400 uppercase">Clear</button>
                )}
@@ -220,7 +222,7 @@ export const PollingBoothLocator = () => {
                    }}
                    className={cn(
                      "min-w-[280px] p-6 rounded-[2.5rem] border transition-all text-left flex justify-between items-center",
-                     selectedBooth?.id === b.id ? "bg-civic-navy text-white shadow-2xl border-civic-navy" : "bg-white border-gray-100 text-gray-500"
+                     selectedBooth?.id === b.id ? "bg-civic-navy text-white shadow-2xl border-civic-navy" : "bg-white dark:bg-white/[0.03] border-gray-100 dark:border-white/10 text-gray-500 dark:text-slate-400"
                    )}
                  >
                    <div className="flex items-center gap-4">
@@ -242,11 +244,11 @@ export const PollingBoothLocator = () => {
                  <div className="p-6 bg-civic-navy/5 rounded-[2rem] border border-civic-navy/10">
                     <div className="flex justify-between items-start mb-4">
                        <div>
-                          <div className="text-lg font-bold text-civic-navy">{selectedBooth.name}</div>
-                          <div className="text-xs text-gray-500 mt-1">{selectedBooth.address}</div>
+                          <div className="text-lg font-bold text-civic-navy dark:text-white">{selectedBooth.name}</div>
+                          <div className="text-xs text-gray-500 dark:text-slate-400 mt-1">{selectedBooth.address}</div>
                        </div>
                        <div className="text-right">
-                          <div className="text-xs font-bold text-civic-navy">{selectedBooth.waitTime}</div>
+                          <div className="text-xs font-bold text-civic-navy dark:text-civic-saffron">{selectedBooth.waitTime}</div>
                           <div className="text-[8px] font-black text-gray-400 uppercase">Wait Time</div>
                        </div>
                     </div>
@@ -254,7 +256,7 @@ export const PollingBoothLocator = () => {
                        <button className="flex-1 py-4 bg-civic-navy text-white text-[10px] font-black uppercase tracking-widest rounded-xl flex items-center justify-center gap-2 shadow-lg active:scale-95 transition-all">
                           Get Directions <ExternalLink className="w-4 h-4" />
                        </button>
-                       <button className="w-14 h-14 bg-white border border-gray-100 rounded-xl flex items-center justify-center text-civic-navy hover:bg-gray-50 transition-all">
+                       <button className="w-14 h-14 bg-white dark:bg-white/[0.05] border border-gray-100 dark:border-white/10 rounded-xl flex items-center justify-center text-civic-navy dark:text-white hover:bg-gray-50 dark:hover:bg-white/10 transition-all">
                           <Phone className="w-6 h-6" />
                        </button>
                     </div>

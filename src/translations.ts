@@ -71,7 +71,7 @@ export const translations: TranslationMap = {
   validator_desc: { en: 'Pre-verify your identity documents against ECI standards.', hi: 'ECI मानकों के खिलाफ अपने पहचान दस्तावेजों को पूर्व-सत्यापित करें।', kn: 'ECI ಮಾನದಂಡಗಳ ವಿರುದ್ಧ ನಿಮ್ಮ ಗುರುತಿನ ದಾಖಲೆಗಳನ್ನು ಪೂರ್ವ-ಪರಿಶೀಲಿಸಿ.' },
   analyze_docs: { en: 'Analyze Documents', hi: 'दस्तावेजों का विश्लेषण करें', kn: 'ದಾಖಲೆಗಳನ್ನು ವಿಶ್ಲೇಷಿಸಿ' },
   complete: { en: 'Complete', hi: 'पूर्ण', kn: 'ಪೂರ್ಣಗೊಂಡಿದೆ' },
-  gemini_validator: { en: 'Gemini Sovereign Validator', hi: 'Gemini Sovereign सत्यापनकर्ता', kn: 'Gemini Sovereign ಪರಿಶೀಲಕ' },
+  gemini_validator: { en: 'Gemini Secure Validator', hi: 'Gemini Secure सत्यापनकर्ता', kn: 'Gemini Secure ಪರಿಶೀಲಕ' },
   
   // Dashboard & Components Missing Keys
   sir2026_framework: { en: 'SIR 2026 Framework', hi: 'SIR 2026 ढांचा', kn: 'SIR 2026 ಚೌಕಟ್ಟು' },
@@ -84,14 +84,14 @@ export const translations: TranslationMap = {
   upcoming: { en: 'Upcoming', hi: 'आगामी', kn: 'ಮುಂಬರುವ' },
   milestone_details: { en: 'Milestone Progress Details', hi: 'मील के पत्थर की प्रगति का विवरण', kn: 'ಮೈಲಿಗಲ್ಲು ಪ್ರಗತಿಯ ವಿವರಗಳು' },
   protocol_42: { en: 'ECI Protocol v4.2 Active', hi: 'ECI प्रोटोकॉल v4.2 सक्रिय', kn: 'ECI ಪ್ರೋಟೋಕಾಲ್ v4.2 ಸಕ್ರಿಯ' },
-  intelligence_hub: { en: 'Sovereign Intelligence Hub', hi: 'Sovereign इंटेलिजेंस हब', kn: 'Sovereign ಇಂಟೆಲಿಜೆನ್ಸ್ ಹಬ್' },
+  intelligence_hub: { en: 'Digital Intelligence Hub', hi: 'Digital इंटेलिजेंस हब', kn: 'Digital ಇಂಟೆಲಿಜೆನ್ಸ್ ಹಬ್' },
   intelligence_desc: { en: 'Access real-time legislative data and ECI protocols.', hi: 'वास्तविक समय के विधायी डेटा और ECI प्रोटोकॉल तक पहुंचें।', kn: 'ನೈಜ-ಸಮಯದ ಶಾಸಕಾಂಗ ಡೇಟಾ ಮತ್ತು ECI ಪ್ರೋಟೋಕಾಲ್‌ಗಳನ್ನು ಪ್ರವೇಶಿಸಿ.' },
   consult_assistant: { en: 'Consult Gemini Assistant', hi: 'Gemini सहायक से परामर्श करें', kn: 'Gemini ಸಹಾಯಕನೊಂದಿಗೆ ಸಮಾಲೋಚಿಸಿ' },
   sir_revision: { en: 'SIR Revision Cycle', hi: 'SIR पुनरीक्षण चक्र', kn: 'SIR ಪರಿಷ್ಕರಣೆ ಚಕ್ರ' },
   sir_revision_desc: { en: 'Track intensive roll revisions.', hi: 'गहन रोल संशोधनों को ट्रैक करें।', kn: 'ತೀವ್ರವಾದ ರೋಲ್ ಪರಿಷ್ಕರಣೆಗಳನ್ನು ಟ್ರ್ಯಾಕ್ ಮಾಡಿ.' },
   constitutional_rights: { en: 'Constitutional Rights', hi: 'संवैधानिक अधिकार', kn: 'ಸಾಂವಿಧಾನಿಕ ಹಕ್ಕುಗಳು' },
   rights_desc: { en: 'Your legal voting protections.', hi: 'आपकी कानूनी मतदान सुरक्षा।', kn: 'ನಿಮ್ಮ ಕಾನೂನು ಮತದಾನ ರಕ್ಷಣೆಗಳು.' },
-  legal_forms: { en: 'Sovereign Legal Forms', hi: 'Sovereign कानूनी फॉर्म', kn: 'Sovereign ಕಾನೂನು ರೂಪಗಳು' },
+  legal_forms: { en: 'Digital Legal Forms', hi: 'Digital कानूनी फॉर्म', kn: 'Digital ಕಾನೂನು ರೂಪಗಳು' },
   forms_desc: { en: 'Interactive ECI form filing.', hi: 'इंटरएक्टिव ECI फॉर्म फाइलिंग।', kn: 'ಸಂವಾದಾತ್ಮಕ ECI ಫಾರ್ಮ್ ಸಲ್ಲಿಕೆ.' },
   eci_helpline: { en: 'ECI National Helpline', hi: 'ECI राष्ट्रीय हेल्पलाइन', kn: 'ECI ರಾಷ್ಟ್ರೀಯ ಸಹಾಯವಾಣಿ' },
   support_desc: { en: '24/7 dedicated support for SIR 2026.', hi: 'SIR 2026 के लिए 24/7 समर्पित सहायता।', kn: 'SIR 2026 ಗಾಗಿ 24/7 ಮೀಸಲಾದ ಬೆಂಬಲ.' },
@@ -102,4 +102,23 @@ export const translations: TranslationMap = {
   blo_officer: { en: 'Your Assigned BLO Officer', hi: 'आपका आवंटित BLO अधिकारी', kn: 'ನಿಮ್ಮ ನಿಯೋಜಿತ BLO ಅಧಿಕಾರಿ' },
   find_blo: { en: 'Find BLO', hi: 'BLO खोजें', kn: 'BLO ಹುಡುಕಿ' },
   search_archives: { en: 'Search Archives', hi: 'पुरालेख खोजें', kn: 'ಆರ್ಕೈವ್‌ಗಳನ್ನು ಹುಡುಕಿ' },
+
+  // Form 8 Corrections
+  corrections_hub: { en: 'Form 8 Corrections Hub', hi: 'फॉर्म 8 सुधार हब', kn: 'ನಮೂನೆ 8 ತಿದ್ದುಪಡಿ ಕೇಂದ್ರ' },
+  epic_audit: { en: 'Live EPIC Audit', hi: 'लाइव EPIC ऑडिट', kn: 'ಲೈವ್ ಇಪಿಐಸಿ ಆಡಿಟ್' },
+  audit_desc: { en: 'AI Data Integrity Check', hi: 'AI डेटा अखंडता जांच', kn: 'AI ಡೇಟಾ ಸಮಗ್ರತೆ ಪರಿಶೀಲನೆ' },
+  update_recommended: { en: 'Update Recommended', hi: 'अपडेट की सिफारिश की गई', kn: 'ನವೀಕರಣ ಶಿಫಾರಸು ಮಾಡಲಾಗಿದೆ' },
+  request_correction: { en: 'Request Correction', hi: 'सुधार का अनुरोध करें', kn: 'ತಿದ್ದುಪಡಿಗಾಗಿ ವಿನಂತಿಸಿ' },
+  correction_logic: { en: 'Form 8 Logic', hi: 'फॉर्म 8 लॉजिक', kn: 'ನಮೂನೆ 8 ತರ್ಕ' },
+  shift_constituency: { en: 'Shift Constituency', hi: 'निर्वाचन क्षेत्र बदलें', kn: 'ಕ್ಷೇತ್ರ ಬದಲಾವಣೆ' },
+  trans_sector: { en: 'Trans-Sector Entry', hi: 'ट्रांस-सेक्टर एंट्री', kn: 'ಟ್ರಾನ್ಸ್-ಸೆಕ್ಟರ್ ನಮೂದು' },
+  ai_audit: { en: 'AI Correction Audit', hi: 'AI सुधार ऑडिट', kn: 'AI ತಿದ್ದುಪಡಿ ಆಡಿಟ್' },
+  ai_audit_desc: { en: 'Neural scan comparison for discrepancies.', hi: 'विसंगतियों के लिए न्यूरल स्कैन तुलना।', kn: 'ವ್ಯತ್ಯಾಸಗಳಿಗಾಗಿ ನ್ಯೂರಲ್ ಸ್ಕ್ಯಾನ್ ಹೋಲಿಕೆ.' },
+  launch_scan: { en: 'Launch Gemini Scan', hi: 'Gemini स्कैन लॉन्च करें', kn: 'Gemini ಸ್ಕ್ಯಾನ್ ಪ್ರಾರಂಭಿಸಿ' },
+  modification_logs: { en: 'Modification Logs', hi: 'संशोधन लॉग', kn: 'ಮಾರ್ಪಾಡು ಲಾಗ್ಗಳು' },
+  
+  // Demo Fallbacks
+  demo_student: { en: 'Arjun Singh', hi: 'अर्जुन सिंह', kn: 'ಅರ್ಜುನ್ ಸಿಂಗ್' },
+  demo_senior: { en: 'Dr. Ramesh Iyer', hi: 'डॉ. रमेश अय्यर', kn: 'ಡಾ. ರಮೇಶ್ ಅಯ್ಯರ್' },
+  demo_new: { en: 'Aditi Rao', hi: 'अदिति राव', kn: 'ಅದಿತಿ ರಾವ್' }
 };

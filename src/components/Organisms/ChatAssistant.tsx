@@ -107,12 +107,12 @@ export const ChatAssistant: React.FC = () => {
                         animate={{ y: 0, opacity: 1 }}
                         exit={{ y: "100%", opacity: 0 }}
                         transition={{ type: "spring", damping: 30, stiffness: 300 }}
-                        className="w-full lg:w-[450px] h-[90vh] lg:h-[650px] glass rounded-t-[3.5rem] lg:rounded-[3rem] flex flex-col relative overflow-hidden shadow-[0_-20px_80px_rgba(0,0,0,0.2)] lg:shadow-[0_32px_128px_rgba(0,0,0,0.15)] border border-white/40"
+                        className="w-full lg:w-[450px] h-[90vh] lg:h-[650px] glass rounded-t-[3.5rem] lg:rounded-[3rem] flex flex-col relative overflow-hidden shadow-[0_-20px_80px_rgba(0,0,0,0.5)] lg:shadow-[0_32px_128px_rgba(0,0,0,0.4)] border border-white/20 dark:border-white/5"
                     >
                         {/* Header */}
-                        <div className="p-6 border-b border-white/20 flex justify-between items-center bg-white/40 backdrop-blur-md sticky top-0 z-20">
+                        <div className="p-6 border-b border-white/10 dark:border-white/5 flex justify-between items-center bg-white/40 dark:bg-slate-950/80 backdrop-blur-3xl sticky top-0 z-20">
                             <div className="flex items-center gap-4">
-                                <div className="w-12 h-12 bg-white rounded-2xl flex items-center justify-center border border-white/40 shadow-sm relative overflow-hidden group">
+                                <div className="w-12 h-12 bg-white dark:bg-white/[0.03] rounded-2xl flex items-center justify-center border border-white/40 dark:border-white/10 shadow-sm relative overflow-hidden group">
                                     <div className="absolute inset-0 bg-gradient-to-tr from-[#4285F4]/10 via-[#EA4335]/10 to-[#FBBC05]/10" />
                                     <img src="https://www.gstatic.com/lamda/images/gemini_sparkle_v002_d4735304ff6292a690345.svg" className="w-6 h-6 animate-gemini-pulse z-10" alt="Gemini" />
                                 </div>
@@ -162,7 +162,7 @@ export const ChatAssistant: React.FC = () => {
                                                     setUserInput(item.q);
                                                     handleSend(item.q);
                                                 }}
-                                                className="p-4 bg-white/60 hover:bg-white border border-white/80 rounded-2xl text-[10px] font-black text-civic-navy uppercase tracking-widest text-left flex items-center gap-3 transition-all hover:scale-[1.02] active:scale-95 shadow-sm"
+                                                className="p-4 bg-white/60 dark:bg-white/[0.05] hover:bg-white dark:hover:bg-white/[0.1] border border-white/80 dark:border-white/10 rounded-2xl text-[10px] font-black text-civic-navy dark:text-white uppercase tracking-widest text-left flex items-center gap-3 transition-all hover:scale-[1.02] active:scale-95 shadow-sm"
                                             >
                                                 <item.icon className="w-4 h-4 text-civic-navy/40" />
                                                 {item.q}

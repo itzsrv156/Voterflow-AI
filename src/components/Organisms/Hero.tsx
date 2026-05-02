@@ -55,13 +55,13 @@ export const Hero = () => {
           animate={{ opacity: 1, y: 0 }}
           transition={{ duration: 0.6 }}
         >
-          <h1 className="text-4xl md:text-6xl font-display font-bold text-civic-navy mb-6 tracking-tight">
+          <h1 className="text-4xl md:text-6xl font-display font-bold text-civic-navy dark:text-white mb-6 tracking-tight">
             {t('select_persona_prefix')}{' '}
-            <span className="bg-gradient-to-r from-civic-saffron to-civic-navy bg-clip-text text-transparent">
+            <span className="bg-gradient-to-r from-civic-saffron to-civic-navy dark:to-white bg-clip-text text-transparent">
                {t('select_persona_highlight')}
             </span>
           </h1>
-          <p className="text-lg text-gray-600 mb-10 max-w-2xl mx-auto font-medium">
+          <p className="text-lg text-gray-600 dark:text-slate-400 mb-10 max-w-2xl mx-auto font-medium">
             {t('persona_desc')}
           </p>
         </motion.div>
@@ -81,7 +81,7 @@ export const Hero = () => {
                 onClick={() => setPersona(data.type)}
                 className={cn(
                   "relative group cursor-pointer p-8 rounded-[3rem] transition-all duration-500",
-                  "glass-card overflow-hidden will-change-transform"
+                  "glass-card overflow-hidden will-change-transform dark:group-hover:shadow-[0_0_40px_rgba(66,133,244,0.15)]"
                 )}
               >
                 {/* Badge */}
@@ -99,15 +99,15 @@ export const Hero = () => {
 
                 <div className="relative z-10 text-left">
                   <div className={cn(
-                    "w-16 h-16 rounded-2xl flex items-center justify-center mb-6 transition-transform duration-500 group-hover:scale-110 bg-gray-100 text-gray-600 group-hover:bg-civic-navy group-hover:text-white shadow-sm"
+                    "w-16 h-16 rounded-2xl flex items-center justify-center mb-6 transition-transform duration-500 group-hover:scale-110 bg-gray-100 dark:bg-white/[0.05] text-gray-600 dark:text-slate-300 group-hover:bg-civic-navy dark:group-hover:bg-white/20 group-hover:text-white shadow-sm"
                   )}>
                     <Icon className="w-8 h-8" />
                   </div>
                   
-                  <h3 className="text-2xl font-display font-bold text-civic-navy mb-4">
+                  <h3 className="text-2xl font-display font-bold text-civic-navy dark:text-white mb-4">
                     {t(`persona_${data.type.toLowerCase()}`)}
                   </h3>
-                  <p className="text-gray-500 font-medium leading-relaxed text-sm">
+                  <p className="text-gray-500 dark:text-slate-400 font-medium leading-relaxed text-sm">
                     {t(`persona_${data.type.toLowerCase()}_desc`)}
                   </p>
                 </div>

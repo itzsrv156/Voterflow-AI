@@ -8,7 +8,7 @@ import {
   PhoneCall, MapPin, ShieldCheck,
   UserCheck,
   Flame, Cpu, BookOpen, Download, FileText,
-  FileEdit, Globe, Fingerprint
+  FileEdit, Globe, Fingerprint, Vote, AlertCircle
 } from 'lucide-react';
 
 import { useVoterStore, type VoterState } from '../../store/useVoterStore';
@@ -16,7 +16,9 @@ import { useTranslation } from '../../LanguageContext';
 import { TiltCard } from '../Atoms/TiltCard';
 import { PollingBoothLocator } from './PollingBoothLocator';
 import { FutureVoterTool } from '../Molecules/FutureVoterTool';
+import { ConstituencyHeatmap } from '../Molecules/ConstituencyHeatmap';
 import { EvmSimulator } from './EvmSimulator';
+import { ThemeToggle } from '../Atoms/ThemeToggle';
 import { cn } from '../../lib/utils';
 
 /**
@@ -26,14 +28,14 @@ import { cn } from '../../lib/utils';
 const LanguageToggle = () => {
     const { language, setLanguage } = useVoterStore();
     return (
-        <div className="flex gap-1 p-1.5 bg-white/60 backdrop-blur-xl rounded-2xl border border-white shadow-sm">
+        <div className="flex gap-1 p-1.5 bg-white/60 dark:bg-white/5 backdrop-blur-xl rounded-2xl border border-white dark:border-white/10 shadow-sm">
             {(['en', 'hi', 'kn'] as const).map(l => (
                 <button
                     key={l}
                     onClick={() => setLanguage(l)}
                     className={cn(
                         "px-3 py-1.5 rounded-xl text-[10px] font-black uppercase tracking-widest transition-all",
-                        language === l ? "bg-civic-navy text-white shadow-lg" : "text-gray-400 hover:text-civic-navy hover:bg-white"
+                        language === l ? "bg-civic-navy text-white shadow-lg" : "text-gray-400 dark:text-gray-500 hover:text-civic-navy dark:hover:text-white hover:bg-white dark:hover:bg-white/10"
                     )}
                 >
                     {l}
@@ -43,59 +45,6 @@ const LanguageToggle = () => {
     );
 };
 
-/**
- * Real-time Constituency Sync Heatmap.
- * Visualizes SIR 2026 sector mapping progress.
- */
-const ConstituencyHeatmap = ({ onOpenChat }: { onOpenChat: () => void }) => (
-    <TiltCard className="h-full group">
-        <div className="glass-card rounded-[3.5rem] p-10 relative overflow-hidden h-full">
-        <div className="flex justify-between items-start mb-8">
-            <div>
-                <h3 className="text-xl font-display font-bold text-civic-navy">Constituency Sync</h3>
-                <p className="text-[10px] font-bold text-gray-400 uppercase tracking-widest mt-1">Real-time Sector Mapping</p>
-            </div>
-            <div className="px-3 py-1 bg-civic-green/10 rounded-full text-[9px] font-black text-civic-green uppercase tracking-widest">
-                Real-time Data
-            </div>
-        </div>
-        
-        <div className="relative aspect-square max-w-[280px] mx-auto">
-            {/* Simple SVG Heatmap Map */}
-            <svg viewBox="0 0 200 200" className="w-full h-full drop-shadow-2xl">
-                {/* Sector 1: Shanti Nagar */}
-                <path d="M40,60 L120,40 L160,80 L140,140 L60,160 Z" className="fill-civic-saffron/20 stroke-civic-saffron stroke-2 hover:fill-civic-saffron/40 transition-colors cursor-pointer" />
-                {/* Sector 2: Shivaji Nagar */}
-                <path d="M120,40 L180,30 L190,90 L160,80 Z" className="fill-civic-navy/10 stroke-civic-navy stroke-1 hover:fill-civic-navy/30 transition-colors cursor-pointer" />
-                {/* Sector 3: CV Raman Nagar */}
-                <path d="M160,80 L190,90 L180,160 L140,140 Z" className="fill-civic-saffron/40 stroke-civic-saffron stroke-2 hover:fill-civic-saffron/60 transition-colors cursor-pointer" />
-                
-                <circle cx="100" cy="100" r="4" className="fill-civic-navy animate-ping" />
-                <circle cx="100" cy="100" r="3" className="fill-civic-navy" />
-            </svg>
-            
-            <div className="absolute bottom-0 left-0 right-0 p-4 bg-white/60 backdrop-blur-md rounded-2xl border border-white/50 space-y-2">
-                <div className="flex justify-between items-center text-[9px] font-bold">
-                    <span className="text-gray-400 uppercase">Current Sector</span>
-                    <span className="text-civic-navy">Shanti Nagar</span>
-                </div>
-                <div className="space-y-4">
-                    <div className="flex justify-between items-center text-[10px] font-bold">
-                        <span className="text-gray-400 uppercase">SIR Phase</span>
-                        <span className="text-civic-navy">2.4 Revision</span>
-                    </div>
-                    <button 
-                        onClick={onOpenChat}
-                        className="w-full py-3 bg-civic-navy text-white text-[9px] font-black uppercase tracking-widest rounded-xl hover:scale-105 transition-all"
-                    >
-                        Ask AI Assistant
-                    </button>
-                </div>
-            </div>
-        </div>
-        </div>
-    </TiltCard>
-);
 
 interface SidebarItemProps {
     id: VoterState['activeTab'];
@@ -112,8 +61,8 @@ const SidebarItem = ({ id, icon: Icon, labelKey, activeTab, setActiveTab, t }: S
       aria-label={`${t(labelKey)} tab`}
       aria-current={activeTab === id ? 'page' : undefined}
       className={cn(
-        "w-full flex items-center gap-3 px-5 py-3 rounded-xl transition-all duration-500 relative group whitespace-nowrap",
-        activeTab === id ? "text-white" : "text-gray-500 hover:text-civic-navy"
+        "w-full flex items-center gap-3 px-5 py-3 rounded-2xl transition-all duration-500 relative group whitespace-nowrap overflow-hidden",
+        activeTab === id ? "text-white" : "text-slate-500 dark:text-slate-400 hover:text-civic-navy dark:hover:text-white"
       )}
     >
       {activeTab === id && (
@@ -201,7 +150,7 @@ export const Dashboard = () => {
 
   return (
     <div className={cn(
-        "flex min-h-screen bg-[#FDFDFD]/50 transition-all duration-1000",
+        "flex min-h-screen bg-transparent transition-all duration-500",
         persona === 'Student' ? "persona-student" : 
         persona === 'Senior' ? "persona-senior" : "persona-new"
     )}>
@@ -209,7 +158,7 @@ export const Dashboard = () => {
       <motion.aside
         initial={{ x: -50, opacity: 0 }}
         animate={{ x: 0, opacity: 1 }}
-        className="hidden lg:flex w-64 glass rounded-[2.5rem] p-6 shadow-2xl shadow-civic-navy/5 sticky top-44 flex-col h-[calc(100vh-220px)]"
+        className="hidden lg:flex w-64 glass rounded-[2.5rem] p-6 shadow-2xl sticky top-44 flex-col h-[calc(100vh-220px)]"
       >
         <div className="flex items-center gap-3 mb-8 px-2">
           <div className="w-8 h-8 bg-civic-navy rounded-lg flex items-center justify-center">
@@ -245,7 +194,9 @@ export const Dashboard = () => {
                         title={badge.title}
                         className={cn(
                             "w-8 h-8 rounded-lg flex items-center justify-center transition-all",
-                            badge.active ? "bg-civic-navy text-civic-saffron shadow-md" : "bg-gray-100 text-gray-300"
+                            badge.active 
+                              ? "bg-civic-navy dark:bg-civic-saffron text-civic-saffron dark:text-civic-navy shadow-md" 
+                              : "bg-gray-100 dark:bg-white/10 text-gray-300 dark:text-slate-600"
                         )}
                     >
                         <badge.icon className="w-4 h-4" />
@@ -306,7 +257,7 @@ export const Dashboard = () => {
             <motion.button 
               whileHover={{ scale: 1.02 }} whileTap={{ scale: 0.98 }}
               onClick={resetStore}
-              className="w-full py-4 bg-gray-100 text-civic-navy font-bold rounded-2xl text-xs flex items-center justify-center gap-2 hover:bg-red-50 hover:text-red-500 transition-all"
+              className="w-full py-4 bg-gray-100 dark:bg-white/[0.05] text-civic-navy dark:text-slate-400 font-bold rounded-2xl text-xs flex items-center justify-center gap-2 hover:bg-red-50 dark:hover:bg-red-500/20 hover:text-red-500 transition-all overflow-hidden relative"
             >
               <ChevronLeft className="w-4 h-4" /> {t('reset')}
             </motion.button>
@@ -317,7 +268,7 @@ export const Dashboard = () => {
 
       {/* Main Content Area */}
       <div className="flex-1 space-y-6 pb-32 lg:pb-20 relative min-w-0">
-          <div className="absolute inset-0 bg-white/5 backdrop-blur-[2px] -z-10 rounded-[4rem] pointer-events-none" />
+          <div className="absolute inset-0 bg-white/5 dark:bg-transparent backdrop-blur-[2px] -z-10 rounded-[4rem] pointer-events-none" />
           
           {/* Removed Large VoterFlow Assistant Access Banner */}
 
@@ -349,22 +300,23 @@ export const Dashboard = () => {
                         <div className="flex items-center gap-2 mb-1">
                             <h2 className="text-[8px] md:text-[10px] font-bold text-civic-saffron uppercase tracking-[0.2em] md:tracking-[0.3em]">{t('active_profile')}</h2>
                         </div>
-                        <h1 className="text-2xl md:text-4xl font-display font-bold text-civic-navy leading-none">
+                        <h1 className="text-2xl md:text-4xl font-display font-bold text-civic-navy dark:text-white leading-none">
                             {voterName ? voterName : (persona ? t(`persona_${persona.toLowerCase()}`) : '')}
                         </h1>
                     </div>
                 </div>
                 
                 <div className="flex flex-wrap gap-3 items-center w-full md:w-auto">
+                    <ThemeToggle />
                     <LanguageToggle />
                     {/* Constituency Intelligence Molecule */}
-                    <div className="flex-1 md:flex-none px-4 md:px-6 py-3 md:py-4 bg-white/60 rounded-2xl md:rounded-3xl border border-white shadow-sm flex items-center gap-3 md:gap-4">
-                        <div className="w-8 h-8 md:w-10 md:h-10 bg-civic-navy/5 rounded-lg md:rounded-xl flex items-center justify-center">
-                            <MapPin className="text-civic-navy w-4 h-4 md:w-5 md:h-5" />
+                    <div className="flex-1 md:flex-none px-4 md:px-6 py-3 md:py-4 bg-white/60 dark:bg-white/[0.03] rounded-2xl md:rounded-3xl border border-white dark:border-white/10 shadow-sm flex items-center gap-3 md:gap-4">
+                        <div className="w-8 h-8 md:w-10 md:h-10 bg-civic-navy/5 dark:bg-white/10 rounded-lg md:rounded-xl flex items-center justify-center">
+                            <MapPin className="text-civic-navy dark:text-civic-saffron w-4 h-4 md:w-5 md:h-5" />
                         </div>
                         <div>
-                            <div className="text-[8px] font-black text-gray-400 uppercase tracking-widest">Constituency</div>
-                            <div className="text-[10px] md:text-xs font-bold text-civic-navy">Bengaluru Central</div>
+                            <div className="text-[8px] font-black text-slate-400 dark:text-slate-500 uppercase tracking-widest">Constituency</div>
+                            <div className="text-[10px] md:text-xs font-bold text-civic-navy dark:text-white">Bengaluru Central</div>
                         </div>
                     </div>
                 </div>
@@ -375,7 +327,7 @@ export const Dashboard = () => {
                 variants={{ hidden: { y: 20, opacity: 0 }, show: { y: 0, opacity: 1 } }}
                 className="xl:col-span-2 mt-8 mb-12"
               >
-                  <div className="w-full bg-white/40 backdrop-blur-2xl rounded-[2.5rem] p-8 flex items-center gap-8 overflow-hidden relative border border-white/60 shadow-sm group">
+                  <div className="w-full bg-white/40 dark:bg-white/[0.02] backdrop-blur-2xl rounded-[2.5rem] p-8 flex items-center gap-8 overflow-hidden relative border border-white/60 dark:border-white/10 shadow-sm group">
                       <div className="flex items-center gap-3 px-5 py-2.5 bg-gradient-to-r from-red-600 via-red-500 to-rose-600 text-white rounded-full text-[9px] font-black uppercase tracking-[0.2em] animate-pulse shadow-xl shadow-red-500/20 shrink-0 z-10">
                           <Zap className="w-3.5 h-3.5 fill-white" /> Urgent Alerts
                       </div>
@@ -407,7 +359,7 @@ export const Dashboard = () => {
                           <CheckCircle className="w-6 h-6 text-civic-navy" />
                       </div>
                       <div>
-                          <h3 className="text-xl font-display font-bold text-civic-navy">Your Personal Voting Journey</h3>
+                          <h3 className="text-xl font-display font-bold text-civic-navy dark:text-white">Your Personal Voting Journey</h3>
                           <p className="text-[10px] font-bold text-gray-400 uppercase tracking-widest mt-1">Guided Assistant Tracker</p>
                       </div>
                   </div>
@@ -424,21 +376,21 @@ export const Dashboard = () => {
                             onClick={s.action}
                             className={cn(
                             "p-6 rounded-[2.5rem] border transition-all duration-500 text-left group/step relative",
-                            s.status === 'complete' ? "bg-civic-green/5 border-civic-green/20 hover:bg-civic-green/10" :
-                            s.status === 'active' ? "bg-civic-navy text-white shadow-2xl scale-105 border-transparent hover:scale-110" :
-                            "bg-white border-gray-100 opacity-60 hover:opacity-80"
+                            s.status === 'complete' ? "bg-civic-green/5 dark:bg-civic-green/20 border-civic-green/20 dark:border-civic-green/40 hover:bg-civic-green/10 dark:hover:bg-civic-green/30" :
+                            s.status === 'active' ? "bg-civic-navy dark:bg-google-blue/20 text-white shadow-2xl scale-105 border-transparent dark:border-google-blue/40 hover:scale-110" :
+                            "bg-white dark:bg-white/[0.05] border-gray-100 dark:border-white/10 opacity-60 hover:opacity-100 dark:hover:bg-white/[0.1]"
                         )}>
                             <div className="flex justify-between items-start mb-4">
-                                <s.icon className={cn("w-6 h-6", s.status === 'active' ? "text-civic-saffron" : "text-civic-navy")} />
+                                <s.icon className={cn("w-6 h-6", s.status === 'active' ? "text-civic-saffron" : "text-civic-navy dark:text-slate-400")} />
                                 {s.status === 'complete' ? (
                                     <CheckCircle className="w-4 h-4 text-civic-green" />
                                 ) : (
-                                    <ArrowRight className={cn("w-4 h-4 opacity-0 group-hover/step:opacity-100 transition-opacity", s.status === 'active' ? "text-civic-saffron" : "text-civic-navy")} />
+                                    <ArrowRight className={cn("w-4 h-4 opacity-0 group-hover/step:opacity-100 transition-opacity", s.status === 'active' ? "text-civic-saffron" : "text-civic-navy dark:text-slate-400")} />
                                 )}
                             </div>
-                            <div className={cn("text-[9px] font-black uppercase tracking-widest mb-1", s.status === 'active' ? "text-white/60" : "text-gray-400")}>{s.step}</div>
-                            <div className="text-sm font-bold mb-1">{s.label}</div>
-                            <div className={cn("text-[10px] font-medium", s.status === 'active' ? "text-white/40" : "text-gray-400")}>{s.desc}</div>
+                            <div className={cn("text-[9px] font-black uppercase tracking-widest mb-1", s.status === 'active' ? "text-white/60 dark:text-civic-saffron/80" : "text-gray-400 dark:text-slate-500")}>{s.step}</div>
+                            <div className={cn("text-sm font-bold mb-1", s.status !== 'active' && "dark:text-white")}>{s.label}</div>
+                            <div className={cn("text-[10px] font-medium", s.status === 'active' ? "text-white/40 dark:text-civic-saffron/60" : "text-gray-400 dark:text-slate-500")}>{s.desc}</div>
                         </button>
                       ))}
                   </div>
@@ -494,7 +446,7 @@ export const Dashboard = () => {
                       </div>
                       
                       <div className="relative flex flex-col md:flex-row justify-between gap-8 px-4 mb-12">
-                          <div className="absolute top-1/2 left-0 w-full h-0.5 bg-gray-100 -z-0 hidden md:block" />
+                          <div className="absolute top-1/2 left-0 w-full h-0.5 bg-gray-100 dark:bg-white/10 -z-0 hidden md:block" />
                           {[
                             { date: 'Oct 2025', event: t('sir_cycle'), status: 'Passed', icon: Zap, details: t('sir_desc') },
                             { date: 'Feb 2026', event: t('draft_roll'), status: 'Current', icon: Search, details: t('draft_desc') },
@@ -532,7 +484,7 @@ export const Dashboard = () => {
                                 initial={{ opacity: 0, y: 10 }}
                                 animate={{ opacity: 1, y: 0 }}
                                 exit={{ opacity: 0, y: -10 }}
-                                className="bg-white/50 border border-white p-8 rounded-[2.5rem] relative overflow-hidden"
+                                className="bg-white/50 dark:bg-white/[0.03] border border-white dark:border-white/10 p-8 rounded-[2.5rem] relative overflow-hidden transition-all duration-700"
                               >
                                  <div className="absolute top-0 right-0 p-8 opacity-5">
                                     {(() => {
@@ -599,7 +551,12 @@ export const Dashboard = () => {
                                     <span className="px-3 py-1 bg-civic-saffron text-civic-navy text-[8px] font-black uppercase tracking-[0.2em] rounded-full">{t('vf_identity')}</span>
                                     <span className="text-[10px] font-bold text-white/40 uppercase tracking-widest">{t('epic_id')}</span>
                                 </div>
-                                <h3 className="text-3xl font-display font-bold uppercase tracking-tight">{voterName || t('sarvesh_a')}</h3>
+                                <h3 className="text-3xl font-display font-bold uppercase tracking-tight">
+                                    {voterName || (
+                                        persona === 'Student' ? t('demo_student') : 
+                                        persona === 'Senior' ? t('demo_senior') : t('demo_new')
+                                    )}
+                                </h3>
                                 <div className="flex items-center gap-4 mt-2">
                                     <div className="text-[10px] font-medium text-white/60">{t('pc_bengaluru')}</div>
                                     <div className="w-1 h-1 bg-white/20 rounded-full" />
@@ -629,31 +586,31 @@ export const Dashboard = () => {
                 className="xl:col-span-1"
               >
                 <TiltCard className="h-full">
-                  <div className="bg-white/70 backdrop-blur-2xl rounded-[3.5rem] p-12 border border-white/50 shadow-sm flex flex-col group relative overflow-hidden cursor-pointer h-full">
+                  <div className="bg-white/70 dark:bg-white/[0.03] backdrop-blur-2xl rounded-[3.5rem] p-12 border border-white/50 dark:border-white/10 shadow-sm flex flex-col group relative overflow-hidden cursor-pointer h-full transition-all duration-700">
                     <div className="absolute top-0 right-0 p-12 opacity-5 pointer-events-none">
-                        <UserPlus className="w-48 h-48 text-civic-navy" />
+                        <UserPlus className="w-48 h-48 text-civic-navy dark:text-white" />
                     </div>
                     <div className="flex justify-between items-start mb-10 relative z-10">
                       <div className="w-16 h-16 bg-civic-navy rounded-2xl flex items-center justify-center group-hover:scale-110 group-hover:rotate-6 transition-all duration-500 shadow-xl shadow-civic-navy/10">
                         <UserPlus className="text-white w-7 h-7" />
                       </div>
-                      <CheckCircle className={cn("w-8 h-8 transition-all duration-500", progress.registration === 100 ? "text-civic-green scale-110" : "text-gray-100")} />
+                      <CheckCircle className={cn("w-8 h-8 transition-all duration-500", progress.registration === 100 ? "text-civic-green scale-110" : "text-gray-100 dark:text-white/10")} />
                     </div>
                     <div className="relative z-10">
-                        <h3 className="text-3xl font-bold text-civic-navy mb-4">{t('registration_suite')}</h3>
-                        <p className="text-sm text-gray-500 mb-10 leading-relaxed max-w-sm">
+                        <h3 className="text-3xl font-bold text-civic-navy dark:text-white mb-4">{t('registration_suite')}</h3>
+                        <p className="text-sm text-gray-500 dark:text-slate-400 mb-10 leading-relaxed max-w-sm">
                           {t('registration_desc')}
                         </p>
                     </div>
                     <div className="mt-auto relative z-10">
                        <div className="flex justify-between text-[9px] font-bold text-gray-400 mb-3 uppercase tracking-[0.2em]">{t('progress')}</div>
-                      <div className="h-2.5 w-full bg-gray-100/50 rounded-full overflow-hidden mb-8 p-0.5 border border-white/20">
+                      <div className="h-2.5 w-full bg-gray-100/50 dark:bg-white/[0.05] rounded-full overflow-hidden mb-8 p-0.5 border border-white/20">
                         <motion.div 
                             animate={{ width: `${progress.registration}%` }} 
                             className="h-full rounded-full animate-liquid" 
                         />
                       </div>
-                      <button className="w-full py-6 bg-civic-navy text-white font-bold rounded-[2rem] shadow-2xl shadow-civic-navy/30 flex items-center justify-center gap-3 active:scale-95 transition-all group/btn">
+                      <button className="w-full py-6 bg-civic-navy text-white font-bold rounded-[2rem] shadow-2xl shadow-civic-navy/30 dark:shadow-[0_0_25px_rgba(66,133,244,0.25)] flex items-center justify-center gap-3 active:scale-95 transition-all group/btn">
                         {t('open_wizard')} <ArrowRight className="w-5 h-5 group-hover:translate-x-2 transition-transform" />
                       </button>
                     </div>
@@ -668,24 +625,24 @@ export const Dashboard = () => {
                 className="xl:col-span-1"
               >
                 <TiltCard className="h-full">
-                  <div className="bg-white/70 backdrop-blur-2xl rounded-[3.5rem] p-12 border border-white/50 shadow-sm flex flex-col group cursor-pointer relative overflow-hidden h-full">
+                  <div className="bg-white/70 dark:bg-white/[0.03] backdrop-blur-2xl rounded-[3.5rem] p-12 border border-white/50 dark:border-white/10 shadow-sm flex flex-col group cursor-pointer relative overflow-hidden h-full transition-all duration-700">
                      <div className="absolute top-0 right-0 p-12 opacity-5 pointer-events-none">
-                        <Cpu className="w-48 h-48 text-civic-navy" />
+                        <Cpu className="w-48 h-48 text-civic-navy dark:text-white" />
                     </div>
                     <div className="flex justify-between items-start mb-10 relative z-10">
                       <div className="w-16 h-16 bg-civic-navy rounded-2xl flex items-center justify-center group-hover:scale-110 group-hover:-rotate-6 transition-all duration-500 shadow-xl">
                         <Cpu className="text-civic-saffron w-7 h-7" />
                       </div>
-                      <span className="px-4 py-2 bg-civic-navy/5 rounded-full text-[9px] font-black text-civic-navy uppercase tracking-widest">VoterFlow AI</span>
+                      <span className="px-4 py-2 bg-civic-navy/5 dark:bg-white/10 rounded-full text-[9px] font-black text-civic-navy dark:text-white uppercase tracking-widest">VoterFlow AI</span>
                     </div>
                     <div className="relative z-10">
-                        <h3 className="text-3xl font-bold text-civic-navy mb-4">{t('doc_validator')}</h3>
-                        <p className="text-sm text-gray-500 mb-10 leading-relaxed max-w-sm">
+                        <h3 className="text-3xl font-bold text-civic-navy dark:text-white mb-4">{t('doc_validator')}</h3>
+                        <p className="text-sm text-gray-500 dark:text-slate-400 mb-10 leading-relaxed max-w-sm">
                           {t('validator_desc')}
                         </p>
                     </div>
                     <div className="mt-auto relative z-10">
-                        <div className="flex items-center gap-3 text-civic-navy font-bold text-[11px] uppercase tracking-[0.2em]">
+                        <div className="flex items-center gap-3 text-civic-navy dark:text-slate-300 font-bold text-[11px] uppercase tracking-[0.2em]">
                             {t('analyze_docs')} <ArrowRight className="w-5 h-5 group-hover:translate-x-2 transition-transform" />
                         </div>
                     </div>
@@ -701,30 +658,30 @@ export const Dashboard = () => {
               exit={{ opacity: 0, x: -20 }}
               className="grid grid-cols-1 xl:grid-cols-2 gap-8"
             >
-              <div className="bg-white/70 backdrop-blur-2xl rounded-[3.5rem] p-12 border border-white/50 shadow-sm flex flex-col group relative overflow-hidden">
+              <div className="bg-white/70 dark:bg-white/[0.03] backdrop-blur-2xl rounded-[3.5rem] p-12 border border-white/50 dark:border-white/10 shadow-sm flex flex-col group relative overflow-hidden transition-all duration-700">
                 <div className="absolute top-0 right-0 p-12 opacity-5 pointer-events-none">
-                    <UserPlus className="w-48 h-48 text-civic-navy" />
+                    <UserPlus className="w-48 h-48 text-civic-navy dark:text-white" />
                 </div>
                 <div className="flex justify-between items-start mb-10 relative z-10">
                   <div className="w-16 h-16 bg-civic-navy rounded-2xl flex items-center justify-center group-hover:scale-110 group-hover:rotate-6 transition-all duration-500 shadow-xl shadow-civic-navy/10">
                     <UserPlus className="text-white w-7 h-7" />
                   </div>
-                  <CheckCircle className={cn("w-8 h-8 transition-all duration-500", progress.registration === 100 ? "text-civic-green scale-110" : "text-gray-100")} />
+                  <CheckCircle className={cn("w-8 h-8 transition-all duration-500", progress.registration === 100 ? "text-civic-green scale-110" : "text-gray-100 dark:text-white/10")} />
                 </div>
                 <div className="relative z-10">
-                    <h3 className="text-3xl font-bold text-civic-navy mb-4">{t('registration_suite')}</h3>
-                    <p className="text-sm text-gray-500 mb-10 leading-relaxed max-w-sm">
+                    <h3 className="text-3xl font-bold text-civic-navy dark:text-white mb-4">{t('registration_suite')}</h3>
+                    <p className="text-sm text-gray-500 dark:text-slate-400 mb-10 leading-relaxed max-w-sm">
                       {t('registration_desc')}
                     </p>
                 </div>
                 <div className="mt-auto relative z-10">
                    <div className="flex justify-between text-[9px] font-bold text-gray-400 mb-3 uppercase tracking-[0.2em]">{t('progress')}</div>
-                  <div className="h-2 w-full bg-gray-100 rounded-full overflow-hidden mb-8">
+                  <div className="h-2 w-full bg-gray-100 dark:bg-white/10 rounded-full overflow-hidden mb-8">
                     <motion.div animate={{ width: `${progress.registration}%` }} className="h-full bg-civic-navy" />
                   </div>
                   <button 
                     onClick={() => setActiveFlow('registration')}
-                    className="w-full py-6 bg-civic-navy text-white font-bold rounded-[2rem] shadow-2xl shadow-civic-navy/30 flex items-center justify-center gap-3 active:scale-95 transition-all group/btn animate-sovereign-pulse"
+                    className="w-full py-6 bg-civic-navy text-white font-bold rounded-[2rem] shadow-2xl shadow-civic-navy/30 dark:shadow-[0_0_25px_rgba(66,133,244,0.25)] flex items-center justify-center gap-3 active:scale-95 transition-all group/btn animate-sovereign-pulse"
                   >
                     {t('open_wizard')} <ArrowRight className="w-5 h-5 group-hover:translate-x-2 transition-transform" />
                   </button>
@@ -733,25 +690,25 @@ export const Dashboard = () => {
 
               <div 
                 onClick={() => setShowAiValidator(true)}
-                className="bg-white/70 backdrop-blur-2xl rounded-[3.5rem] p-12 border border-white/50 shadow-sm flex flex-col group cursor-pointer relative overflow-hidden"
+                className="bg-white/70 dark:bg-white/[0.03] backdrop-blur-2xl rounded-[3.5rem] p-12 border border-white/50 dark:border-white/10 shadow-sm flex flex-col group cursor-pointer relative overflow-hidden transition-all duration-700"
               >
                  <div className="absolute top-0 right-0 p-12 opacity-5 pointer-events-none">
-                    <Cpu className="w-48 h-48 text-civic-navy" />
+                    <Cpu className="w-48 h-48 text-civic-navy dark:text-white" />
                 </div>
                 <div className="flex justify-between items-start mb-10 relative z-10">
                   <div className="w-16 h-16 bg-civic-navy rounded-2xl flex items-center justify-center group-hover:scale-110 group-hover:-rotate-6 transition-all duration-500 shadow-xl">
                     <Cpu className="text-civic-saffron w-7 h-7" />
                   </div>
-                  <span className="px-4 py-2 bg-civic-navy/5 rounded-full text-[9px] font-black text-civic-navy uppercase tracking-widest">VoterFlow AI</span>
+                  <span className="px-4 py-2 bg-civic-navy/5 dark:bg-white/10 rounded-full text-[9px] font-black text-civic-navy dark:text-white uppercase tracking-widest">VoterFlow AI</span>
                 </div>
                 <div className="relative z-10">
-                    <h3 className="text-3xl font-bold text-civic-navy mb-4">{t('doc_validator')}</h3>
-                    <p className="text-sm text-gray-500 mb-10 leading-relaxed max-w-sm">
+                    <h3 className="text-3xl font-bold text-civic-navy dark:text-white mb-4">{t('doc_validator')}</h3>
+                    <p className="text-sm text-gray-500 dark:text-slate-400 mb-10 leading-relaxed max-w-sm">
                       {t('validator_desc')}
                     </p>
                 </div>
                 <div className="mt-auto relative z-10">
-                    <div className="flex items-center gap-3 text-civic-navy font-bold text-[11px] uppercase tracking-[0.2em]">
+                    <div className="flex items-center gap-3 text-civic-navy dark:text-slate-300 font-bold text-[11px] uppercase tracking-[0.2em]">
                         {t('analyze_docs')} <ArrowRight className="w-5 h-5 group-hover:translate-x-2 transition-transform" />
                     </div>
                 </div>
@@ -774,12 +731,12 @@ export const Dashboard = () => {
             >
               <motion.header variants={{ hidden: { y: 20, opacity: 0 }, show: { y: 0, opacity: 1 } }} className="flex justify-between items-end">
                 <div>
-                  <h2 className="text-4xl font-display font-bold text-civic-navy mb-2">{t('intelligence_hub')}</h2>
-                  <p className="text-gray-500 font-medium">{t('intelligence_desc')}</p>
+                  <h2 className="text-4xl font-display font-bold text-civic-navy dark:text-white mb-2">{t('intelligence_hub')}</h2>
+                  <p className="text-gray-500 dark:text-slate-400 font-medium">{t('intelligence_desc')}</p>
                 </div>
                 <button 
                   onClick={() => setIsChatOpen(true)} 
-                  className="px-8 py-4 bg-civic-navy text-white font-bold rounded-2xl shadow-xl shadow-civic-navy/20 hover:scale-105 active:scale-95 transition-all flex items-center gap-3"
+                  className="px-8 py-4 bg-civic-navy dark:bg-civic-saffron text-white dark:text-civic-navy font-bold rounded-2xl shadow-xl shadow-civic-navy/20 dark:shadow-[0_0_30px_rgba(255,153,51,0.4)] hover:scale-105 active:scale-95 transition-all flex items-center gap-3"
                 >
                   <BookOpen className="w-5 h-5" /> {t('consult_assistant')}
                 </button>
@@ -791,12 +748,12 @@ export const Dashboard = () => {
                       { title: t('constitutional_rights'), desc: t('rights_desc'), icon: ShieldCheck, color: 'text-orange-500', bg: 'bg-orange-50' },
                       { title: t('legal_forms'), desc: t('forms_desc'), icon: FileEdit, color: 'text-civic-green', bg: 'bg-green-50' },
                   ].map((item, i) => (
-                      <motion.div variants={{ hidden: { y: 20, opacity: 0 }, show: { y: 0, opacity: 1 } }} key={i} className="p-8 bg-white border border-gray-100 rounded-[2.5rem] shadow-sm hover:shadow-xl transition-all group">
+                      <motion.div variants={{ hidden: { y: 20, opacity: 0 }, show: { y: 0, opacity: 1 } }} key={i} className="p-8 bg-white dark:bg-white/[0.03] border border-gray-100 dark:border-white/10 rounded-[2.5rem] shadow-sm hover:shadow-xl transition-all group">
                           <div className={cn("w-14 h-14 rounded-2xl flex items-center justify-center mb-6 group-hover:scale-110 transition-transform", item.bg, item.color)}>
                               <item.icon className="w-7 h-7" />
                           </div>
-                          <h3 className="text-xl font-bold text-civic-navy mb-3">{item.title}</h3>
-                          <p className="text-sm text-gray-500 leading-relaxed">{item.desc}</p>
+                          <h3 className="text-xl font-bold text-civic-navy dark:text-white mb-3">{item.title}</h3>
+                          <p className="text-sm text-gray-500 dark:text-slate-400 leading-relaxed">{item.desc}</p>
                       </motion.div>
                   ))}
               </div>
@@ -811,28 +768,174 @@ export const Dashboard = () => {
             >
               <EvmSimulator />
             </motion.div>
+          ) : activeTab === 'form8' ? (
+            <motion.div
+              key="form8"
+              initial={{ opacity: 0, y: 20 }}
+              animate={{ opacity: 1, y: 0 }}
+              exit={{ opacity: 0, y: -20 }}
+              className="grid grid-cols-1 xl:grid-cols-3 gap-8"
+            >
+              {/* Left: EPIC Live Audit Card */}
+              <div className="xl:col-span-2 space-y-8">
+                <div className="bg-white/70 dark:bg-white/[0.03] backdrop-blur-2xl rounded-[3.5rem] p-12 border border-white/50 dark:border-white/10 shadow-sm relative overflow-hidden transition-all duration-700">
+                    <div className="flex justify-between items-start mb-10">
+                        <div className="flex items-center gap-4">
+                            <div className="w-14 h-14 bg-civic-navy rounded-2xl flex items-center justify-center shadow-xl">
+                                <ShieldCheck className="w-7 h-7 text-white" />
+                            </div>
+                            <div>
+                                <h3 className="text-2xl font-bold text-civic-navy dark:text-white">{t('epic_audit')}</h3>
+                                <p className="text-[10px] font-black text-gray-400 uppercase tracking-widest mt-1">{t('audit_desc')}</p>
+                            </div>
+                        </div>
+                        <div className="px-4 py-2 bg-red-50 dark:bg-red-500/10 border border-red-100 dark:border-red-500/20 rounded-full text-[9px] font-black text-red-500 uppercase tracking-[0.2em] animate-pulse">
+                            {t('update_recommended')}
+                        </div>
+                    </div>
+
+                    <div className="relative group">
+                        {/* Simulated Voter ID Card */}
+                        <div className="aspect-[1.6/1] bg-gradient-to-br from-civic-navy via-blue-900 to-black rounded-[2.5rem] p-10 text-white relative overflow-hidden shadow-2xl transition-all group-hover:scale-[1.01]">
+                            <div className="absolute inset-0 bg-[url('https://grainy-gradients.vercel.app/noise.svg')] opacity-10 mix-blend-overlay" />
+                            <div className="absolute top-0 right-0 p-10 opacity-10">
+                                <Vote className="w-40 h-40" />
+                            </div>
+                            
+                            <div className="flex justify-between items-start mb-12">
+                                <div className="space-y-1">
+                                    <div className="text-[8px] font-black uppercase tracking-[0.3em] opacity-60">Election Commission of India</div>
+                                    <div className="text-lg font-display font-bold tracking-tight">VOTER IDENTITY CARD</div>
+                                </div>
+                                <img src="https://upload.wikimedia.org/wikipedia/commons/e/e4/National_Emblem_of_India.svg" className="w-10 h-10 invert opacity-40" alt="Emblem" />
+                            </div>
+
+                            <div className="flex gap-8 items-end">
+                                <div className="w-28 h-36 bg-white/10 backdrop-blur-md rounded-xl border border-white/20 flex items-center justify-center">
+                                    <User className="w-12 h-12 opacity-40" />
+                                </div>
+                                <div className="space-y-4 flex-1">
+                                    <div className="grid grid-cols-2 gap-4">
+                                        <div>
+                                            <div className="text-[7px] font-black uppercase tracking-widest opacity-40 mb-1">Elector Name</div>
+                                            <div className="text-sm font-bold uppercase">
+                                                {voterName || (
+                                                    persona === 'Student' ? t('demo_student') : 
+                                                    persona === 'Senior' ? t('demo_senior') : t('demo_new')
+                                                )}
+                                            </div>
+                                        </div>
+                                        <div>
+                                            <div className="text-[7px] font-black uppercase tracking-widest opacity-40 mb-1">EPIC Number</div>
+                                            <div className="text-sm font-bold tracking-widest text-civic-saffron">ZXC9874561</div>
+                                        </div>
+                                    </div>
+                                    <div className="p-3 bg-red-500/20 border border-red-500/30 rounded-xl flex items-center gap-3">
+                                        <AlertCircle className="w-4 h-4 text-red-400" />
+                                        <span className="text-[9px] font-bold text-red-300">Mismatch Detected: Address Outdated</span>
+                                    </div>
+                                </div>
+                            </div>
+
+                            <div className="absolute bottom-6 left-10 flex gap-4 items-center">
+                                <div className="w-10 h-10 bg-white rounded-lg p-1.5 opacity-60">
+                                    {/* Simulated QR */}
+                                    <div className="w-full h-full bg-black grid grid-cols-4 grid-rows-4 gap-0.5">
+                                        {[...Array(16)].map((_, i) => <div key={i} className={cn("bg-white", Math.random() > 0.5 ? "opacity-100" : "opacity-0")} />)}
+                                    </div>
+                                </div>
+                                <div className="text-[8px] font-black uppercase tracking-widest opacity-40">Digital Sovereign Copy</div>
+                            </div>
+                        </div>
+                    </div>
+
+                    <div className="mt-12 grid grid-cols-1 md:grid-cols-2 gap-6">
+                        <button className="flex items-center justify-between p-6 bg-white dark:bg-white/[0.05] border border-gray-100 dark:border-white/10 rounded-2xl hover:bg-civic-navy hover:text-white dark:hover:bg-civic-navy/40 transition-all group">
+                            <div className="flex items-center gap-4">
+                                <div className="w-10 h-10 bg-gray-50 dark:bg-white/5 rounded-xl flex items-center justify-center group-hover:bg-white/10"><FileText className="w-5 h-5" /></div>
+                                <div className="text-left">
+                                    <div className="text-sm font-bold">{t('request_correction')}</div>
+                                    <div className="text-[9px] font-bold opacity-60 uppercase tracking-widest">{t('correction_logic')}</div>
+                                </div>
+                            </div>
+                            <ArrowRight className="w-5 h-5 opacity-0 group-hover:opacity-100 group-hover:translate-x-2 transition-all" />
+                        </button>
+                        <button className="flex items-center justify-between p-6 bg-white dark:bg-white/[0.05] border border-gray-100 dark:border-white/10 rounded-2xl hover:bg-civic-navy hover:text-white dark:hover:bg-civic-navy/40 transition-all group">
+                            <div className="flex items-center gap-4">
+                                <div className="w-10 h-10 bg-gray-50 dark:bg-white/5 rounded-xl flex items-center justify-center group-hover:bg-white/10"><MapPin className="w-5 h-5" /></div>
+                                <div className="text-left">
+                                    <div className="text-sm font-bold">{t('shift_constituency')}</div>
+                                    <div className="text-[9px] font-bold opacity-60 uppercase tracking-widest">{t('trans_sector')}</div>
+                                </div>
+                            </div>
+                            <ArrowRight className="w-5 h-5 opacity-0 group-hover:opacity-100 group-hover:translate-x-2 transition-all" />
+                        </button>
+                    </div>
+                </div>
+              </div>
+
+              {/* Right: Correction Categories */}
+              <div className="space-y-8">
+                  <div className="bg-civic-navy rounded-[3rem] p-10 text-white relative overflow-hidden shadow-2xl">
+                      <div className="absolute top-0 right-0 p-8 opacity-10">
+                          <Cpu className="w-24 h-24" />
+                      </div>
+                      <h4 className="text-xl font-bold mb-6">{t('ai_audit')}</h4>
+                      <p className="text-xs opacity-60 leading-relaxed mb-8">
+                          {t('ai_audit_desc')}
+                      </p>
+                      <button 
+                        onClick={() => setShowAiValidator(true)}
+                        className="w-full py-4 bg-civic-saffron text-civic-navy font-bold rounded-2xl flex items-center justify-center gap-3 hover:scale-105 transition-all shadow-xl shadow-civic-saffron/20"
+                      >
+                          <Zap className="w-5 h-5" /> {t('launch_scan')}
+                      </button>
+                  </div>
+
+                  <div className="glass-card rounded-[3rem] p-10 border border-white/50 dark:border-white/10 shadow-sm space-y-6">
+                      <h4 className="text-sm font-bold text-civic-navy dark:text-white uppercase tracking-widest mb-2">{t('modification_logs')}</h4>
+                      {[
+                          { title: 'DOB Sync', date: '12 Jan 2026', status: 'Approved', color: 'text-civic-green' },
+                          { title: 'Address Shift', date: '04 Mar 2026', status: 'Pending', color: 'text-civic-saffron' },
+                      ].map((log, i) => (
+                          <div key={i} className="flex justify-between items-center p-4 bg-white/40 dark:bg-white/5 rounded-2xl border border-white dark:border-white/10 transition-all hover:bg-white/60">
+                              <div>
+                                  <div className="text-xs font-bold text-civic-navy dark:text-white">{log.title}</div>
+                                  <div className="text-[9px] text-gray-400 font-bold uppercase tracking-widest mt-1">{log.date}</div>
+                              </div>
+                              <div className={cn("text-[9px] font-black uppercase tracking-widest", log.color)}>{log.status}</div>
+                          </div>
+                      ))}
+                      <div className="pt-4 flex items-center gap-2 text-gray-300 dark:text-slate-600">
+                          <div className="w-1 h-1 bg-current rounded-full" />
+                          <div className="w-1 h-1 bg-current rounded-full" />
+                          <div className="w-1 h-1 bg-current rounded-full" />
+                      </div>
+                  </div>
+              </div>
+            </motion.div>
           ) : activeTab === 'helpline' ? (
             <motion.div
               key="helpline"
               initial={{ opacity: 0, scale: 0.95 }}
               animate={{ opacity: 1, scale: 1 }}
               exit={{ opacity: 0, scale: 0.95 }}
-              className="bg-white/70 backdrop-blur-2xl rounded-[3.5rem] p-16 border border-white/50 h-full flex flex-col items-center justify-center text-center"
+              className="bg-white/70 dark:bg-white/[0.03] backdrop-blur-2xl rounded-[3.5rem] p-16 border border-white/50 dark:border-white/10 h-full flex flex-col items-center justify-center text-center transition-all duration-700"
             >
-               <div className="w-24 h-24 bg-civic-navy rounded-3xl flex items-center justify-center mb-8 shadow-2xl shadow-civic-navy/20">
+               <div className="w-24 h-24 bg-civic-navy dark:bg-white/10 rounded-3xl flex items-center justify-center mb-8 shadow-2xl shadow-civic-navy/20">
                   <PhoneCall className="w-10 h-10 text-white" />
                </div>
-               <h2 className="text-4xl font-display font-bold text-civic-navy mb-4">{t('eci_helpline')}</h2>
-               <p className="text-gray-500 max-w-md text-lg font-medium mb-12">{t('support_desc')}</p>
+               <h2 className="text-4xl font-display font-bold text-civic-navy dark:text-white mb-4">{t('eci_helpline')}</h2>
+               <p className="text-gray-500 dark:text-slate-400 max-w-md text-lg font-medium mb-12">{t('support_desc')}</p>
                
                <div className="grid grid-cols-1 md:grid-cols-2 gap-6 w-full max-w-3xl">
-                  <div className="p-8 bg-white rounded-[2.5rem] border border-gray-100 shadow-sm flex flex-col items-center gap-4 group hover:bg-civic-navy hover:text-white transition-all">
+                  <div className="p-8 bg-white dark:bg-white/[0.05] rounded-[2.5rem] border border-gray-100 dark:border-white/10 shadow-sm flex flex-col items-center gap-4 group hover:bg-civic-navy hover:text-white transition-all">
                       <div className="text-[10px] font-black uppercase tracking-widest opacity-40">{t('national_support')}</div>
                       <div className="text-4xl font-display font-bold">1950</div>
                       <div className="text-xs font-bold opacity-60">{t('voter_hotline')}</div>
                       <a href="tel:1950" className="mt-4 px-6 py-3 bg-civic-saffron text-civic-navy rounded-xl text-[10px] font-black uppercase tracking-widest group-hover:bg-white transition-all">{t('connect')}</a>
                   </div>
-                  <div className="p-8 bg-white rounded-[2.5rem] border border-gray-100 shadow-sm flex flex-col items-center gap-4 group hover:bg-civic-navy hover:text-white transition-all">
+                  <div className="p-8 bg-white dark:bg-white/[0.05] rounded-[2.5rem] border border-gray-100 dark:border-white/10 shadow-sm flex flex-col items-center gap-4 group hover:bg-civic-navy hover:text-white transition-all">
                       <div className="text-[10px] font-black uppercase tracking-widest opacity-40">{t('local_mapping')}</div>
                       <div className="text-2xl font-display font-bold">{t('blo_officer')}</div>
                       <div className="text-xs font-bold opacity-60">{t('find_blo')}</div>
@@ -846,14 +949,14 @@ export const Dashboard = () => {
               initial={{ opacity: 0, scale: 0.95 }}
               animate={{ opacity: 1, scale: 1 }}
               exit={{ opacity: 0, scale: 0.95 }}
-              className="bg-white/70 backdrop-blur-2xl rounded-[3.5rem] p-16 border border-white/50 h-full flex flex-col items-start text-left overflow-y-auto"
+              className="bg-white/70 dark:bg-white/[0.03] backdrop-blur-2xl rounded-[3.5rem] p-16 border border-white/50 dark:border-white/10 h-full flex flex-col items-start text-left overflow-y-auto transition-all duration-700"
             >
                <div className="flex items-center gap-4 mb-10">
                   <div className="w-16 h-16 bg-civic-saffron rounded-2xl flex items-center justify-center shadow-xl">
                       <Calendar className="w-8 h-8 text-civic-navy" />
                   </div>
                   <div>
-                      <h2 className="text-3xl font-display font-bold text-civic-navy">{t('sir2026_framework')}</h2>
+                      <h2 className="text-3xl font-display font-bold text-civic-navy dark:text-white">{t('sir2026_framework')}</h2>
                       <p className="text-[10px] font-black text-civic-saffron uppercase tracking-widest mt-1">{t('sir_status')}</p>
                   </div>
                </div>
@@ -870,7 +973,7 @@ export const Dashboard = () => {
                             <span className="text-[9px] font-black uppercase text-civic-saffron tracking-widest">{item.status}</span>
                         </div>
                         <h4 className="font-bold text-civic-navy mb-4">{item.label}</h4>
-                        <div className="h-1.5 w-full bg-gray-100 rounded-full overflow-hidden">
+                        <div className="h-1.5 w-full bg-gray-100 dark:bg-white/10 rounded-full overflow-hidden">
                             <motion.div initial={{ width: 0 }} animate={{ width: `${item.progress}%` }} className="h-full bg-civic-navy" />
                         </div>
                         <span className="text-[9px] font-bold text-gray-400 mt-2 block">{item.progress}% {t('complete')}</span>
@@ -890,13 +993,13 @@ export const Dashboard = () => {
                     initial={{ scale: 0.9, opacity: 0, y: 20 }}
                     animate={{ scale: 1, opacity: 1, y: 0 }}
                     exit={{ scale: 0.9, opacity: 0, y: 20 }}
-                    className="bg-white w-full max-w-xl rounded-[3.5rem] p-12 shadow-2xl relative overflow-hidden"
+                    className="bg-white dark:bg-[#0A0A0A] w-full max-w-xl rounded-[3.5rem] p-12 shadow-2xl relative overflow-hidden border dark:border-white/10"
                 >
                     <div className="text-center mb-10">
                         <div className="w-20 h-20 bg-civic-navy rounded-[2rem] flex items-center justify-center mx-auto mb-6 shadow-xl relative group">
                             <Cpu className="text-civic-saffron w-10 h-10 animate-pulse" />
                         </div>
-                        <h3 className="text-2xl font-display font-bold text-civic-navy">{t('gemini_validator')}</h3>
+                        <h3 className="text-2xl font-display font-bold text-civic-navy dark:text-white">{t('gemini_validator')}</h3>
                         <p className="text-[10px] font-black text-gray-400 uppercase tracking-[0.2em] mt-2 font-medium flex items-center justify-center gap-2">
                              <img src="https://www.gstatic.com/lamda/images/gemini_sparkle_v002_d4735304ff6292a690345.svg" className="w-3 h-3" alt="Gemini" loading="lazy" decoding="async" />
                              Multimodal Analysis Core
@@ -907,30 +1010,30 @@ export const Dashboard = () => {
                         <div className="space-y-6">
                             <div 
                                 onClick={() => setScanStatus('scanning')}
-                                className="p-12 border-2 border-dashed border-gray-100 rounded-[2.5rem] flex flex-col items-center gap-4 hover:border-google-blue hover:bg-blue-50/30 transition-all cursor-pointer group"
+                                className="p-12 border-2 border-dashed border-gray-100 dark:border-white/10 rounded-[2.5rem] flex flex-col items-center gap-4 hover:border-google-blue hover:bg-blue-50/30 dark:hover:bg-blue-500/10 transition-all cursor-pointer group"
                             >
-                                <div className="w-16 h-16 bg-gray-50 rounded-2xl flex items-center justify-center group-hover:bg-white transition-all shadow-sm">
+                                <div className="w-16 h-16 bg-gray-50 dark:bg-white/5 rounded-2xl flex items-center justify-center group-hover:bg-white dark:group-hover:bg-white/10 transition-all shadow-sm">
                                     <Download className="w-8 h-8 text-gray-400 group-hover:text-google-blue" />
                                 </div>
                                 <div className="text-center">
-                                    <p className="font-bold text-civic-navy">Drop Identity Document</p>
-                                    <p className="text-[10px] text-gray-400 font-bold uppercase mt-1">Aadhaar / Voter ID / Passport</p>
+                                    <p className="font-bold text-civic-navy dark:text-white">Drop Identity Document</p>
+                                    <p className="text-[10px] text-gray-400 dark:text-slate-500 font-bold uppercase mt-1">Aadhaar / Voter ID / Passport</p>
                                 </div>
                             </div>
                             <div className="grid grid-cols-2 gap-4">
-                                <div className="p-4 bg-gray-50 rounded-2xl border border-gray-100 flex items-center gap-3">
+                                <div className="p-4 bg-gray-50 dark:bg-white/5 rounded-2xl border border-gray-100 dark:border-white/10 flex items-center gap-3">
                                     <ShieldCheck className="w-4 h-4 text-civic-green" />
-                                    <span className="text-[10px] font-bold text-gray-500">End-to-End Encryption</span>
+                                    <span className="text-[10px] font-bold text-gray-500 dark:text-slate-400">End-to-End Encryption</span>
                                 </div>
-                                <div className="p-4 bg-gray-50 rounded-2xl border border-gray-100 flex items-center gap-3">
+                                <div className="p-4 bg-gray-50 dark:bg-white/5 rounded-2xl border border-gray-100 dark:border-white/10 flex items-center gap-3">
                                     <Globe className="w-4 h-4 text-google-blue" />
-                                    <span className="text-[10px] font-bold text-gray-500">Gemini Sovereign Multimodal</span>
+                                    <span className="text-[10px] font-bold text-gray-500 dark:text-slate-400">Gemini Sovereign Multimodal</span>
                                 </div>
                             </div>
                         </div>
                     ) : scanStatus === 'scanning' ? (
                         <div className="py-12 flex flex-col items-center gap-8">
-                            <div className="w-48 h-64 bg-gray-100 rounded-2xl relative overflow-hidden shadow-inner border border-gray-200 holographic-scan">
+                            <div className="w-48 h-64 bg-gray-100 dark:bg-white/[0.05] rounded-2xl relative overflow-hidden shadow-inner border border-gray-200 dark:border-white/10 holographic-scan">
                                 <div className="absolute inset-0 bg-gradient-to-b from-transparent via-google-blue/5 to-google-blue/10" />
                                 <motion.div 
                                     animate={{ y: [0, 256, 0] }}
@@ -1012,7 +1115,7 @@ export const Dashboard = () => {
         whileHover={{ scale: 1.1 }}
         whileTap={{ scale: 0.9 }}
         onClick={() => setIsChatOpen(true)}
-        className="fixed bottom-32 right-6 lg:hidden w-16 h-16 bg-civic-navy text-white rounded-full shadow-[0_15px_40px_rgba(0,0,128,0.4)] flex items-center justify-center z-[110] border border-white/20 overflow-hidden"
+        className="fixed bottom-12 right-6 lg:hidden w-16 h-16 bg-civic-navy text-white rounded-full shadow-[0_15px_40px_rgba(0,0,128,0.4)] flex items-center justify-center z-[110] border border-white/20 overflow-hidden"
       >
           <motion.div 
             animate={{ rotate: 360 }}

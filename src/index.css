@@ -24,18 +24,19 @@
 
 @layer base {
   html {
-    font-size: 13px; /* Reduced further to ensure visibility at 100% zoom */
+    font-size: 10px;
+    @apply bg-white dark:bg-[#020617];
   }
 
   @media (min-width: 1536px) {
     html {
-      font-size: 15px;
+      font-size: 12px;
     }
   }
 
   body {
-    @apply bg-[#FDFDFD];
-    @apply text-slate-900;
+    @apply bg-[#FDFDFD] dark:bg-[#020617];
+    @apply text-slate-900 dark:text-white;
     @apply antialiased;
     @apply selection:bg-civic-navy/10;
     @apply selection:text-civic-navy;
@@ -47,6 +48,15 @@
       radial-gradient(at 0% 100%, rgba(0, 0, 128, 0.05) 0px, transparent 50%),
       #FDFDFD;
     background-attachment: fixed;
+  }
+
+  .dark body {
+    background: 
+      radial-gradient(at 0% 0%, rgba(66, 133, 244, 0.08) 0px, transparent 50%),
+      radial-gradient(at 100% 0%, rgba(255, 153, 51, 0.08) 0px, transparent 50%),
+      radial-gradient(at 100% 100%, rgba(18, 136, 7, 0.08) 0px, transparent 50%),
+      radial-gradient(at 0% 100%, rgba(0, 0, 128, 0.08) 0px, transparent 50%),
+      #020617;
   }
 
   .custom-scrollbar::-webkit-scrollbar {
@@ -85,21 +95,21 @@
   }
 
   .glass {
-    @apply bg-white/30;
+    @apply bg-white/30 dark:bg-white/[0.03];
     @apply backdrop-blur-xl;
     @apply border;
-    @apply border-white/40;
-    @apply shadow-[0_8px_32px_0_rgba(0,0,128,0.05)];
+    @apply border-white/40 dark:border-white/[0.08];
+    @apply shadow-[0_8px_32px_0_rgba(0,0,128,0.05)] dark:shadow-[0_8px_32px_0_rgba(0,0,0,0.4)];
     contain: layout style;
   }
 
   .glass-card {
-    @apply bg-white/40;
+    @apply bg-white/40 dark:bg-white/[0.03];
     @apply backdrop-blur-xl;
     @apply border;
-    @apply border-white/60;
-    @apply shadow-[0_20px_60px_rgba(0,0,0,0.05)];
-    @apply hover:bg-white/50;
+    @apply border-white/60 dark:border-white/[0.08];
+    @apply shadow-[0_20px_60px_rgba(0,0,0,0.05)] dark:shadow-[0_20px_60px_rgba(0,0,0,0.4)];
+    @apply hover:bg-white/50 dark:hover:bg-white/[0.06];
     @apply transition-all;
     @apply duration-700;
     contain: layout style;
@@ -436,5 +446,50 @@
     .markdown-content h1 { @apply text-xl; }
     .markdown-content h2 { @apply text-lg; }
     .markdown-content h3 { @apply text-base; }
+  }
+}
+
+/* Mobile Architecture Overrides */
+@media (max-width: 768px) {
+  html {
+    font-size: 11px;
+  }
+
+  .glass,
+  .glass-card {
+    @apply bg-white/60 dark:bg-black/80;
+    @apply backdrop-blur-3xl;
+    @apply border-white/80 dark:border-white/10;
+    @apply shadow-[0_20px_50px_rgba(0,0,128,0.1)];
+    @apply saturate-150;
+    @apply rounded-t-[3rem];
+    @apply p-8;
+    @apply pb-12;
+    @apply shadow-[0_-20px_60px_rgba(0,0,0,0.15)];
+    @apply duration-500;
+  }
+
+  .hero-glow {
+    @apply opacity-30;
+    @apply scale-75;
+    @apply blur-[80px];
+  }
+
+  .mobile-nav-bar {
+    @apply fixed;
+    @apply bottom-6;
+    @apply left-1/2;
+    @apply -translate-x-1/2;
+    @apply z-[5000];
+    @apply flex;
+    @apply items-center;
+    @apply gap-3;
+    @apply bg-civic-navy/90;
+    @apply backdrop-blur-2xl;
+    @apply p-2;
+    @apply rounded-full;
+    @apply shadow-2xl;
+    @apply border;
+    @apply border-white/20;
   }
 }

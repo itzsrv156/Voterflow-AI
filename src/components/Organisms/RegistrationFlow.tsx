@@ -33,8 +33,8 @@ const EligibilityStep = ({ onNext }: StepProps) => {
       exit={{ x: -50, opacity: 0 }}
       className="space-y-6"
     >
-      <div className="bg-civic-navy/5 p-6 rounded-2xl border border-civic-navy/10">
-        <h3 className="text-xl font-bold text-civic-navy mb-4 flex items-center gap-2">
+      <div className="bg-civic-navy/5 dark:bg-white/5 p-6 rounded-2xl border border-civic-navy/10 dark:border-white/10">
+        <h3 className="text-xl font-bold text-civic-navy dark:text-white/90 mb-4 flex items-center gap-2">
           <Calendar className="w-6 h-6 text-civic-saffron" />
           Step 1: Date of Birth
         </h3>
@@ -45,7 +45,7 @@ const EligibilityStep = ({ onNext }: StepProps) => {
               type="date" 
               value={dob}
               onChange={handleDobChange}
-              className="w-full p-4 bg-white border border-gray-100 rounded-xl focus:ring-2 focus:ring-civic-navy outline-none font-bold text-civic-navy"
+              className="w-full p-4 bg-white dark:bg-white/5 border border-gray-100 dark:border-white/10 rounded-xl focus:ring-2 focus:ring-civic-navy outline-none font-bold text-civic-navy dark:text-white"
             />
           </div>
 
@@ -69,8 +69,8 @@ const EligibilityStep = ({ onNext }: StepProps) => {
         onClick={onNext}
         disabled={!dob}
         className={cn(
-          "w-full py-4 font-bold rounded-2xl flex items-center justify-center gap-2 transition-all",
-          dob ? "bg-civic-navy text-white hover:bg-civic-navy/90" : "bg-gray-100 text-gray-400"
+          "w-full py-4 font-bold rounded-2xl flex items-center justify-center gap-2 transition-all overflow-hidden relative",
+          dob ? "bg-civic-navy text-white hover:bg-civic-navy/90 dark:shadow-[0_0_20px_rgba(66,133,244,0.3)]" : "bg-white/[0.05] dark:bg-white/[0.05] text-slate-500 dark:text-slate-500"
         )}
       >
         Continue <ChevronRight className="w-5 h-5" />
@@ -108,7 +108,7 @@ const Form6Assistant = ({ onNext }: StepProps) => {
       className="space-y-6"
     >
       <div className="bg-civic-saffron/5 p-6 rounded-2xl border border-civic-saffron/10">
-        <h3 className="text-xl font-bold text-civic-navy mb-4 flex items-center gap-2">
+        <h3 className="text-xl font-bold text-civic-navy dark:text-white mb-4 flex items-center gap-2">
           <FileText className="w-6 h-6 text-civic-saffron" />
           Step 2: Document Scan
         </h3>
@@ -132,8 +132,8 @@ const Form6Assistant = ({ onNext }: StepProps) => {
           >
             {isScanning ? (
               <>
-                <Loader2 className="w-10 h-10 text-civic-navy animate-spin" />
-                <p className="text-sm font-bold text-civic-navy italic">Gemini Sovereign Core Analyzing...</p>
+                <Loader2 className="w-10 h-10 text-civic-navy dark:text-civic-saffron animate-spin" />
+                <p className="text-sm font-bold text-civic-navy dark:text-white italic">Gemini Sovereign Core Analyzing...</p>
                 <div className="mt-2 flex gap-1">
                     {[1,2,3].map(i => <div key={i} className="w-1 h-1 bg-civic-saffron rounded-full animate-bounce" style={{ animationDelay: `${i*0.2}s` }} />)}
                 </div>
@@ -147,11 +147,11 @@ const Form6Assistant = ({ onNext }: StepProps) => {
             ) : file ? (
               <div className="flex flex-col items-center">
                 <CheckCircle className="w-12 h-12 text-civic-green mb-4" />
-                <p className="text-[10px] font-black text-civic-navy uppercase tracking-widest bg-civic-green/10 px-3 py-1 rounded-full mb-4">Gemini OCR Verified</p>
-                <div className="text-left w-full bg-white/60 p-4 rounded-xl border border-civic-green/20 space-y-2">
+                <p className="text-[10px] font-black text-civic-navy dark:text-white uppercase tracking-widest bg-civic-green/10 dark:bg-civic-green/20 px-3 py-1 rounded-full mb-4">Gemini OCR Verified</p>
+                <div className="text-left w-full bg-white/60 dark:bg-black/40 p-4 rounded-xl border border-civic-green/20 space-y-2">
                     <div className="flex justify-between items-center">
                         <span className="text-[8px] font-black text-gray-400 uppercase">Extracted Name</span>
-                        <span className="text-[10px] font-bold text-civic-navy uppercase tracking-tight">SARVESH ARUNKUMAR</span>
+                        <span className="text-[10px] font-bold text-civic-navy dark:text-white uppercase tracking-tight">SARVESH ARUNKUMAR</span>
                     </div>
                     <div className="flex justify-between items-center">
                         <span className="text-[8px] font-black text-gray-400 uppercase">Sovereign Validation</span>
@@ -159,7 +159,7 @@ const Form6Assistant = ({ onNext }: StepProps) => {
                     </div>
                     <div className="flex justify-between items-center">
                         <span className="text-[8px] font-black text-gray-400 uppercase">Qualifying Date</span>
-                        <span className="text-[10px] font-bold text-civic-navy">01-01-2026</span>
+                        <span className="text-[10px] font-bold text-civic-navy dark:text-slate-300">01-01-2026</span>
                     </div>
                 </div>
               </div>
@@ -183,7 +183,7 @@ const Form6Assistant = ({ onNext }: StepProps) => {
                   onChange={(e) => setAnnexureChecked(e.target.checked)}
                   className="w-5 h-5 accent-civic-saffron rounded"
                 />
-                <span className="text-xs font-bold text-civic-navy uppercase">I have Annexure-II signed by Warden</span>
+                <span className="text-xs font-bold text-civic-navy dark:text-white uppercase">I have Annexure-II signed by Warden</span>
               </label>
             </div>
           )}
@@ -194,8 +194,8 @@ const Form6Assistant = ({ onNext }: StepProps) => {
         onClick={onNext}
         disabled={!canContinue || isScanning}
         className={cn(
-          "w-full py-4 font-bold rounded-2xl flex items-center justify-center gap-2 transition-all shadow-xl shadow-civic-navy/10",
-          canContinue ? "bg-civic-navy text-white" : "bg-gray-100 text-gray-400"
+          "w-full py-4 font-bold rounded-2xl flex items-center justify-center gap-2 transition-all shadow-xl shadow-civic-navy/10 overflow-hidden relative",
+          canContinue ? "bg-civic-navy text-white" : "bg-gray-100 dark:bg-white/[0.05] text-gray-400 dark:text-slate-500"
         )}
       >
         Next Step <ChevronRight className="w-5 h-5" />
@@ -213,13 +213,13 @@ const FinalStep = ({ onNext }: StepProps) => (
   >
     <div className="bg-civic-green/5 p-8 rounded-2xl border border-civic-green/10 text-center">
       <CheckCircle className="w-16 h-16 text-civic-green mx-auto mb-6" />
-      <h3 className="text-2xl font-bold text-civic-navy mb-2">Form 6 Ready to Submit</h3>
+      <h3 className="text-2xl font-bold text-civic-navy dark:text-white mb-2">Form 6 Ready to Submit</h3>
       <p className="text-sm text-gray-500 mb-6 leading-relaxed">
         Your documents have been scanned and verified.
       </p>
       
-      <div className="bg-white/60 p-6 rounded-2xl border border-civic-green/20 text-left space-y-4 mb-6">
-          <h4 className="text-[10px] font-black text-civic-navy uppercase tracking-widest flex items-center gap-2">
+      <div className="bg-white/60 dark:bg-black/40 p-6 rounded-2xl border border-civic-green/20 text-left space-y-4 mb-6 transition-all duration-700">
+          <h4 className="text-[10px] font-black text-civic-navy dark:text-white uppercase tracking-widest flex items-center gap-2">
               <Info className="w-4 h-4 text-civic-saffron" /> What Happens Next?
           </h4>
           <ul className="space-y-3">
@@ -239,7 +239,7 @@ const FinalStep = ({ onNext }: StepProps) => (
     </div>
     <button
       onClick={onNext}
-      className="w-full py-4 bg-civic-green text-white font-bold rounded-2xl flex items-center justify-center gap-2"
+      className="w-full py-4 bg-civic-green text-white font-bold rounded-2xl dark:shadow-[0_0_20px_rgba(18,136,7,0.3)] flex items-center justify-center gap-2"
     >
       Submit Form 6 <ChevronRight className="w-5 h-5" />
     </button>
@@ -261,15 +261,15 @@ export const RegistrationFlow = ({ onClose }: { onClose: () => void }) => {
       <motion.div
         initial={{ scale: 0.9, opacity: 0, y: 20 }}
         animate={{ scale: 1, opacity: 1, y: 0 }}
-        className="bg-white w-full max-w-lg rounded-[2.5rem] shadow-2xl overflow-hidden relative"
+        className="bg-white dark:bg-[#0A0A0A] w-full max-w-lg rounded-[2.5rem] shadow-2xl overflow-hidden relative border dark:border-white/10"
       >
-        <button onClick={onClose} className="absolute top-6 right-6 p-2 bg-gray-100 rounded-full hover:bg-red-50 hover:text-red-500 transition-colors z-10">
+        <button onClick={onClose} className="absolute top-6 right-6 p-2 bg-gray-100 dark:bg-white/10 rounded-full hover:bg-red-50 dark:hover:bg-red-500/20 hover:text-red-500 dark:text-slate-400 transition-colors z-10 overflow-hidden relative">
           <X className="w-5 h-5" />
         </button>
         <div className="p-10">
           <div className="flex gap-2 mb-8">
             {[1, 2, 3].map((s) => (
-              <div key={s} className={cn("h-1.5 flex-1 rounded-full transition-all duration-500", s <= step ? "bg-civic-navy" : "bg-gray-100")} />
+              <div key={s} className={cn("h-1.5 flex-1 rounded-full transition-all duration-500", s <= step ? "bg-civic-navy dark:bg-civic-saffron" : "bg-gray-100 dark:bg-white/10")} />
             ))}
           </div>
           <AnimatePresence mode="wait">

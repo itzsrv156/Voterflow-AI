@@ -10,9 +10,52 @@ import { ErrorBoundary } from './components/Atoms/ErrorBoundary';
 import { X } from 'lucide-react';
 import { cn } from './lib/utils';
 import { Tooltip } from './components/Atoms/Tooltip';
+import { useEffect, useState } from 'react';
 
 function App() {
-  const { view, activeFlow, setActiveFlow, readinessScore, isChatOpen, setIsChatOpen } = useVoterStore();
+  const { view, activeFlow, setActiveFlow, readinessScore, isChatOpen, setIsChatOpen, theme, setTheme } = useVoterStore();
+  const [isMobile, setIsMobile] = useState(window.innerWidth < 1024);
+
+  useEffect(() => {
+    const handleResize = () => setIsMobile(window.innerWidth < 1024);
+    window.addEventListener('resize', handleResize);
+    return () => window.removeEventListener('resize', handleResize);
+  }, []);
+
+  // Force Light Mode for fresh Hackathon sessions
+  useEffect(() => {
+    const hasSetTheme = localStorage.getItem('voter-flow-theme-set');
+    if (!hasSetTheme) {
+      setTheme('light');
+      localStorage.setItem('voter-flow-theme-set', 'true');
+    }
+  }, []);
+
+  useEffect(() => {
+    const root = window.document.documentElement;
+    const metaTheme = document.querySelector('meta[name="theme-color"]');
+    
+    const applyTheme = (t: string) => {
+      if (t === 'dark') {
+        root.classList.add('dark');
+        if (metaTheme) metaTheme.setAttribute('content', '#020617');
+      } else if (t === 'light') {
+        root.classList.remove('dark');
+        if (metaTheme) metaTheme.setAttribute('content', '#FFFFFF');
+      } else {
+        const systemDark = window.matchMedia('(prefers-color-scheme: dark)').matches;
+        if (systemDark) {
+          root.classList.add('dark');
+          if (metaTheme) metaTheme.setAttribute('content', '#020617');
+        } else {
+          root.classList.remove('dark');
+          if (metaTheme) metaTheme.setAttribute('content', '#FFFFFF');
+        }
+      }
+    };
+
+    applyTheme(theme);
+  }, [theme]);
 
   // Dynamic colors based on readinessScore
   const getPulseColor = (base: 'blue' | 'saffron' | 'green') => {

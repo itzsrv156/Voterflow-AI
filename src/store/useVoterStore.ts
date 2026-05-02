@@ -27,6 +27,8 @@ export interface VoterState {
   language: 'en' | 'hi' | 'kn';
   /** Metric for voter's electoral preparation (0-100). */
   readinessScore: number;
+  /** UI Theme preference. */
+  theme: 'light' | 'dark' | 'system';
   /** Specific progress metrics for electoral pillars. */
   progress: {
     registration: number;
@@ -39,6 +41,7 @@ export interface VoterState {
   voterName: string | null;
 
   /* Actions */
+  setTheme: (t: 'light' | 'dark' | 'system') => void;
   setHasGreeted: (v: boolean) => void;
   setPersona: (p: Persona | null) => void;
   setVoterName: (n: string) => void;
@@ -62,6 +65,7 @@ const initialState = {
   isChatOpen: false,
   chatMessages: [],
   language: 'en' as const,
+  theme: 'light' as const,
   readinessScore: 0,
   progress: {
     registration: 0,
@@ -69,7 +73,7 @@ const initialState = {
     polling: 0,
   },
   hasGreeted: false,
-  voterName: null,
+  voterName: 'Sarvesh Arunkumar',
 };
 
 export const useVoterStore = create<VoterState>()(
@@ -97,6 +101,7 @@ export const useVoterStore = create<VoterState>()(
         return { chatMessages: newMessages };
       }),
       setLanguage: (language) => set({ language }),
+      setTheme: (theme) => set({ theme }),
       setHasGreeted: (hasGreeted) => set({ hasGreeted }),
       addReadiness: (amount) => set((state) => ({ 
         readinessScore: Math.min(100, state.readinessScore + amount) 

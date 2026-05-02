@@ -1,20 +1,28 @@
 import { motion, AnimatePresence } from 'framer-motion';
 import { useVoterStore } from '../../store/useVoterStore';
-import { ShieldCheck, Vote, Globe, User, ExternalLink, Bell, Search } from 'lucide-react';
+import { ShieldCheck, Vote, Globe, User, ExternalLink, Bell, Search, Sun, Moon, Monitor } from 'lucide-react';
 import { cn } from '../../lib/utils';
-import { useState } from 'react';
+import { useState, useEffect } from 'react';
+import { ThemeToggle } from '../Atoms/ThemeToggle';
 
 export const Header = () => {
-    const { setView, resetStore, view, language, setLanguage } = useVoterStore();
+    const { setView, resetStore, view, language, setLanguage, theme, setTheme } = useVoterStore();
     const [showCredits, setShowCredits] = useState(false);
+    const [showNotifications, setShowNotifications] = useState(false);
+
+    // Auto-close on view change
+    useEffect(() => {
+        setShowCredits(false);
+        setShowNotifications(false);
+    }, [view]);
 
     return (
         <motion.header
             initial={{ y: -100 }}
             animate={{ y: 0 }}
-            className="fixed top-0 left-0 right-0 z-[1000] px-3 py-3 lg:px-10 lg:py-6"
+            className="fixed top-0 inset-x-0 z-[6000] p-6 pointer-events-none"
         >
-            <div className="max-w-[1600px] mx-auto flex items-center justify-between glass rounded-[2rem] lg:rounded-[2.5rem] px-3 py-2 lg:px-10 lg:py-5 shadow-2xl relative overflow-hidden">
+            <div className="max-w-[1600px] mx-auto flex items-center justify-between glass rounded-[2.5rem] px-10 py-5 shadow-2xl relative pointer-events-auto">
                 {/* Shine Sweep Effect */}
                 <motion.div
                     animate={{ x: ["-100%", "200%"] }}
@@ -43,14 +51,14 @@ export const Header = () => {
                     </div>
 
                     <div className="text-left">
-                        <h1 className="text-lg lg:text-2xl font-display font-black text-civic-navy leading-none tracking-tight flex items-center gap-1 lg:gap-2 group-hover:tracking-tighter transition-all">
+                        <h1 className="text-lg lg:text-2xl font-display font-black text-civic-navy dark:text-white leading-none tracking-tight flex items-center gap-1 lg:gap-2 group-hover:tracking-tighter transition-all">
                             VoterFlow
                             <span className="bg-civic-saffron/10 text-civic-saffron px-1.5 py-0.5 rounded-md lg:rounded-lg text-[9px] lg:text-xs italic border border-civic-saffron/20 group-hover:bg-civic-saffron group-hover:text-white transition-all">AI</span>
                         </h1>
                         <div className="flex items-center gap-2 mt-1">
-                            <div className="h-px w-3 bg-civic-navy/20 group-hover:w-6 transition-all" />
-                            <span className="text-[9px] font-bold text-gray-400 uppercase tracking-widest flex items-center gap-1.5">
-                                Sovereign Edition
+                            <div className="h-px w-3 bg-civic-navy/20 dark:bg-white/10 group-hover:w-6 transition-all" />
+                            <span className="text-[9px] font-bold text-slate-400 dark:text-slate-500 uppercase tracking-widest flex items-center gap-1.5">
+                                Pro Edition
                             </span>
                         </div>
                     </div>
@@ -58,89 +66,113 @@ export const Header = () => {
 
                 {/* Live Status Badge */}
                 <div className="hidden md:flex items-center gap-8">
-                    <div className="flex items-center gap-4 px-6 py-3 bg-white/50 rounded-2xl border border-white shadow-sm">
+                    <div className="flex items-center gap-4 px-6 py-3 bg-white/40 dark:bg-white/[0.03] rounded-2xl border border-white dark:border-white/10 shadow-sm">
                         <div className="relative">
                             <div className="w-3 h-3 bg-civic-green rounded-full animate-ping absolute" />
                             <div className="w-3 h-3 bg-civic-green rounded-full relative" />
                         </div>
-                        <span className="text-[10px] font-bold text-civic-navy uppercase tracking-widest">SIR 2026 Cycle</span>
+                        <span className="text-[10px] font-bold text-civic-navy dark:text-slate-200 uppercase tracking-widest">SIR 2026 Cycle</span>
                     </div>
 
-                    <div className="h-10 w-px bg-gray-200" />
+                    <div className="h-10 w-px bg-slate-200 dark:bg-white/10" />
 
                     <div className="flex items-center gap-3">
-                        <ShieldCheck className="text-civic-navy w-5 h-5" />
+                        <ShieldCheck className="text-civic-navy dark:text-civic-saffron w-5 h-5" />
                         <div className="text-left">
-                            <div className="text-[10px] font-bold text-gray-400 uppercase tracking-tight">Compliance Status</div>
-                            <div className="text-[11px] font-black text-civic-navy uppercase tracking-[0.05em]">Sovereign Civic Protocol</div>
+                            <div className="text-[10px] font-bold text-slate-400 dark:text-slate-500 uppercase tracking-tight">Compliance Status</div>
+                            <div className="text-[11px] font-black text-civic-navy dark:text-white uppercase tracking-[0.05em]">Digital Civic Protocol</div>
                         </div>
                     </div>
                 </div>
 
-                {/* Intelligence Stats Bar - NEW PREMIUM FEATURE */}
+                {/* Intelligence Stats Bar */}
                 <div className="hidden lg:flex items-center gap-10">
                     <div className="text-center">
-                        <div className="text-[8px] font-black text-gray-400 uppercase tracking-widest mb-1">Sector Turnout</div>
-                        <div className="text-xs font-bold text-civic-navy">94.2% Goal</div>
+                        <div className="text-[8px] font-black text-slate-400 dark:text-slate-500 uppercase tracking-widest mb-1">Sector Turnout</div>
+                        <div className="text-xs font-bold text-civic-navy dark:text-white">94.2% Goal</div>
                     </div>
-                    <div className="h-6 w-px bg-gray-100" />
+                    <div className="h-6 w-px bg-slate-100 dark:bg-white/10" />
                     <div className="text-center">
-                        <div className="text-[8px] font-black text-gray-400 uppercase tracking-widest mb-1">Registration Health</div>
+                        <div className="text-[8px] font-black text-slate-400 dark:text-slate-500 uppercase tracking-widest mb-1">Registration Health</div>
                         <div className="text-xs font-bold text-civic-green">Optimal</div>
                     </div>
                 </div>
 
                 {/* Quick Actions & Translation */}
                 <div className="flex items-center gap-4 sm:gap-6">
-                    <div className="hidden sm:flex bg-white/50 backdrop-blur-md p-1.5 rounded-2xl border border-white">
+                    <div className="hidden sm:flex bg-white/40 dark:bg-white/[0.03] backdrop-blur-md p-1.5 rounded-2xl border border-white dark:border-white/10">
                         {(['en', 'hi', 'kn'] as const).map((l) => (
                             <button
                                 key={l}
                                 onClick={() => setLanguage(l)}
                                 className={cn(
                                     "px-3 sm:px-4 py-2 text-[10px] font-bold rounded-xl transition-all uppercase tracking-widest",
-                                    language === l ? "bg-civic-navy text-white shadow-lg shadow-civic-navy/20" : "text-gray-400 hover:text-civic-navy"
+                                    language === l ? "bg-civic-navy text-white shadow-lg" : "text-slate-400 dark:text-slate-500 hover:text-civic-navy dark:hover:text-white"
                                 )}
                             >
                                 {l}
                             </button>
                         ))}
                     </div>
+                    
+                    {/* Right Section: Toggles & Panels */}
+                    <div className="flex items-center gap-2 lg:gap-6">
+                        {/* Desktop Theme Toggles */}
+                        <div className="hidden lg:flex items-center">
+                            <ThemeToggle />
+                        </div>
 
                     {/* Notification Bell with Dropdown */}
-                    <div className="relative group">
-                        <button className="w-10 h-10 lg:w-12 lg:h-12 bg-gray-50 rounded-xl lg:rounded-2xl flex items-center justify-center hover:bg-civic-navy hover:text-white transition-all relative">
-                            <Bell className="w-4 h-4 lg:w-5 lg:h-5" />
-                            <span className="absolute top-2.5 right-2.5 lg:top-3 lg:right-3 w-2 h-2 bg-civic-saffron rounded-full border-2 border-white animate-pulse" />
+                    <div className="relative">
+                        <button 
+                            onClick={() => {
+                                setShowNotifications(!showNotifications);
+                                setShowCredits(false);
+                            }}
+                            className={cn(
+                                "w-12 h-12 rounded-2xl flex items-center justify-center transition-all relative",
+                                showNotifications ? "bg-civic-navy text-white shadow-xl" : "bg-gray-50 dark:bg-white/5 hover:bg-civic-navy hover:text-white"
+                            )}
+                        >
+                            <Bell className="w-5 h-5" />
+                            <span className="absolute top-3 right-3 w-2 h-2 bg-civic-saffron rounded-full border-2 border-white dark:border-[#0f0f0f] animate-pulse" />
                         </button>
 
-                        {/* Floating Notification Panel */}
-                        <div className="absolute top-full right-0 mt-4 w-72 glass-card rounded-[2.5rem] p-8 opacity-0 translate-y-4 pointer-events-none group-hover:opacity-100 group-hover:translate-y-0 transition-all z-50">
-                            <div className="flex items-center justify-between mb-6">
-                                <h4 className="text-[10px] font-black text-civic-navy uppercase tracking-widest">Sovereign Alerts</h4>
-                                <span className="px-2 py-0.5 bg-civic-saffron/10 text-civic-saffron text-[8px] font-bold rounded-full">2 NEW</span>
-                            </div>
-                            <div className="space-y-6">
-                                <div className="flex gap-4">
-                                    <div className="w-8 h-8 bg-civic-navy/5 rounded-xl flex items-center justify-center shrink-0">
-                                        <Search className="w-4 h-4 text-civic-navy" />
+                        <AnimatePresence>
+                            {showNotifications && (
+                                <motion.div 
+                                    initial={{ opacity: 0, y: 10, scale: 0.95 }}
+                                    animate={{ opacity: 1, y: 0, scale: 1 }}
+                                    exit={{ opacity: 0, y: 10, scale: 0.95 }}
+                                    className="fixed inset-x-4 top-24 lg:absolute lg:inset-auto lg:top-full lg:right-0 lg:mt-4 lg:w-72 glass-card rounded-[2.5rem] p-8 z-[7000] border-t-4 border-t-civic-navy dark:border-t-civic-saffron shadow-2xl"
+                                >
+                                    <div className="flex items-center justify-between mb-6">
+                                        <h4 className="text-[10px] font-black text-civic-navy dark:text-white uppercase tracking-widest">System Alerts</h4>
+                                        <span className="px-2 py-0.5 bg-civic-saffron/10 text-civic-saffron text-[8px] font-bold rounded-full">2 NEW</span>
                                     </div>
-                                    <div>
-                                        <p className="text-[10px] text-gray-700 font-bold leading-tight mb-1">SIR 2026 Audit Ready</p>
-                                        <p className="text-[9px] text-gray-400 font-medium leading-relaxed">Your sector data mapping is 100% verified by ECI.</p>
+                                    <div className="space-y-6">
+                                        <div className="flex gap-4">
+                                            <div className="w-8 h-8 bg-civic-navy/5 rounded-xl flex items-center justify-center shrink-0">
+                                                <Search className="w-4 h-4 text-civic-navy dark:text-civic-saffron" />
+                                            </div>
+                                            <div>
+                                                <p className="text-[10px] text-gray-700 dark:text-white font-bold leading-tight mb-1">SIR 2026 Audit Ready</p>
+                                                <p className="text-[9px] text-gray-400 dark:text-slate-400 font-medium leading-relaxed">Your sector data mapping is 100% verified by ECI.</p>
+                                            </div>
+                                        </div>
+                                        <div className="flex gap-4">
+                                            <div className="w-8 h-8 bg-civic-green/5 rounded-xl flex items-center justify-center shrink-0">
+                                                <ShieldCheck className="w-4 h-4 text-civic-green" />
+                                            </div>
+                                            <div>
+                                                <p className="text-[10px] text-gray-700 dark:text-white font-bold leading-tight mb-1">Identity Synchronized</p>
+                                                <p className="text-[9px] text-gray-400 dark:text-slate-400 font-medium leading-relaxed">Aadhaar-EPIC linking successful for PC 25.</p>
+                                            </div>
+                                        </div>
                                     </div>
-                                </div>
-                                <div className="flex gap-4">
-                                    <div className="w-8 h-8 bg-civic-green/5 rounded-xl flex items-center justify-center shrink-0">
-                                        <ShieldCheck className="w-4 h-4 text-civic-green" />
-                                    </div>
-                                    <div>
-                                        <p className="text-[10px] text-gray-700 font-bold leading-tight mb-1">Identity Synchronized</p>
-                                        <p className="text-[9px] text-gray-400 font-medium leading-relaxed">Aadhaar-EPIC linking successful for PC 25.</p>
-                                    </div>
-                                </div>
-                            </div>
-                        </div>
+                                </motion.div>
+                            )}
+                        </AnimatePresence>
                     </div>
 
                     {view === 'dashboard' && (
@@ -148,7 +180,7 @@ export const Header = () => {
                             whileHover={{ scale: 1.05 }}
                             whileTap={{ scale: 0.95 }}
                             onClick={() => setView('selection')}
-                            className="hidden sm:block px-6 py-3 bg-civic-navy text-white text-[10px] font-bold uppercase tracking-widest rounded-xl shadow-lg shadow-civic-navy/20"
+                            className="hidden sm:block px-6 py-3 bg-civic-navy dark:bg-white/10 text-white dark:text-slate-200 text-[10px] font-bold uppercase tracking-widest rounded-xl shadow-lg dark:shadow-none border dark:border-white/10"
                         >
                             Switch Identity
                         </motion.button>
@@ -159,10 +191,13 @@ export const Header = () => {
                         <motion.button
                             whileHover={{ scale: 1.1 }}
                             whileTap={{ scale: 0.9 }}
-                            onClick={() => setShowCredits(!showCredits)}
+                            onClick={() => {
+                                setShowCredits(!showCredits);
+                                setShowNotifications(false);
+                            }}
                             className={cn(
                                 "w-10 h-10 lg:w-12 lg:h-12 rounded-xl lg:rounded-2xl flex items-center justify-center transition-all",
-                                showCredits ? "bg-civic-saffron text-civic-navy" : "bg-gray-100 text-gray-400 hover:bg-white"
+                                showCredits ? "bg-civic-saffron text-civic-navy" : "bg-gray-100 dark:bg-white/[0.05] text-gray-400 dark:text-slate-400 hover:bg-white dark:hover:bg-white/[0.1] dark:hover:text-white"
                             )}
                         >
                             <User className="w-5 h-5 lg:w-6 lg:h-6" />
@@ -174,31 +209,38 @@ export const Header = () => {
                                     initial={{ opacity: 0, y: 10, scale: 0.95 }}
                                     animate={{ opacity: 1, y: 0, scale: 1 }}
                                     exit={{ opacity: 0, y: 10, scale: 0.95 }}
-                                    className="absolute right-0 mt-4 w-64 glass-card rounded-[2rem] p-8 z-[1010]"
+                                    className="fixed inset-x-4 top-24 lg:absolute lg:inset-auto lg:top-full lg:right-0 lg:mt-4 lg:w-64 glass-card rounded-[2rem] p-8 z-[7000] border-t-4 border-t-civic-saffron dark:border-t-civic-navy shadow-2xl"
                                 >
                                     <div className="flex flex-col items-center text-center">
+                                        {/* Mobile Theme Toggles (Integrated) */}
+                                        <div className="lg:hidden mb-8 w-full">
+                                            <div className="text-[8px] font-black text-gray-400 uppercase tracking-widest mb-3">Display Settings</div>
+                                            <div className="flex justify-center">
+                                                <ThemeToggle />
+                                            </div>
+                                        </div>
                                         <div className="w-16 h-16 bg-civic-navy rounded-full flex items-center justify-center mb-4 shadow-xl">
                                             <span className="text-xl font-display font-bold text-white">S</span>
                                         </div>
                                         <h4 className="text-sm font-bold text-civic-navy mb-1 uppercase tracking-widest">Sarvesh Arunkumar</h4>
-                                        <p className="text-[10px] font-bold text-gray-400 uppercase tracking-tighter mb-6">Sovereign Lead Engineer</p>
+                                        <p className="text-[10px] font-bold text-gray-400 uppercase tracking-tighter mb-6">Lead Developer</p>
 
                                         <div className="grid grid-cols-2 gap-3 w-full">
                                             <a
                                                 href="https://github.com/itzsrv156"
                                                 target="_blank"
-                                                className="flex flex-col items-center gap-2 p-4 bg-gray-50 rounded-2xl hover:bg-civic-navy hover:text-white transition-all group"
+                                                className="flex flex-col items-center gap-2 p-4 bg-gray-50 dark:bg-white/[0.03] rounded-2xl hover:bg-civic-navy dark:hover:bg-civic-navy/40 hover:text-white transition-all group"
                                             >
-                                                <Globe className="w-5 h-5" />
-                                                <span className="text-[8px] font-black uppercase tracking-widest">GitHub</span>
+                                                <Globe className="w-5 h-5 dark:text-slate-300" />
+                                                <span className="text-[8px] font-black uppercase tracking-widest dark:text-slate-400 group-hover:text-white">GitHub</span>
                                             </a>
                                             <a
                                                 href="https://www.linkedin.com/in/sarvesh-arunkumar/"
                                                 target="_blank"
-                                                className="flex flex-col items-center gap-2 p-4 bg-gray-50 rounded-2xl hover:bg-[#0077b5] hover:text-white transition-all group"
+                                                className="flex flex-col items-center gap-2 p-4 bg-gray-50 dark:bg-white/[0.03] rounded-2xl hover:bg-[#0077b5] dark:hover:bg-[#0077b5]/40 hover:text-white transition-all group"
                                             >
-                                                <User className="w-5 h-5" />
-                                                <span className="text-[8px] font-black uppercase tracking-widest">LinkedIn</span>
+                                                <User className="w-5 h-5 dark:text-slate-300" />
+                                                <span className="text-[8px] font-black uppercase tracking-widest dark:text-slate-400 group-hover:text-white">LinkedIn</span>
                                             </a>
                                         </div>
 
@@ -209,6 +251,7 @@ export const Header = () => {
                                 </motion.div>
                             )}
                         </AnimatePresence>
+                        </div>
                     </div>
                 </div>
             </div>

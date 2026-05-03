@@ -73,7 +73,7 @@ const initialState = {
     polling: 0,
   },
   hasGreeted: false,
-  voterName: 'Sarvesh Arunkumar',
+  voterName: null,
 };
 
 export const useVoterStore = create<VoterState>()(

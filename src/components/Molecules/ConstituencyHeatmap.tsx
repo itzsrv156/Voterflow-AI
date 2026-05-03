@@ -1,7 +1,4 @@
-import { motion } from 'framer-motion';
-import { MapPin } from 'lucide-react';
 import { TiltCard } from '../Atoms/TiltCard';
-import { useVoterStore } from '../../store/useVoterStore';
 
 /**
  * Real-time Constituency Sync Heatmap.

@@ -1,16 +1,14 @@
 import { motion, AnimatePresence } from 'framer-motion';
 import { useVoterStore } from '../../../store/useVoterStore';
-import { ShieldCheck, User, Bell, Search, Menu, X, Globe, Moon, Sun, Monitor } from 'lucide-react';
+import { ShieldCheck, User, Bell, Search, Menu, X } from 'lucide-react';
 import { cn } from '../../../lib/utils';
 import { useState, useEffect } from 'react';
 import { ThemeToggle } from '../../Atoms/ThemeToggle';
-import { useTranslation } from '../../../LanguageContext';
 
 export const MobileHeader = () => {
-    const { setView, view, language, setLanguage, theme, setTheme } = useVoterStore();
+    const { setView, view, language, setLanguage } = useVoterStore();
     const [isMenuOpen, setIsMenuOpen] = useState(false);
     const [showNotifications, setShowNotifications] = useState(false);
-    const { t } = useTranslation();
 
     // Auto-close on view change
     useEffect(() => {
@@ -72,53 +70,33 @@ export const MobileHeader = () => {
                                         <User className="w-6 h-6 text-white" />
                                     </div>
                                     <div>
-                                        <h4 className="text-xs font-bold text-civic-navy dark:text-white uppercase tracking-widest">Sarvesh Arunkumar</h4>
+                                        <h4 className="text-xs font-bold text-civic-navy dark:text-white uppercase tracking-widest">Arjun Singh</h4>
                                         <p className="text-[8px] font-black text-slate-400 uppercase tracking-tighter mt-0.5">Lead Developer</p>
                                     </div>
                                 </div>
 
-                                {/* Display Mode (Segmented Control) */}
-                                <div className="space-y-3">
-                                    <span className="text-[8px] font-black text-gray-400 uppercase tracking-widest block">Visual Theme</span>
-                                    <div className="flex bg-white/40 dark:bg-white/[0.03] p-1.5 rounded-2xl border border-white/20 dark:border-white/10">
-                                        {[
-                                            { id: 'light', icon: Sun, label: 'Light' },
-                                            { id: 'dark', icon: Moon, label: 'Dark' },
-                                            { id: 'system', icon: Monitor, label: 'Auto' }
-                                        ].map(t => (
-                                            <button
-                                                key={t.id}
-                                                onClick={() => setTheme(t.id as any)}
-                                                className={cn(
-                                                    "flex-1 py-3 rounded-xl flex items-center justify-center gap-2 text-[9px] font-black uppercase transition-all",
-                                                    theme === t.id 
-                                                        ? "bg-civic-navy text-white shadow-xl" 
-                                                        : "text-gray-400"
-                                                )}
-                                            >
-                                                <t.icon className="w-3.5 h-3.5" />
-                                                {t.label}
-                                            </button>
-                                        ))}
+                                {/* Display & Language */}
+                                <div className="grid grid-cols-2 gap-4">
+                                    <div className="space-y-3">
+                                        <span className="text-[8px] font-black text-gray-400 uppercase tracking-widest block">Display Mode</span>
+                                        <ThemeToggle />
                                     </div>
-                                </div>
-
-                                {/* Language Selection */}
-                                <div className="space-y-3">
-                                    <span className="text-[8px] font-black text-gray-400 uppercase tracking-widest block">Language Protocol</span>
-                                    <div className="flex bg-white/40 dark:bg-white/[0.03] p-1.5 rounded-2xl border border-white/20 dark:border-white/10">
-                                        {['en', 'hi', 'kn'].map(l => (
-                                            <button
-                                                key={l}
-                                                onClick={() => setLanguage(l as any)}
-                                                className={cn(
-                                                    "flex-1 py-3 rounded-xl text-[9px] font-black uppercase transition-all",
-                                                    language === l ? "bg-civic-navy text-white shadow-xl" : "text-gray-400"
-                                                )}
-                                            >
-                                                {l}
-                                            </button>
-                                        ))}
+                                    <div className="space-y-3">
+                                        <span className="text-[8px] font-black text-gray-400 uppercase tracking-widest block">Language</span>
+                                        <div className="flex bg-white/40 dark:bg-white/[0.03] p-1 rounded-xl border border-white/20 dark:border-white/10">
+                                            {['en', 'hi', 'kn'].map(l => (
+                                                <button
+                                                    key={l}
+                                                    onClick={() => setLanguage(l as any)}
+                                                    className={cn(
+                                                        "flex-1 py-1.5 rounded-lg text-[9px] font-black uppercase transition-all",
+                                                        language === l ? "bg-civic-navy text-white shadow-lg" : "text-gray-400"
+                                                    )}
+                                                >
+                                                    {l}
+                                                </button>
+                                            ))}
+                                        </div>
                                     </div>
                                 </div>
 

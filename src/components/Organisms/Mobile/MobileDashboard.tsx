@@ -1,14 +1,11 @@
-import { useState, useEffect } from 'react';
+import { useState } from 'react';
 import { motion, AnimatePresence } from 'framer-motion';
 import { 
-  Zap, CheckCircle, Gavel, Calendar, LayoutDashboard, UserPlus, Search, 
-  Library, Headphones, ArrowRight, Radio, Award, ChevronLeft, User, Target,
-  PhoneCall, MapPin, ShieldCheck, UserCheck, Flame, Cpu, BookOpen, Download, 
-  FileText, FileEdit, Globe, Fingerprint, Vote, AlertCircle, Maximize
+  Zap, CheckCircle, LayoutDashboard, UserPlus, 
+  ArrowRight, Radio, ShieldCheck, Cpu
 } from 'lucide-react';
 
 import { useVoterStore } from '../../../store/useVoterStore';
-import { useTranslation } from '../../../LanguageContext';
 import { cn } from '../../../lib/utils';
 
 // Shared Components (These will still be responsive or we can make mobile versions if needed)
@@ -20,8 +17,7 @@ import { ResearchVault } from '../ResearchVault';
 import { ChatAssistant } from '../ChatAssistant';
 
 export const MobileDashboard = () => {
-    const { view, setView, progress } = useVoterStore();
-    const { t } = useTranslation();
+    const { progress } = useVoterStore();
     const [activeTab, setActiveTab] = useState<'overview' | 'registration' | 'security'>('overview');
     const [activeFlow, setActiveFlow] = useState<'registration' | 'audit' | 'vault' | null>(null);
     const [isChatOpen, setIsChatOpen] = useState(false);
@@ -171,12 +167,12 @@ export const MobileDashboard = () => {
                     <DigitalFormEngine onClose={() => setActiveFlow(null)} />
                 )}
                 {activeFlow === 'vault' && (
-                    <ResearchVault onClose={() => setActiveFlow(null)} />
+                    <ResearchVault isOpen={true} onClose={() => setActiveFlow(null)} />
                 )}
             </AnimatePresence>
 
             {isChatOpen && (
-                <ChatAssistant isOpen={isChatOpen} onClose={() => setIsChatOpen(false)} />
+                <ChatAssistant />
             )}
         </div>
     );

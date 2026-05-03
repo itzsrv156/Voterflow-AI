@@ -1,6 +1,9 @@
+import { useState, useEffect } from 'react';
 import { Header } from './components/Organisms/Header';
+import { MobileHeader } from './components/Organisms/Mobile/MobileHeader';
 import { Hero } from './components/Organisms/Hero';
 import { Dashboard } from './components/Organisms/Dashboard';
+import { MobileDashboard } from './components/Organisms/Mobile/MobileDashboard';
 import { DigitalFormEngine } from './components/Organisms/DigitalFormEngine';
 import { ResearchVault } from './components/Organisms/ResearchVault';
 import { ChatAssistant } from './components/Organisms/ChatAssistant';
@@ -10,10 +13,10 @@ import { ErrorBoundary } from './components/Atoms/ErrorBoundary';
 import { X } from 'lucide-react';
 import { cn } from './lib/utils';
 import { Tooltip } from './components/Atoms/Tooltip';
-import { useEffect, useState } from 'react';
 
 function App() {
-  const { view, activeFlow, setActiveFlow, readinessScore, isChatOpen, setIsChatOpen, theme, setTheme } = useVoterStore();
+  const { view, activeFlow, setActiveFlow, readinessScore, isChatOpen, setIsChatOpen, theme } = useVoterStore();
+  
   const [isMobile, setIsMobile] = useState(window.innerWidth < 1024);
 
   useEffect(() => {
@@ -22,39 +25,28 @@ function App() {
     return () => window.removeEventListener('resize', handleResize);
   }, []);
 
-  // Force Light Mode for fresh Hackathon sessions
-  useEffect(() => {
-    const hasSetTheme = localStorage.getItem('voter-flow-theme-set');
-    if (!hasSetTheme) {
-      setTheme('light');
-      localStorage.setItem('voter-flow-theme-set', 'true');
-    }
-  }, []);
-
   useEffect(() => {
     const root = window.document.documentElement;
-    const metaTheme = document.querySelector('meta[name="theme-color"]');
-    
     const applyTheme = (t: string) => {
       if (t === 'dark') {
         root.classList.add('dark');
-        if (metaTheme) metaTheme.setAttribute('content', '#020617');
       } else if (t === 'light') {
         root.classList.remove('dark');
-        if (metaTheme) metaTheme.setAttribute('content', '#FFFFFF');
       } else {
         const systemDark = window.matchMedia('(prefers-color-scheme: dark)').matches;
-        if (systemDark) {
-          root.classList.add('dark');
-          if (metaTheme) metaTheme.setAttribute('content', '#020617');
-        } else {
-          root.classList.remove('dark');
-          if (metaTheme) metaTheme.setAttribute('content', '#FFFFFF');
-        }
+        if (systemDark) root.classList.add('dark');
+        else root.classList.remove('dark');
       }
     };
 
     applyTheme(theme);
+
+    if (theme === 'system') {
+      const mediaQuery = window.matchMedia('(prefers-color-scheme: dark)');
+      const handleChange = () => applyTheme('system');
+      mediaQuery.addEventListener('change', handleChange);
+      return () => mediaQuery.removeEventListener('change', handleChange);
+    }
   }, [theme]);
 
   // Dynamic colors based on readinessScore
@@ -66,7 +58,7 @@ function App() {
 
   return (
     <ErrorBoundary>
-      <div className="min-h-screen bg-[#FDFDFD] selection:bg-civic-navy/10 relative">
+      <div className="min-h-screen bg-[#FDFDFD] dark:bg-[#020617] selection:bg-civic-navy/10 relative transition-colors duration-700">
         {/* Floating Background Blobs for Glass Depth - Reactive Civic Pulse */}
         <div className="fixed inset-0 overflow-hidden pointer-events-none z-0">
           <motion.div 
@@ -137,7 +129,7 @@ function App() {
         Skip to Content
       </a>
 
-        <Header />
+        {isMobile ? <MobileHeader /> : <Header />}
         
         <main id="main-content" className="relative min-h-screen z-10">
           <AnimatePresence mode="wait">
@@ -166,7 +158,7 @@ function App() {
                 transition={{ duration: 1.5, ease: [0.22, 1, 0.36, 1] }}
                 className="pt-36 lg:pt-48 px-6 lg:px-4 pb-32 lg:pb-20 max-w-[1600px] mx-auto h-full relative z-10 [contain:layout_style]"
               >
-                <Dashboard />
+                {isMobile ? <MobileDashboard /> : <Dashboard />}
               </motion.div>
             )}
           </AnimatePresence>
@@ -252,15 +244,15 @@ function App() {
 
         {/* Footer / Meta Data */}
         <div className="fixed bottom-4 left-4 text-[10px] font-bold text-gray-400 z-50 mix-blend-difference hidden md:block">
-          Sovereign VoterFlow Protocol // System Active // Encyption Level: AES-256
+          Secure VoterFlow Protocol // System Active // Encryption Level: AES-256
         </div>
         <div className="fixed bottom-4 right-4 text-[10px] font-bold text-gray-400 z-50 mix-blend-difference hidden md:block">
           Election Commission of India // Framework 2026
         </div>
 
-        {/* Sovereign Disclaimer Footer */}
+        {/* Secure Disclaimer Footer */}
         <footer className="fixed bottom-6 left-6 z-[3500] pointer-events-auto group hidden md:block">
-            <div className="flex items-center gap-3 bg-white/40 backdrop-blur-md px-4 py-2 rounded-full border border-white/40 shadow-sm transition-all hover:bg-white/60">
+            <div className="flex items-center gap-3 bg-white/40 dark:bg-white/[0.03] backdrop-blur-md px-4 py-2 rounded-full border border-white/40 dark:border-white/10 shadow-sm transition-all hover:bg-white/60">
                 <div className="w-5 h-5 bg-civic-navy rounded-full flex items-center justify-center">
                     <span className="text-[10px] font-black text-white italic">i</span>
                 </div>

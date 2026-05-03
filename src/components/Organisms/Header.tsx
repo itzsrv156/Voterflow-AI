@@ -1,12 +1,12 @@
 import { motion, AnimatePresence } from 'framer-motion';
 import { useVoterStore } from '../../store/useVoterStore';
-import { ShieldCheck, Vote, Globe, User, ExternalLink, Bell, Search, Sun, Moon, Monitor } from 'lucide-react';
+import { ShieldCheck, Vote, Globe, User, ExternalLink, Bell, Search } from 'lucide-react';
 import { cn } from '../../lib/utils';
 import { useState, useEffect } from 'react';
 import { ThemeToggle } from '../Atoms/ThemeToggle';
 
 export const Header = () => {
-    const { setView, resetStore, view, language, setLanguage, theme, setTheme } = useVoterStore();
+    const { setView, resetStore, view, language, setLanguage } = useVoterStore();
     const [showCredits, setShowCredits] = useState(false);
     const [showNotifications, setShowNotifications] = useState(false);
 

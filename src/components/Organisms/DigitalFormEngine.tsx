@@ -146,8 +146,9 @@ const StudentBranch = ({ data, setData }: { data: FormData, setData: (d: FormDat
         <motion.div initial={{ opacity: 0, y: 10 }} animate={{ opacity: 1, y: 0 }} className="space-y-4">
           <div className="grid grid-cols-2 gap-4">
             <div className="flex flex-col gap-2">
-              <label className="text-[10px] font-bold text-gray-400 uppercase">Hostel Name</label>
+              <label htmlFor="form-hostel" className="text-[10px] font-bold text-gray-400 uppercase">Hostel Name</label>
               <input 
+                id="form-hostel"
                 className="p-4 bg-gray-50 border border-gray-100 rounded-xl text-sm focus:ring-2 focus:ring-civic-navy outline-none"
                 placeholder="e.g. Ganga Hostel"
                 value={data.hostelName || ''}
@@ -155,8 +156,9 @@ const StudentBranch = ({ data, setData }: { data: FormData, setData: (d: FormDat
               />
             </div>
             <div className="flex flex-col gap-2">
-              <label className="text-[10px] font-bold text-gray-400 uppercase">Warden Name</label>
+              <label htmlFor="form-warden" className="text-[10px] font-bold text-gray-400 uppercase">Warden Name</label>
               <input 
+                id="form-warden"
                 className="p-4 bg-gray-50 border border-gray-100 rounded-xl text-sm focus:ring-2 focus:ring-civic-navy outline-none"
                 placeholder="Dr. Sharma"
                 value={data.wardenName || ''}
@@ -167,8 +169,9 @@ const StudentBranch = ({ data, setData }: { data: FormData, setData: (d: FormDat
         </motion.div>
       ) : (
         <motion.div initial={{ opacity: 0, y: 10 }} animate={{ opacity: 1, y: 0 }} className="flex flex-col gap-2">
-          <label className="text-[10px] font-bold text-gray-400 uppercase tracking-widest">Permanent Address (Native)</label>
+          <label htmlFor="form-address" className="text-[10px] font-bold text-gray-400 uppercase tracking-widest">Permanent Address (Native)</label>
           <textarea 
+            id="form-address"
             className="p-4 bg-gray-50 border border-gray-100 rounded-xl text-sm focus:ring-2 focus:ring-civic-navy outline-none min-h-[100px]"
             placeholder="Enter your permanent native address as per Aadhaar..."
             value={data.permanentAddress || ''}
@@ -220,12 +223,15 @@ const FormStep1 = ({ onNext, data, setData }: FormStepProps) => {
     <div className="space-y-8">
       <div className="flex flex-col gap-2">
         <div className="flex justify-between items-center">
-            <label className="text-[10px] font-bold text-gray-400 uppercase tracking-widest">Full Legal Name</label>
+            <label htmlFor="form-name" className="text-[10px] font-bold text-gray-400 uppercase tracking-widest">Full Legal Name</label>
             {errors.name && <span className="text-[9px] text-red-500 font-bold uppercase">{errors.name}</span>}
         </div>
         <input 
+          id="form-name"
           type="text" 
           placeholder="As per Aadhaar"
+          aria-required="true"
+          aria-invalid={!!errors.name}
           className={cn(
             "p-5 bg-gray-50 border rounded-2xl text-lg font-bold text-civic-navy focus:ring-2 focus:ring-civic-navy outline-none transition-all",
             errors.name ? "border-red-200 bg-red-50" : "border-gray-100"
@@ -237,11 +243,14 @@ const FormStep1 = ({ onNext, data, setData }: FormStepProps) => {
 
       <div className="flex flex-col gap-2">
         <div className="flex justify-between items-center">
-            <label className="text-[10px] font-bold text-gray-400 uppercase tracking-widest">Date of Birth</label>
+            <label htmlFor="form-dob" className="text-[10px] font-bold text-gray-400 uppercase tracking-widest">Date of Birth</label>
             {errors.dob && <span className="text-[9px] text-red-500 font-bold uppercase">{errors.dob}</span>}
         </div>
         <input 
+          id="form-dob"
           type="date" 
+          aria-required="true"
+          aria-invalid={!!errors.dob}
           className={cn(
             "p-5 bg-gray-50 border rounded-2xl font-bold text-civic-navy transition-all",
             errors.dob ? "border-red-200 bg-red-50" : "border-gray-100"

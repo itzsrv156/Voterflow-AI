@@ -8,10 +8,10 @@ const API_KEY: string = import.meta.env.VITE_GEMINI_API_KEY || "";
 const genAI = new GoogleGenerativeAI(API_KEY);
 
 /** 
- * Latest stable lightweight model for 2026. 
+ * Latest stable lightweight model. 
  * @constant 
  */
-const MODEL_NAME = "gemini-2.5-flash-lite"; 
+const MODEL_NAME = "gemini-1.5-flash"; 
 
 /**
  * Interface for chat history messages adhering to Gemini API protocol.
